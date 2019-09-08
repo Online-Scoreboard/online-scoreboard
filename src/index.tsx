@@ -9,8 +9,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import * as serviceWorker from './serviceWorker';
 import { AMPLIFY, API_URL, APP_NAME } from './config';
+import { ProvideAuth } from './components/Auth/Auth.Provider';
+import { App } from './App';
 import theme from './theme';
-import useAppStyles from './App.styles';
 
 dotenv.config();
 Amplify.configure(AMPLIFY);
@@ -49,46 +50,17 @@ const client = new ApolloClient({
         };
         cache.writeData({ data });
       },
-      async user(): Promise<void> {
-        let user;
-        const data = {
-          user: {
-            __typename: 'UserSession',
-            isLoggedIn: false,
-            username: '',
-          },
-        };
-        try {
-          user = await Auth.currentUserInfo();
-          data.user.isLoggedIn = true;
-          data.user.username = user.username;
-        } catch (err) {
-          data.user.isLoggedIn = false;
-        }
-
-        cache.writeData({ data });
-      },
     },
-    // Mutation: {
-    //   async signOut(_, args, { cache }) {
-    //     await signOut();
-    //     return null;
-    //   },
-    // },
   },
 });
-
-const App: React.FC = () => {
-  useAppStyles();
-
-  return <h1>{APP_NAME}</h1>;
-};
 
 const ApolloApp = (AppComponent: React.ComponentType): JSX.Element => (
   <ThemeProvider theme={theme}>
     <ApolloProvider client={client}>
-      <CssBaseline />
-      <AppComponent />
+      <ProvideAuth>
+        <CssBaseline />
+        <AppComponent />
+      </ProvideAuth>
     </ApolloProvider>
   </ThemeProvider>
 );

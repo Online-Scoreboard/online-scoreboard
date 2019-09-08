@@ -7,7 +7,7 @@ module.exports = {
     jest: true,
   },
   extends: [
-    // 'eslint:recommended',
+    'eslint:recommended',
     // 'plugin:react/recommended',
     'react-app',
     'plugin:@typescript-eslint/recommended',
@@ -28,6 +28,7 @@ module.exports = {
   },
   plugins: ['react', 'react-hooks', '@typescript-eslint', 'prettier'],
   rules: {
+    '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-angle-bracket-type-assertion': 'off',
     'prettier/prettier': ['error', { singleQuote: true }],
     'react-hooks/rules-of-hooks': 'error',
