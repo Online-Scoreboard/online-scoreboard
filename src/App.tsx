@@ -7,10 +7,15 @@ import { useAuth } from './components/Auth/Auth.Provider';
 import { Footer } from './components/Footer';
 
 import useAppStyles from './App.styles';
+import { Loading } from './components/Loading';
 
 export const App: React.FC = React.memo(() => {
   const classes = useAppStyles();
-  const { isLoggedIn, logOut } = useAuth();
+  const { isLoggedIn, logOut, loading } = useAuth();
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className={classes.root}>
