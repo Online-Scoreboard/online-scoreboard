@@ -9,7 +9,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import * as serviceWorker from './serviceWorker';
 import { AMPLIFY, API_URL, APP_NAME } from './config';
-import { ProvideAuth } from './components/Auth/Auth.Provider';
 import { App } from './App';
 import theme from './theme';
 
@@ -54,17 +53,15 @@ const client = new ApolloClient({
   },
 });
 
-const ApolloApp = (AppComponent: React.ComponentType): JSX.Element => (
+const AppContainer = (AppComponent: React.ComponentType): JSX.Element => (
   <ThemeProvider theme={theme}>
     <ApolloProvider client={client}>
-      <ProvideAuth>
-        <CssBaseline />
-        <AppComponent />
-      </ProvideAuth>
+      <CssBaseline />
+      <AppComponent />
     </ApolloProvider>
   </ThemeProvider>
 );
 
-render(ApolloApp(App), document.getElementById('root'));
+render(AppContainer(App), document.getElementById('root'));
 
 serviceWorker.unregister();

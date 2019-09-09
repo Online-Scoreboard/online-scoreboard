@@ -5,11 +5,10 @@ import { NotFound } from '../../NotFound';
 
 const Home: React.FC<RouteComponentProps> = () => <div>Home</div>;
 
-export const Auth: React.FC<RouteComponentProps> = () => (
+export const Auth: React.FC<RouteComponentProps> = React.memo(() => (
   <Router>
     <Home path="/" />
     <LogIn path="login" />
-    <LogIn path="register" />
     <NotFound default />
   </Router>
-);
+));

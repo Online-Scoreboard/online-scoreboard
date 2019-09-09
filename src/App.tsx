@@ -1,35 +1,14 @@
 import React from 'react';
-import { Router, Link } from '@reach/router';
+import { Link } from '@reach/router';
 import { Typography, AppBar, Toolbar, Button, Link as LinkButton } from '@material-ui/core';
 
-import { Auth } from './components/Auth/Auth';
+import { PrivateRouter } from './PrivateRouter';
 import { useAuth } from './components/Auth/Auth.Provider';
-import { Home } from './components/Home';
 import { Footer } from './components/Footer';
 
 import useAppStyles from './App.styles';
 
-interface PrivateRouterProps {
-  isLoggedIn: boolean;
-}
-
-const PrivateRouter: React.FC<PrivateRouterProps> = ({ isLoggedIn }) => {
-  if (isLoggedIn) {
-    return (
-      <Router>
-        <Home default />
-      </Router>
-    );
-  }
-
-  return (
-    <Router>
-      <Auth path="*" />
-    </Router>
-  );
-};
-
-export const App: React.FC = () => {
+export const App: React.FC = React.memo(() => {
   const classes = useAppStyles();
   const { isLoggedIn, logOut } = useAuth();
 
@@ -82,4 +61,4 @@ export const App: React.FC = () => {
       <Footer />
     </div>
   );
-};
+});

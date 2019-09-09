@@ -1,27 +1,95 @@
-import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import { useEffect, useState } from 'react';
 import { Auth } from 'aws-amplify';
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+import { Resolvers } from 'apollo-boost';
 
-type User = {
+const GET_USER = gql`
+  query GetUser {
+    user @client(always: true) {
+      isLoggedIn
+      username
+      email
+    }
+  }
+`;
+
+const LOG_IN = gql`
+  mutation LogIn($loginData: LogInData!) {
+    logIn(loginData: $loginData) @client
+  }
+`;
+
+const LOG_OUT = gql`
+  mutation LogOut {
+    logOut @client
+  }
+`;
+
+interface User {
   attributes: {
     email: string;
     email_verified: boolean;
     sub: string;
   };
   username: string;
-};
-
-interface AuthContext {
-  isLoggedIn: boolean;
-  user?: User;
-  logIn: (username: string, password: string) => Promise<void>;
-  logOut: () => Promise<void>;
 }
 
-const authInitialState = {
-  isLoggedIn: false,
-} as AuthContext;
+const resolvers: Resolvers = {
+  Query: {
+    async user(launch, args, { cache }): Promise<void> {
+      console.warn('checking user');
+      let user: User;
+      const data = {
+        user: {
+          __typename: 'UserSession',
+          isLoggedIn: false,
+          username: '',
+          email: '',
+        },
+      };
+      try {
+        user = await Auth.currentUserInfo();
+        data.user.isLoggedIn = true;
+        data.user.username = user.username;
+        data.user.email = user.attributes.email;
+      } catch (err) {
+        data.user.isLoggedIn = false;
+      }
 
-const authContext = createContext(authInitialState);
+      cache.writeData({ data });
+    },
+  },
+
+  Mutation: {
+    async logIn(launch, { loginData }, { cache }) {
+      try {
+        await awsSignIn(loginData.username, loginData.password);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+
+    async logOut(launch, args, { cache }) {
+      try {
+        await awsSignOut();
+      } catch (err) {
+        console.error(err);
+      }
+
+      const data = {
+        user: {
+          __typename: 'UserSession',
+          isLoggedIn: false,
+          username: '',
+          email: '',
+        },
+      };
+
+      cache.writeData({ data });
+    },
+  },
+};
 
 const awsSignIn = async (username: string, password: string) => {
   let res;
@@ -45,119 +113,37 @@ const awsSignIn = async (username: string, password: string) => {
 
 const awsSignOut = () => Auth.signOut();
 
-const getAuthenticationStatus = async () => {
-  let user;
-  try {
-    user = await Auth.currentAuthenticatedUser();
-  } catch (err) {
-    throw new Error(err);
-  }
+export const useAuth = () => {
+  const client = useApolloClient();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { loading: userLoading, error, data } = useQuery(GET_USER);
+  const [logOut, { loading: logOutLoading }] = useMutation(LOG_OUT, {
+    refetchQueries: ['GetUser'],
+  });
+  const [logIn, { loading: logInLoading }] = useMutation(LOG_IN, {
+    refetchQueries: ['GetUser'],
+  });
 
-  return user;
-};
+  client.addResolvers(resolvers);
 
-type ActionType = 'logIn' | 'logOut' | 'logInError' | 'userAuthenticated';
-
-interface Action {
-  type: ActionType;
-  payload?: any;
-}
-
-interface State {
-  isLoggedIn: boolean;
-  user?: User;
-  message?: {
-    body: string;
-    type: 'success' | 'warning' | 'error' | 'info';
-  };
-}
-
-const initialState: State = {
-  isLoggedIn: false,
-};
-
-const authReducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case 'logIn':
-      return {
-        ...state,
-        isLoggedIn: true,
-        message: {
-          body: `Welcome back ${state.user}`,
-          type: 'success',
-        },
-      };
-    case 'logOut':
-      return {
-        ...state,
-        isLoggedIn: false,
-      };
-    case 'logInError':
-      return {
-        ...state,
-        isLoggedIn: false,
-        message: {
-          body: action.payload,
-          type: 'error',
-        },
-      };
-    case 'userAuthenticated':
-      return {
-        ...state,
-        isLoggedIn: true,
-        user: action.payload,
-      };
-    default:
-      return state;
-  }
-};
-
-const useProvideAuth = (): AuthContext => {
-  const [{ user, isLoggedIn }, dispatch] = useReducer(authReducer, initialState);
+  const user = data && data.user;
 
   useEffect(() => {
-    getAuthenticationStatus()
-      .then(res => {
-        console.warn('getAuthenticationStatus', res);
-        if (res && res.username) {
-          dispatch({ type: 'userAuthenticated', payload: res });
-        }
-      })
-      .catch((err: any) => {
-        console.warn('getAuthenticationStatus', err);
-        dispatch({ type: 'logOut' });
-      });
-  }, []);
-
-  const logIn = async (username: string, password: string) => {
-    try {
-      await awsSignIn(username, password);
-    } catch (errMessage) {
-      dispatch({
-        type: 'logInError',
-        payload: errMessage,
-      });
+    if (user && user.isLoggedIn) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
     }
-    dispatch({ type: 'logIn' });
-  };
-
-  const logOut = async () => {
-    await awsSignOut();
-    dispatch({ type: 'logOut' });
-  };
+  }, [logIn, logOut, user]);
 
   return {
     user,
     isLoggedIn,
-    logIn,
-    logOut,
+    loading: userLoading,
+    operationLoading: logInLoading || logOutLoading,
+    logIn: (username: string, password: string) => {
+      logIn({ variables: { loginData: { username, password } } });
+    },
+    logOut: () => logOut(),
   };
 };
-
-export const ProvideAuth: React.FC = ({ children }) => {
-  const auth = useProvideAuth();
-
-  return <authContext.Provider value={auth}>{children}</authContext.Provider>;
-};
-
-export const useAuth = () => useContext(authContext);

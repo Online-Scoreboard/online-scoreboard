@@ -33,7 +33,7 @@ export const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const LogIn: React.FC<RouteComponentProps> = () => {
+export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
   const initialData = { username: '', password: '' };
 
   const { formData, setFormField, resetForm } = useForm(initialData);
@@ -116,4 +116,4 @@ export const LogIn: React.FC<RouteComponentProps> = () => {
       </div>
     </Container>
   );
-};
+});
