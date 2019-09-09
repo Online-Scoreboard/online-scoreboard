@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import { Container, Avatar, Typography, TextField, FormControlLabel, Grid, Link } from '@material-ui/core';
@@ -7,6 +7,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import { RouteComponentProps } from '@reach/router';
 import { useAuth } from './Auth.Provider';
+import { useForm } from '../../hooks/useForm';
 
 export const useStyles = makeStyles(theme => ({
   paper: {
@@ -32,26 +33,13 @@ export const useStyles = makeStyles(theme => ({
   },
 }));
 
-function useForm<T>(initialState: T): [T, (e: React.ChangeEvent<any>) => void, () => void] {
-  const [data, setData] = useState(initialState);
-
-  const setFormField = (e: React.ChangeEvent<any>) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-
-  const resetForm = () => setData(initialState);
-
-  return [data, setFormField, resetForm];
-}
-
 export const LogIn: React.FC<RouteComponentProps> = () => {
   const initialData = { username: '', password: '' };
-  const operationLoading = false;
 
-  const [formData, setFormField, resetForm] = useForm(initialData);
+  const { formData, setFormField, resetForm } = useForm(initialData);
   const classes = useStyles();
 
-  const { logIn } = useAuth();
+  const { logIn, operationLoading } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
