@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from '@reach/router';
 import { Typography, AppBar, Toolbar, Button, Link as LinkButton } from '@material-ui/core';
 
@@ -8,10 +8,12 @@ import { Footer } from './components/Footer';
 
 import useAppStyles from './App.styles';
 import { Loading } from './components/Loading';
+import { useNotification, Notification } from './components/Notification';
 
 export const App: React.FC = React.memo(() => {
   const classes = useAppStyles();
   const { isLoggedIn, logOut, loading } = useAuth();
+  const { open, variant, message } = useNotification();
 
   if (loading) {
     return <Loading />;
@@ -19,6 +21,7 @@ export const App: React.FC = React.memo(() => {
 
   return (
     <div className={classes.root}>
+      <Notification message={message} open={open} variant={variant} />
       <AppBar position="static" color="default" elevation={0} className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
           <Typography variant="h6" noWrap className={classes.toolbarTitle}>

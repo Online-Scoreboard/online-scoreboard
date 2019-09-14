@@ -9,6 +9,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import * as serviceWorker from './serviceWorker';
 import { AMPLIFY, API_URL, APP_NAME } from './config';
+import { notificationInitialData } from './components/Notification';
 import { App } from './App';
 import theme from './theme';
 
@@ -21,6 +22,7 @@ const uri = `${API_URL}/graphql`;
 cache.writeData({
   data: {
     appName: APP_NAME,
+    ...notificationInitialData,
   },
 });
 
