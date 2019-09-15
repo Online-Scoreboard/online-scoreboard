@@ -1,0 +1,11 @@
+{
+  "build": {
+    "env": {
+      "REACT_APP_APP_NAME": "Online Scoreboard",
+      "REACT_APP_REGION": "US-EAST-1",
+      "REACT_APP_USER_POOL_ID": "@online_scoreboard_app_user_pool_id",
+      "REACT_APP_APP_CLIENT_ID": "@online_scoreboard_app_client_id",
+      "REACT_APP_API_URL": "@online_scoreboard_api_url"
+    }
+  }
+}

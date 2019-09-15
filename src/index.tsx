@@ -8,7 +8,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import * as serviceWorker from './serviceWorker';
-import { AMPLIFY, API_URL, APP_NAME } from './config';
+import { AMPLIFY, API_URL, APP_NAME, APP_VERSION } from './config';
 import { notificationInitialData } from './components/Notification';
 import { App } from './App';
 import theme from './theme';
@@ -67,3 +67,5 @@ const AppContainer = (AppComponent: React.ComponentType): JSX.Element => (
 render(AppContainer(App), document.getElementById('root'));
 
 serviceWorker.unregister();
+
+console.warn(`Online Scoreboard v.${APP_VERSION}`);
