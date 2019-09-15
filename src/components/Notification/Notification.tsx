@@ -60,12 +60,7 @@ export const Notification: React.FC<NotificationProps> = ({ message, variant, op
   }
 
   return (
-    <Snackbar
-      open={open}
-      onClose={handleCloseCb}
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      autoHideDuration={6000}
-    >
+    <Snackbar open={open} onClose={handleCloseCb} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
       <NotificationContent message={message} variant={variant} onClose={handleCloseCb} />
     </Snackbar>
   );

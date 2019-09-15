@@ -13,19 +13,15 @@ import { useNotification, Notification } from './components/Notification';
 export const App: React.FC = React.memo(() => {
   const classes = useAppStyles();
   const { isLoggedIn, logOut, loading, error, success } = useAuth();
-  const { open, variant, message, setMessage, setOpen, setVariant } = useNotification();
+  const { open, variant, message, setNotification } = useNotification();
 
   useEffect(() => {
     if (error) {
-      setVariant('error');
-      setMessage(error);
-      setOpen(true);
+      setNotification(error, 'error');
     }
 
     if (success) {
-      setVariant('success');
-      setMessage(success);
-      setOpen(true);
+      setNotification(success, 'success');
     }
     // eslint-disable-next-line
   }, [error, success]);

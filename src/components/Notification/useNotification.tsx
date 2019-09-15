@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { NotificationVariant } from './Notification';
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -111,7 +111,7 @@ const resolvers: Resolvers = {
   },
 };
 
-export const useNotification = (timeout: number = 3000) => {
+export const useNotification = (timeout: number = 4000) => {
   const client = useApolloClient();
   client.addResolvers(resolvers);
 
@@ -133,39 +133,42 @@ export const useNotification = (timeout: number = 3000) => {
   const notification = (data && data.notification) || defaultNotification.notification;
   const { open, message, variant } = notification;
 
-  useEffect(() => {
-    if (open && !notificationTimeout.current) {
-      notificationTimeout.current = setTimeout(() => {
-        _setOpen({ variables: { openStatus: false } });
-      }, timeout);
-    }
-  }, [open, timeout, _setOpen]);
-
-  useEffect(() => {
-    return () => {
-      if (notificationTimeout.current) {
-        clearTimeout(notificationTimeout.current);
-      }
-    };
-  }, []);
-
   return {
     open,
     message,
     variant,
-    setOpen: (openStatus: boolean) => {
-      if (notificationTimeout.current) {
-        clearTimeout(notificationTimeout.current);
-        notificationTimeout.current = undefined;
-      }
+    setNotification: (_message: string, _variant: NotificationVariant) => {
+      const tryToShowNotification = () => {
+        if (notificationTimeout.current) {
+          clearTimeout(notificationTimeout.current);
+          notificationTimeout.current = undefined;
 
-      _setOpen({ variables: { openStatus } });
-    },
-    setMessage: (message: string) => {
-      return _setMessage({ variables: { message } });
-    },
-    setVariant: (variant: NotificationVariant) => {
-      _setVariant({ variables: { variant } });
+          setTimeout(() => {
+            _setOpen({ variables: { openStatus: false } });
+            _setMessage({ variables: { message: '' } });
+          }, 150);
+          setTimeout(() => tryToShowNotification(), 750);
+          return;
+        }
+
+        _setVariant({ variables: { variant: _variant } });
+        _setMessage({ variables: { message: _message } });
+        _setOpen({ variables: { openStatus: true } });
+
+        if (!notificationTimeout.current) {
+          notificationTimeout.current = setTimeout(() => {
+            _setOpen({ variables: { openStatus: false } });
+            _setMessage({ variables: { message: '' } });
+            _setVariant({ variables: { variant: 'info' } });
+            if (notificationTimeout.current) {
+              clearTimeout(notificationTimeout.current);
+              notificationTimeout.current = undefined;
+            }
+          }, timeout);
+        }
+      };
+
+      return tryToShowNotification();
     },
   };
 };
