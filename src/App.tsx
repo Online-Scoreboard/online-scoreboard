@@ -27,6 +27,7 @@ export const App: React.FC = React.memo(() => {
       setMessage(success);
       setOpen(true);
     }
+    // eslint-disable-next-line
   }, [error, success]);
 
   if (loading) {

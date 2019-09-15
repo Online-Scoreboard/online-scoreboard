@@ -1,6 +1,6 @@
 export const API_URL = process.env.REACT_APP_API_URL || '';
 export const APP_NAME = process.env.REACT_APP_APP_NAME || 'APP NAME';
-export const APP_VERSION = process.env.AWS_LAMBDA_FUNCTION_VERSION || 'dev';
+export const APP_VERSION = process.env.REACT_APP_VERSION || 'dev';
 export const AMPLIFY = {
   Auth: {
     mandatorySignIn: true,

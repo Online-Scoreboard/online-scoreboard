@@ -1,4 +1,15 @@
 {
+  "version": 2,
+  "name": "online-scoreboard",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@now/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
   "build": {
     "env": {
       "REACT_APP_APP_NAME": "Online Scoreboard",
@@ -7,5 +18,22 @@
       "REACT_APP_APP_CLIENT_ID": "@online_scoreboard_app_client_id",
       "REACT_APP_API_URL": "@online_scoreboard_api_url"
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "headers": { "cache-control": "s-maxage=31536000,immutable" },
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*).(json|png|ico|js)$",
+      "headers": { "cache-control": "s-maxage=31536000,immutable" },
+      "dest": "/$1.$2"
+    },
+    {
+      "src": "/(.*)",
+      "headers": { "cache-control": "s-maxage=0" },
+      "dest": "/index.html"
+    }
+  ]
 }

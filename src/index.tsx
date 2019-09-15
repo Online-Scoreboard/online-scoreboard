@@ -68,4 +68,4 @@ render(AppContainer(App), document.getElementById('root'));
 
 serviceWorker.unregister();
 
-console.warn(`Online Scoreboard v.${APP_VERSION}`);
+console.log(`Online Scoreboard v.${APP_VERSION}`);
