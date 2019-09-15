@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Link } from '@reach/router';
+import { Link, navigate } from '@reach/router';
 import { Typography, AppBar, Toolbar, Button, Link as LinkButton } from '@material-ui/core';
 
 import { PrivateRouter } from './PrivateRouter';
-import { useAuth } from './components/Auth/Auth.Provider';
+import { useAuth } from './components/Auth/useAuth';
 import { Footer } from './components/Footer';
 
 import useAppStyles from './App.styles';
@@ -12,12 +12,36 @@ import { useNotification, Notification } from './components/Notification';
 
 export const App: React.FC = React.memo(() => {
   const classes = useAppStyles();
-  const { isLoggedIn, logOut, loading } = useAuth();
-  const { open, variant, message } = useNotification();
+  const { isLoggedIn, logOut, loading, error, success } = useAuth();
+  const { open, variant, message, setMessage, setOpen, setVariant } = useNotification();
+
+  useEffect(() => {
+    if (error) {
+      setVariant('error');
+      setMessage(error);
+      setOpen(true);
+    }
+
+    if (success) {
+      setVariant('success');
+      setMessage(success);
+      setOpen(true);
+    }
+  }, [error, success]);
 
   if (loading) {
     return <Loading />;
   }
+
+  const onLogOut = async () => {
+    try {
+      await logOut();
+    } catch (err) {
+      return;
+    }
+
+    navigate('/');
+  };
 
   return (
     <div className={classes.root}>
@@ -53,7 +77,7 @@ export const App: React.FC = React.memo(() => {
             </Link>
           </nav>
           {isLoggedIn ? (
-            <Button color="primary" variant="outlined" className={classes.link} onClick={logOut}>
+            <Button color="primary" variant="outlined" className={classes.link} onClick={onLogOut}>
               Log out
             </Button>
           ) : (

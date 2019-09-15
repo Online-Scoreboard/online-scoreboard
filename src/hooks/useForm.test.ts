@@ -1,20 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useForm } from './useForm';
 
-let container: HTMLElement | null;
-
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
-});
-
-afterEach(() => {
-  if (container) {
-    document.body.removeChild(container);
-    container = null;
-  }
-});
-
 describe('useForm', () => {
   it('should set the initial form data', () => {
     // Arrange

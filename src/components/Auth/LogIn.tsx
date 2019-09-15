@@ -1,55 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import { Container, Avatar, Typography, TextField, FormControlLabel, Grid, Link } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { makeStyles } from '@material-ui/core/styles';
 import { RouteComponentProps } from '@reach/router';
-import { useAuth } from './Auth.Provider';
+import { useAuth } from './useAuth';
 import { useForm } from '../../hooks/useForm';
-
-export const useStyles = makeStyles(theme => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(4),
-  },
-  loader: {
-    marginRight: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+import { useLoginStyles } from './Login.styles';
 
 export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
   const initialData = { username: '', password: '' };
 
+  const classes = useLoginStyles();
   const { formData, setFormField, resetForm } = useForm(initialData);
-  const classes = useStyles();
+  const { logIn, operationLoading, error } = useAuth();
 
-  const { logIn, operationLoading } = useAuth();
+  useEffect(() => {
+    if (error) {
+      resetForm();
+    }
+  }, [error, resetForm]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    try {
-      await logIn(formData.username, formData.password);
-    } catch (err) {
-      console.error(err);
-      resetForm();
-    }
+    logIn(formData.username, formData.password);
   };
 
   return (

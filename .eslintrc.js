@@ -33,6 +33,7 @@ module.exports = {
     'prettier/prettier': ['error', { singleQuote: true }],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    'no-use-before-define': ['error', { functions: true, classes: true }],
   },
   settings: {
     react: {
