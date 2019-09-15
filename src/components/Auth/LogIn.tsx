@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import { Container, Avatar, Typography, TextField, FormControlLabel, Grid, Link } from '@material-ui/core';
@@ -15,12 +15,23 @@ export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
   const classes = useLoginStyles();
   const { formData, setFormField, resetForm } = useForm(initialData);
   const { logIn, operationLoading, error } = useAuth();
+  const [errorState, setErrorState] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
-    if (error) {
-      resetForm();
+    if (!error) {
+      setErrorState(false);
     }
-  }, [error, resetForm]);
+    if (error && !errorState) {
+      resetForm();
+      setErrorState(true);
+    }
+  }, [error, resetForm, errorState]);
+
+  useEffect(() => {
+    const _isFormValid = Object.values(formData).reduce((acc, curr) => Boolean(acc && curr), true);
+    setIsFormValid(_isFormValid);
+  }, [formData]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -71,7 +82,7 @@ export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            disabled={operationLoading}
+            disabled={operationLoading || !isFormValid}
           >
             {operationLoading && <CircularProgress size={24} className={classes.loader} />}
             Log In
