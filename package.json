@@ -9,28 +9,16 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "now-build": "bash ./scripts/version.sh && react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll",
     "eject": "react-scripts eject"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.1",
-    "@material-ui/core": "^4.4.0",
-    "@material-ui/icons": "^4.2.1",
+    "@material-ui/core": "^4.4.2",
+    "@material-ui/icons": "^4.4.1",
     "@reach/router": "^1.2.1",
     "apollo-boost": "^0.4.4",
-    "aws-amplify": "^1.1.36",
+    "aws-amplify": "^1.1.40",
     "dotenv": "^8.1.0",
     "graphql": "^14.5.7",
     "react": "^16.9.0",
@@ -55,6 +43,18 @@
     "eslint-plugin-prettier": "^3.1.1",
     "prettier": "^1.18.2",
     "react-test-renderer": "^16.9.0",
-    "typescript": "^3.6.3"
+    "typescript": "3.6.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
