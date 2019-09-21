@@ -28,6 +28,7 @@ module.exports = {
   },
   plugins: ['react', 'react-hooks', '@typescript-eslint', 'prettier'],
   rules: {
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-angle-bracket-type-assertion': 'off',
     'prettier/prettier': ['error', { singleQuote: true }],

@@ -123,7 +123,7 @@ describe('AWS', () => {
       await Auth.signIn(fakeUsername, 'fake_password');
 
       // Act
-      let res = await getCurrentUser();
+      const res = await getCurrentUser();
 
       // Assert
       expect(res).toEqual(expectedAuthUser);
@@ -134,7 +134,7 @@ describe('AWS', () => {
       jest.spyOn(Auth, 'currentUserInfo').mockImplementationOnce(async () => undefined);
 
       // Act
-      let res = await getCurrentUser();
+      const res = await getCurrentUser();
 
       // Assert
       expect(res).toBeUndefined();

@@ -5,26 +5,24 @@ import { Typography, AppBar, Toolbar, Button, Link as LinkButton } from '@materi
 import { PrivateRouter } from './PrivateRouter';
 import { useAuth } from './components/Auth/useAuth';
 import { Footer } from './components/Footer';
-
-import useAppStyles from './App.styles';
 import { Loading } from './components/Loading';
 import { useNotification, Notification } from './components/Notification';
+import useAppStyles from './App.styles';
 
 export const App: React.FC = React.memo(() => {
   const classes = useAppStyles();
   const { isLoggedIn, logOut, loading, error, success } = useAuth();
-  const { open, variant, message, setNotification } = useNotification();
+  const { open, variant, message, openNotification, dismissNotification } = useNotification();
 
   useEffect(() => {
     if (error) {
-      setNotification(error, 'error');
+      openNotification(error, 'error');
     }
 
     if (success) {
-      setNotification(success, 'success');
+      openNotification(success, 'success');
     }
-    // eslint-disable-next-line
-  }, [error, success]);
+  }, [error, success, openNotification]);
 
   if (loading) {
     return <Loading />;
@@ -41,8 +39,8 @@ export const App: React.FC = React.memo(() => {
   };
 
   return (
-    <div className={classes.root}>
-      <Notification message={message} open={open} variant={variant} />
+    <div className={`${classes.root} App`}>
+      <Notification message={message} open={open} variant={variant} handleClose={dismissNotification} />
       <AppBar position="static" color="default" elevation={0} className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
           <Typography variant="h6" noWrap className={classes.toolbarTitle}>
