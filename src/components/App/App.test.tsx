@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import * as Auth from './components/Auth';
-import * as Notification from './components/Notification';
-import { Loading } from './components/Loading';
+import * as Auth from '../Auth';
+import * as Notification from '../Notification';
+import { Loading } from '../Loading';
 
 import { App } from './App';
 

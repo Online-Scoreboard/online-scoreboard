@@ -10,21 +10,23 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import * as serviceWorker from './serviceWorker';
 import { AMPLIFY, API_URL, APP_NAME, APP_VERSION } from './config';
 import { notificationInitialData } from './components/Notification';
-import { App } from './App';
+import { App } from './components/App';
 import theme from './theme';
 
 dotenv.config();
 Amplify.configure(AMPLIFY);
 
-const cache = new InMemoryCache();
-const uri = `${API_URL}/graphql`;
-
-cache.writeData({
+const rootState = {
   data: {
     appName: APP_NAME,
     ...notificationInitialData,
   },
-});
+};
+
+const cache = new InMemoryCache();
+const uri = `${API_URL}/graphql`;
+
+cache.writeData(rootState);
 
 const client = new ApolloClient({
   uri,

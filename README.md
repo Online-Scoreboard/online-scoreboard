@@ -5,6 +5,10 @@ against the latest changes on the master branch of this repository
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## About the project
+
+Read more about this project in the [Wiki](https://github.com/Online-Scoreboard/online-scoreboard/wiki)
+
 ## Available Scripts
 
 In the project directory, you can run:

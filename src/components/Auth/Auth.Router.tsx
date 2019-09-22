@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router, RouteComponentProps } from '@reach/router';
 import { LogIn } from './LogIn';
-import { NotFound } from '../../NotFound';
+import { NotFound } from '../NotFound';
 
 const Home: React.FC<RouteComponentProps> = () => <div>Home</div>;
 

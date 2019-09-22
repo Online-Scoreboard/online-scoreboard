@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Link, navigate } from '@reach/router';
 import { Typography, AppBar, Toolbar, Button, Link as LinkButton } from '@material-ui/core';
 
-import { PrivateRouter } from './PrivateRouter';
-import { useAuth } from './components/Auth/useAuth';
-import { Footer } from './components/Footer';
-import { Loading } from './components/Loading';
-import { useNotification, Notification } from './components/Notification';
+import { PrivateRouter } from '../PrivateRouter';
+import { useNotification, Notification } from '../Notification';
+import { Loading } from '../Loading';
+import { useAuth } from '../Auth/useAuth';
+import { Footer } from '../Footer';
+
 import useAppStyles from './App.styles';
 
 export const App: React.FC = React.memo(() => {
@@ -24,11 +25,7 @@ export const App: React.FC = React.memo(() => {
     }
   }, [error, success, openNotification]);
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  const onLogOut = async () => {
+  const onLogOut = useCallback(async () => {
     try {
       await logOut();
     } catch (err) {
@@ -36,7 +33,11 @@ export const App: React.FC = React.memo(() => {
     }
 
     navigate('/');
-  };
+  }, [logOut]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className={`${classes.root} App`}>

@@ -68,13 +68,13 @@ const resolvers: Resolvers = {
   },
 };
 
-export const useNotification = (timeout: number = 4000) => {
+export const useNotification = (timeout = 4000) => {
   const client = useApolloClient();
   client.addResolvers(resolvers);
 
   const { data } = useQuery<NotificationData>(GET_NOTIFICATION);
   const [_openNotification] = useMutation(OPEN_NOTIFICATION);
-  let notificationTimeout = useRef<void | NodeJS.Timeout>();
+  const notificationTimeout = useRef<void | NodeJS.Timeout>();
 
   const defaultNotification: NotificationData = {
     notification: {

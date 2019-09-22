@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router, Redirect, RouteComponentProps } from '@reach/router';
-import { Auth } from './components/Auth';
-import { Home } from './components/Home';
+import { Auth } from './Auth';
+import { Home } from './Home';
 
 export interface PrivateRouterProps {
   isLoggedIn: boolean;
