@@ -1,29 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  Container,
-  Avatar,
-  Typography,
-  TextField,
-  FormControlLabel,
-  Grid,
-  Button,
-  Checkbox,
-  CircularProgress,
-  Link as StyledLink,
-} from '@material-ui/core';
+import { Button, Container, Avatar, Typography, TextField, Grid, Link, CircularProgress } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { RouteComponentProps, Link } from '@reach/router';
+import { navigate } from '@reach/router';
 
 import { useAuth } from './useAuth';
 import { useForm } from '../../hooks/useForm';
 import { useAuthStyles } from './Auth.styles';
 
-export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
-  const initialData = { username: '', password: '' };
+const VerifyEmailComponent: React.FC = () => {
+  const initialData = { code: '' };
 
   const classes = useAuthStyles();
   const { formData, setFormField, resetForm } = useForm(initialData);
-  const { logIn, operationLoading, error } = useAuth();
+  const { verifyEmail, resendCode, operationLoading, error } = useAuth();
   const [errorState, setErrorState] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
 
@@ -38,19 +27,29 @@ export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
   }, [error, resetForm, errorState]);
 
   useEffect(() => {
-    const _isFormValid = Object.values(formData).reduce((acc, curr) => Boolean(acc && curr), true);
-    setIsFormValid(_isFormValid);
+    const { code } = formData;
+    setIsFormValid(Boolean(code && code.length === 6));
   }, [formData]);
 
   const handleSubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
+    async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
-      const { username, password } = formData;
+      const { code } = formData;
 
-      logIn(username, password);
+      await verifyEmail(code);
+      navigate('/login');
     },
-    [formData, logIn]
+    [verifyEmail, formData]
+  );
+
+  const resendCodeHandler = useCallback(
+    async (event: any) => {
+      event.preventDefault();
+
+      resendCode();
+    },
+    [resendCode]
   );
 
   return (
@@ -60,36 +59,21 @@ export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Log In
+          Verify Email
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
+            id="code"
+            label="Verification Code"
+            name="code"
+            value={formData.code}
+            onChange={setFormField}
             required
             fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            autoComplete="email"
-            value={formData.username}
-            onChange={setFormField}
             autoFocus
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={formData.password}
-            onChange={setFormField}
-          />
-          <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
           <Button
             type="submit"
             fullWidth
@@ -99,26 +83,22 @@ export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
             disabled={operationLoading || !isFormValid}
           >
             {operationLoading && <CircularProgress size={24} className={classes.loader} />}
-            Log In
+            Verify Code
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link to="/forgot-password">
-                <StyledLink component="span" variant="body2">
-                  Forgot password?
-                </StyledLink>
+              <Link variant="body2" component="button" onClick={resendCodeHandler}>
+                Send another code
               </Link>
             </Grid>
             <Grid item>
-              <Link to="/register">
-                <StyledLink component="span" variant="body2">
-                  Don't have an account? Sign Up
-                </StyledLink>
-              </Link>
+              <Link href="/login">Back to Log In</Link>
             </Grid>
           </Grid>
         </form>
       </div>
     </Container>
   );
-});
+};
+
+export const VerifyEmail = React.memo(VerifyEmailComponent);

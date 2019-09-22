@@ -1,16 +1,18 @@
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import { Resolvers } from 'apollo-boost';
 import gql from 'graphql-tag';
-import { awsSignIn, awsSignOut, getCurrentUser } from './AWS';
+import { awsSignIn, awsSignOut, awsRegister, getCurrentUser, awsVerifyEmail, awsResendCode } from './AWS';
 import { DEFAULT_ERROR_MESSAGE, LOGIN_WELCOME_MESSAGE } from '../../helpers/strings';
 
 const GET_USER = gql`
   query GetUser {
     user @client(always: true) {
       isLoggedIn
+      confirmEmail
       username
       email
       error
+      info
     }
   }
 `;
@@ -33,6 +35,24 @@ const LOG_OUT = gql`
   }
 `;
 
+const REGISTER = gql`
+  mutation Register($registerData: RegisterData!) {
+    register(registerData: $registerData) @client
+  }
+`;
+
+const VERIFY_EMAIL = gql`
+  mutation VerifyEmail($verifyEmailData: VerifyEmailData!) {
+    verifyEmail(verifyEmailData: $verifyEmailData) @client
+  }
+`;
+
+const RESEND_CODE = gql`
+  mutation ResendCode {
+    resendCode @client
+  }
+`;
+
 interface User {
   attributes: {
     email: string;
@@ -44,20 +64,27 @@ interface User {
 interface UserData {
   __typename: string;
   isLoggedIn: boolean;
+  confirmEmail: boolean;
   username: string;
   email: string;
   error: string;
+  info: string;
 }
 
 const resolvers: Resolvers = {
   Query: {
-    async user(_, __, { cache }) {
+    async user(parent) {
+      const currUser = parent.user;
+
       const data: UserData = {
         __typename: 'UserSession',
         isLoggedIn: false,
+        confirmEmail: false,
         username: '',
         email: '',
         error: '',
+        info: '',
+        ...currUser,
       };
 
       let user: User | void = undefined;
@@ -69,11 +96,11 @@ const resolvers: Resolvers = {
 
       if (user) {
         data.isLoggedIn = true;
+        data.confirmEmail = false;
         data.username = user.username;
         data.email = user.attributes.email;
       }
 
-      cache.writeData({ data });
       return data;
     },
   },
@@ -84,18 +111,29 @@ const resolvers: Resolvers = {
       const userData: UserData = { ...currState.user };
 
       userData.error = '';
+      userData.info = '';
       cache.writeData({ data: { user: userData } });
     },
 
-    async logIn(launch, { loginData }, { cache }): Promise<void> {
+    async logIn(_, { loginData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
       const userData: UserData = { ...currState.user };
+
+      userData.error = '';
+      userData.info = '';
 
       let user: User | void = undefined;
       try {
         await awsSignIn(loginData.username, loginData.password);
         user = await getCurrentUser();
       } catch (err) {
+        if (err && err.code === 'UserNotConfirmedException') {
+          userData.confirmEmail = true;
+          userData.email = loginData.username;
+        } else {
+          userData.confirmEmail = false;
+        }
+
         userData.isLoggedIn = false;
         userData.error = err.message || DEFAULT_ERROR_MESSAGE;
 
@@ -103,10 +141,9 @@ const resolvers: Resolvers = {
         return;
       }
 
-      userData.error = '';
-
       if (user) {
         userData.isLoggedIn = true;
+        userData.confirmEmail = false;
         userData.username = user.username;
         userData.email = user.attributes.email;
       }
@@ -114,11 +151,79 @@ const resolvers: Resolvers = {
       cache.writeData({ data: { user: userData } });
     },
 
-    async logOut(launch, args, { cache }): Promise<void> {
+    async register(_, { registerData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
       const userData: UserData = { ...currState.user };
 
-      // throw new Error('Ops');
+      userData.error = '';
+      userData.info = '';
+
+      let res: any;
+      try {
+        res = await awsRegister(registerData.username, registerData.password);
+      } catch (err) {
+        userData.error = err.message || DEFAULT_ERROR_MESSAGE;
+        cache.writeData({ data: { user: userData } });
+        return;
+      }
+
+      if (!(res && res.userSub)) {
+        userData.error = DEFAULT_ERROR_MESSAGE;
+      }
+
+      if (res && res.userConfirmed === false) {
+        userData.confirmEmail = true;
+        userData.email = registerData.username;
+      }
+
+      cache.writeData({ data: { user: userData } });
+    },
+
+    async verifyEmail(_, { verifyEmailData }, { cache }): Promise<void> {
+      const currState = cache.readQuery({ query: GET_USER });
+      const userData: UserData = { ...currState.user };
+      const { code } = verifyEmailData;
+
+      userData.error = '';
+      userData.info = '';
+
+      try {
+        await awsVerifyEmail(userData.email, code);
+      } catch (err) {
+        userData.error = err.message || DEFAULT_ERROR_MESSAGE;
+        cache.writeData({ data: { user: userData } });
+        return;
+      }
+
+      userData.confirmEmail = false;
+      userData.info = 'User correctly verified. You can now log in';
+
+      cache.writeData({ data: { user: userData } });
+    },
+
+    async resendCode(_, __, { cache }): Promise<void> {
+      const currState = cache.readQuery({ query: GET_USER });
+      const userData: UserData = { ...currState.user };
+
+      userData.error = '';
+      userData.info = '';
+
+      try {
+        await awsResendCode(userData.email);
+      } catch (err) {
+        userData.error = (err.message && err.message.trim()) || DEFAULT_ERROR_MESSAGE;
+        cache.writeData({ data: { user: userData } });
+        return;
+      }
+
+      userData.info = `New code correctly sent to ${userData.email}`;
+      cache.writeData({ data: { user: userData } });
+    },
+
+    async logOut(_, __, { cache }): Promise<void> {
+      const currState = cache.readQuery({ query: GET_USER });
+      const userData: UserData = { ...currState.user };
+
       try {
         await awsSignOut();
       } catch (err) {
@@ -128,9 +233,11 @@ const resolvers: Resolvers = {
       }
 
       userData.isLoggedIn = false;
+      userData.confirmEmail = false;
       userData.username = '';
       userData.email = '';
       userData.error = '';
+      userData.info = 'You are now logged out';
 
       cache.writeData({ data: { user: userData } });
     },
@@ -142,29 +249,47 @@ export const useAuth = () => {
   client.addResolvers(resolvers);
 
   const { loading: userLoading, data } = useQuery<{ user: UserData }>(GET_USER);
-  const [logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
-  const [logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN);
+  const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
+  const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN);
+  const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
+  const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
+  const [_resendCode, { loading: resendCodeLoading }] = useMutation<void>(RESEND_CODE);
   const [resetErrors] = useMutation<void>(RESET_ERRORS);
 
   const user = data && data.user;
 
   const isLoggedIn = Boolean(user && user.isLoggedIn);
+  const confirmEmail = Boolean(user && user.confirmEmail);
   const success = isLoggedIn && LOGIN_WELCOME_MESSAGE;
 
   return {
     user,
     isLoggedIn,
+    confirmEmail,
     loading: userLoading,
-    operationLoading: logInLoading || logOutLoading,
+    operationLoading: logInLoading || logOutLoading || registerLoading || verifyEmailLoading || resendCodeLoading,
     error: user && user.error,
+    info: user && user.info,
     success,
     logIn: async (username: string, password: string) => {
       await resetErrors();
-      await logIn({ variables: { loginData: { username, password } } });
+      return _logIn({ variables: { loginData: { username, password } } });
+    },
+    register: async (username: string, password: string) => {
+      await resetErrors();
+      return _register({ variables: { registerData: { username, password } } });
+    },
+    verifyEmail: async (code: string) => {
+      await resetErrors();
+      return _verifyEmail({ variables: { verifyEmailData: { code } } });
+    },
+    resendCode: async () => {
+      await resetErrors();
+      return _resendCode();
     },
     logOut: async () => {
       await resetErrors();
-      await logOut();
+      return _logOut();
     },
   };
 };

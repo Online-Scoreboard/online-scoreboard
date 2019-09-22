@@ -1,6 +1,5 @@
 import React from 'react';
-import { Snackbar, SnackbarContent, IconButton } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Snackbar, SnackbarContent } from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import WarningIcon from '@material-ui/icons/Warning';
@@ -17,10 +16,9 @@ const variantIcon = {
 interface SnackbarContentWrapperProps {
   message: string;
   variant: 'error' | 'info' | 'success' | 'warning';
-  onClose: () => void;
 }
 
-const NotificationContent: React.FC<SnackbarContentWrapperProps> = ({ message, variant, onClose }) => {
+const NotificationContent: React.FC<SnackbarContentWrapperProps> = ({ message, variant }) => {
   const classes = useStyles();
   const Icon = variantIcon[variant];
 
@@ -34,11 +32,6 @@ const NotificationContent: React.FC<SnackbarContentWrapperProps> = ({ message, v
           {message}
         </span>
       }
-      action={[
-        <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
-          <CloseIcon className={classes.icon} />
-        </IconButton>,
-      ]}
     />
   );
 };
@@ -61,7 +54,7 @@ export const Notification: React.FC<NotificationProps> = ({ message, variant, op
 
   return (
     <Snackbar open={open} onClose={handleCloseCb} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-      <NotificationContent message={message} variant={variant} onClose={handleCloseCb} />
+      <NotificationContent message={message} variant={variant} />
     </Snackbar>
   );
 };

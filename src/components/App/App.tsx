@@ -12,7 +12,7 @@ import useAppStyles from './App.styles';
 
 export const App: React.FC = React.memo(() => {
   const classes = useAppStyles();
-  const { isLoggedIn, logOut, loading, error, success } = useAuth();
+  const { isLoggedIn, confirmEmail, logOut, loading, error, info, success } = useAuth();
   const { open, variant, message, openNotification, dismissNotification } = useNotification();
 
   useEffect(() => {
@@ -20,10 +20,14 @@ export const App: React.FC = React.memo(() => {
       openNotification(error, 'error');
     }
 
+    if (info) {
+      openNotification(info, 'success');
+    }
+
     if (success) {
       openNotification(success, 'success');
     }
-  }, [error, success, openNotification]);
+  }, [error, info, success, openNotification]);
 
   const onLogOut = useCallback(async () => {
     try {
@@ -84,7 +88,7 @@ export const App: React.FC = React.memo(() => {
         </Toolbar>
       </AppBar>
 
-      <PrivateRouter isLoggedIn={isLoggedIn} />
+      <PrivateRouter isLoggedIn={isLoggedIn} confirmEmail={confirmEmail} />
 
       <Footer />
     </div>

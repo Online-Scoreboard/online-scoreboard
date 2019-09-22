@@ -5,11 +5,12 @@ import { Home } from './Home';
 
 export interface PrivateRouterProps {
   isLoggedIn: boolean;
+  confirmEmail: boolean;
 }
 
 const NotFound: React.FC<RouteComponentProps> = () => <Redirect noThrow to="/home" />;
 
-export const PrivateRouter: React.FC<PrivateRouterProps> = React.memo(({ isLoggedIn }) => {
+const PrivateRouterComponent: React.FC<PrivateRouterProps> = React.memo(({ isLoggedIn, confirmEmail }) => {
   if (isLoggedIn) {
     return (
       <Router>
@@ -21,7 +22,9 @@ export const PrivateRouter: React.FC<PrivateRouterProps> = React.memo(({ isLogge
 
   return (
     <Router>
-      <Auth path="*" />
+      <Auth path="*" confirmEmail={confirmEmail} />
     </Router>
   );
 });
+
+export const PrivateRouter = React.memo(PrivateRouterComponent);
