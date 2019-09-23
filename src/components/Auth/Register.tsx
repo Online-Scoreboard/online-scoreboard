@@ -1,15 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
+  Button,
   Container,
   Avatar,
   Typography,
   TextField,
-  FormControlLabel,
   Grid,
-  Button,
-  Checkbox,
-  CircularProgress,
   Link as StyledLink,
+  CircularProgress,
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { RouteComponentProps, Link } from '@reach/router';
@@ -18,12 +16,12 @@ import { useAuth } from './useAuth';
 import { useForm } from '../../hooks/useForm';
 import { useAuthStyles } from './Auth.styles';
 
-export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
+export const Register: React.FC<RouteComponentProps> = React.memo(() => {
   const initialData = { username: '', password: '' };
 
   const classes = useAuthStyles();
   const { formData, setFormField, resetForm } = useForm(initialData);
-  const { logIn, operationLoading, error } = useAuth();
+  const { register, operationLoading, error } = useAuth();
   const [errorState, setErrorState] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
 
@@ -48,9 +46,9 @@ export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
 
       const { username, password } = formData;
 
-      logIn(username, password);
+      register(username, password);
     },
-    [formData, logIn]
+    [register, formData]
   );
 
   return (
@@ -60,7 +58,7 @@ export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Log In
+          Register
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <TextField
@@ -89,7 +87,6 @@ export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
             value={formData.password}
             onChange={setFormField}
           />
-          <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
           <Button
             type="submit"
             fullWidth
@@ -99,20 +96,14 @@ export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
             disabled={operationLoading || !isFormValid}
           >
             {operationLoading && <CircularProgress size={24} className={classes.loader} />}
-            Log In
+            Register
           </Button>
           <Grid container>
-            <Grid item xs>
-              <Link to="/forgot-password">
-                <StyledLink component="span" variant="body2">
-                  Forgot password?
-                </StyledLink>
-              </Link>
-            </Grid>
+            <Grid item xs />
             <Grid item>
-              <Link to="/register">
+              <Link to="/login">
                 <StyledLink component="span" variant="body2">
-                  Don't have an account? Sign Up
+                  Already registered? Log In
                 </StyledLink>
               </Link>
             </Grid>

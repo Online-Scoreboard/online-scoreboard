@@ -48,7 +48,7 @@ const OPEN_NOTIFICATION = gql`
 
 const resolvers: Resolvers = {
   Mutation: {
-    async openNotification(_, { openNotificationInput }: OpenNotificationInput, { cache, getCacheKey }) {
+    async openNotification(_, { openNotificationInput }: OpenNotificationInput, { cache }) {
       const { openStatus, message, variant } = openNotificationInput;
       const currState = cache.readQuery({ query: GET_NOTIFICATION });
 
