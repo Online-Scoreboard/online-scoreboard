@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Typography, Link, Container, Box, Grid } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import useStyles from './Footer.styles';
 
 export const footers = [
   {
@@ -21,23 +21,7 @@ export const footers = [
   },
 ];
 
-const useStyles = makeStyles(theme => ({
-  link: {
-    margin: theme.spacing(1, 1.5),
-  },
-  footer: {
-    borderTop: `1px solid ${theme.palette.divider}`,
-    marginTop: 'auto',
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-    [theme.breakpoints.up('sm')]: {
-      paddingTop: theme.spacing(6),
-      paddingBottom: theme.spacing(6),
-    },
-  },
-}));
-
-export const Footer: React.FC = () => {
+const FooterComponent: React.FC = () => {
   const classes = useStyles();
 
   return (
@@ -72,3 +56,5 @@ export const Footer: React.FC = () => {
     </Container>
   );
 };
+
+export const Footer = memo(FooterComponent);

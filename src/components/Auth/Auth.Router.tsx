@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Router, RouteComponentProps } from '@reach/router';
 import { LogIn } from './LogIn';
 import { Register } from './Register';
@@ -27,4 +27,4 @@ const AuthComponent: React.FC<AuthProps> = ({ confirmEmail }) => {
   );
 };
 
-export const Auth = React.memo(AuthComponent);
+export const Auth = memo(AuthComponent);

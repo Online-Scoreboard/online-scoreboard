@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Router, Redirect, RouteComponentProps } from '@reach/router';
 import { Auth } from './Auth';
 import { Home } from './Home';
@@ -27,4 +27,4 @@ const PrivateRouterComponent: React.FC<PrivateRouterProps> = React.memo(({ isLog
   );
 });
 
-export const PrivateRouter = React.memo(PrivateRouterComponent);
+export const PrivateRouter = memo(PrivateRouterComponent);

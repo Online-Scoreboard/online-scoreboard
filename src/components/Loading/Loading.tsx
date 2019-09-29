@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { CircularProgress } from '@material-ui/core';
 
-import { useStyles } from './Loading.styles';
+import useStyles from './Loading.styles';
 
 interface LoadingComponentProps {
   show: boolean;
@@ -23,4 +23,4 @@ LoadingComponent.defaultProps = {
   show: true,
 };
 
-export const Loading = LoadingComponent;
+export const Loading = memo(LoadingComponent);

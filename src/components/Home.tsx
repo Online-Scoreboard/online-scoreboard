@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, Typography } from '@material-ui/core';
 import { RouteComponentProps } from '@reach/router';
@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const Home: React.FC<RouteComponentProps> = () => {
+const HomeComponent: React.FC<RouteComponentProps> = () => {
   const classes = useStyles();
 
   return (
@@ -31,3 +31,5 @@ export const Home: React.FC<RouteComponentProps> = () => {
     </div>
   );
 };
+
+export const Home = memo(HomeComponent);

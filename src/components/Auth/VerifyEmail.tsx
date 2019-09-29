@@ -1,16 +1,16 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, memo } from 'react';
 import { Button, Container, Avatar, Typography, TextField, Grid, Link, CircularProgress } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { navigate } from '@reach/router';
 
 import { useAuth } from './useAuth';
 import { useForm } from '../../hooks/useForm';
-import { useAuthStyles } from './Auth.styles';
+import useStyles from './Auth.styles';
 
 const VerifyEmailComponent: React.FC = () => {
   const initialData = { code: '' };
 
-  const classes = useAuthStyles();
+  const classes = useStyles();
   const { formData, setFormField, resetForm } = useForm(initialData);
   const { verifyEmail, resendCode, operationLoading, error } = useAuth();
   const [errorState, setErrorState] = useState(false);
@@ -101,4 +101,4 @@ const VerifyEmailComponent: React.FC = () => {
   );
 };
 
-export const VerifyEmail = React.memo(VerifyEmailComponent);
+export const VerifyEmail = memo(VerifyEmailComponent);

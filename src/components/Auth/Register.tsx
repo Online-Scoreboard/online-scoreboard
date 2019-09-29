@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, memo } from 'react';
 import {
   Button,
   Container,
@@ -14,12 +14,12 @@ import { RouteComponentProps, Link } from '@reach/router';
 
 import { useAuth } from './useAuth';
 import { useForm } from '../../hooks/useForm';
-import { useAuthStyles } from './Auth.styles';
+import useStyles from './Auth.styles';
 
-export const Register: React.FC<RouteComponentProps> = React.memo(() => {
+const RegisterComponent: React.FC<RouteComponentProps> = () => {
   const initialData = { username: '', password: '' };
 
-  const classes = useAuthStyles();
+  const classes = useStyles();
   const { formData, setFormField, resetForm } = useForm(initialData);
   const { register, operationLoading, error } = useAuth();
   const [errorState, setErrorState] = useState(false);
@@ -112,4 +112,6 @@ export const Register: React.FC<RouteComponentProps> = React.memo(() => {
       </div>
     </Container>
   );
-});
+};
+
+export const Register = memo(RegisterComponent);

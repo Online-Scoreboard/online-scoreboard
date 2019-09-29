@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Snackbar, SnackbarContent } from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -45,7 +45,7 @@ interface NotificationProps {
   handleClose?: () => void;
 }
 
-export const Notification: React.FC<NotificationProps> = ({ message, variant, open, handleClose }) => {
+const NotificationComponent: React.FC<NotificationProps> = ({ message, variant, open, handleClose }) => {
   const handleCloseCb = handleClose || (() => undefined);
 
   if (!message) {
@@ -58,3 +58,5 @@ export const Notification: React.FC<NotificationProps> = ({ message, variant, op
     </Snackbar>
   );
 };
+
+export const Notification = memo(NotificationComponent);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, memo } from 'react';
 import {
   Container,
   Avatar,
@@ -16,12 +16,12 @@ import { RouteComponentProps, Link } from '@reach/router';
 
 import { useAuth } from './useAuth';
 import { useForm } from '../../hooks/useForm';
-import { useAuthStyles } from './Auth.styles';
+import useStyles from './Auth.styles';
 
-export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
+const LogInComponent: React.FC<RouteComponentProps> = () => {
   const initialData = { username: '', password: '' };
 
-  const classes = useAuthStyles();
+  const classes = useStyles();
   const { formData, setFormField, resetForm } = useForm(initialData);
   const { logIn, operationLoading, error } = useAuth();
   const [errorState, setErrorState] = useState(false);
@@ -121,4 +121,6 @@ export const LogIn: React.FC<RouteComponentProps> = React.memo(() => {
       </div>
     </Container>
   );
-});
+};
+
+export const LogIn = memo(LogInComponent);

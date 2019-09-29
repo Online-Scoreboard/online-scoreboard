@@ -21,16 +21,19 @@ describe('App', () => {
     __typename: 'UserSession',
   };
 
-  jest.spyOn(Auth, 'useAuth').mockImplementation(() => ({
-    user: testUser,
-    error: undefined,
-    loading: mockLoading,
-    operationLoading: mockOperationLoading,
-    isLoggedIn,
-    success: false,
-    logIn: jest.fn(),
-    logOut: jest.fn(),
-  }));
+  jest.spyOn(Auth, 'useAuth').mockImplementation(
+    () =>
+      ({
+        user: testUser,
+        error: undefined,
+        loading: mockLoading,
+        operationLoading: mockOperationLoading,
+        isLoggedIn,
+        success: false,
+        logIn: jest.fn(),
+        logOut: jest.fn(),
+      } as any)
+  );
 
   jest.spyOn(Notification, 'useNotification').mockImplementation(() => ({
     openNotification: jest.fn(),
