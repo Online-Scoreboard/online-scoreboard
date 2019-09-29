@@ -50,7 +50,7 @@ describe('Notification', () => {
     const wrapper = mount(el);
 
     // Assert
-    expect(wrapper.find(Notification).html()).toBeNull();
+    expect(wrapper.find(Notification).html()).toBe('');
   });
 
   it('should render an `info` notification', () => {
@@ -95,25 +95,5 @@ describe('Notification', () => {
 
     // Assert
     expect(wrapper.find('div.makeStyles-warning-11').exists()).toBe(true);
-  });
-
-  it('should dismiss call an handleClose callback when the user dismisses the notification', () => {
-    // Arrange
-    let closed = false;
-
-    const TestComponent: React.FC = () => (
-      <Notification message="Allo" open={!closed} variant="info" handleClose={() => (closed = true)} />
-    );
-
-    const wrapper = mount(<TestComponent />);
-
-    expect(closed).toBe(false);
-
-    // Act
-    wrapper.find('button').simulate('click');
-
-    // Assert
-    expect(wrapper.find('button').length).toBe(1);
-    expect(closed).toBe(true);
   });
 });

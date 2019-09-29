@@ -6,8 +6,8 @@ import { Loading } from '../Loading';
 
 import { App } from './App';
 
-jest.mock('./components/Auth/useAuth');
-jest.mock('./components/Notification');
+jest.mock('../Auth/useAuth');
+jest.mock('../Notification');
 
 describe('App', () => {
   let mockLoading = false;
@@ -42,8 +42,6 @@ describe('App', () => {
     variant: 'info',
     open: false,
   }));
-  // Mock the Notification component
-  jest.spyOn(Notification, 'Notification').mockImplementation(() => null);
 
   it('should render without crashing', () => {
     // Act

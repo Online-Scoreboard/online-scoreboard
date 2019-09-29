@@ -74,7 +74,7 @@ export const useNotification = (timeout = 4000) => {
 
   const { data } = useQuery<NotificationData>(GET_NOTIFICATION);
   const [_openNotification] = useMutation(OPEN_NOTIFICATION);
-  const notificationTimeout = useRef<void | NodeJS.Timeout>();
+  const notificationTimeout = useRef<NodeJS.Timeout>();
 
   const defaultNotification: NotificationData = {
     notification: {

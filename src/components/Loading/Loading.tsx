@@ -3,13 +3,11 @@ import { CircularProgress } from '@material-ui/core';
 
 import useStyles from './Loading.styles';
 
-interface LoadingComponentProps {
-  show: boolean;
+interface LoadingProps {
+  show?: boolean;
 }
 
-type LoadingProps = React.FC<LoadingComponentProps> & { defaultProps: Partial<LoadingProps> };
-
-const LoadingComponent: LoadingProps = ({ show }) => {
+const LoadingComponent: React.FC<LoadingProps> = ({ show = true }) => {
   const classes = useStyles();
 
   return show ? (
@@ -17,10 +15,6 @@ const LoadingComponent: LoadingProps = ({ show }) => {
       <CircularProgress size={60} thickness={4} color="primary" className={classes.progress} />
     </div>
   ) : null;
-};
-
-LoadingComponent.defaultProps = {
-  show: true,
 };
 
 export const Loading = memo(LoadingComponent);
