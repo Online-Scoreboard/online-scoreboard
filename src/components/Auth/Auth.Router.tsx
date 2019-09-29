@@ -4,8 +4,7 @@ import { LogIn } from './LogIn';
 import { Register } from './Register';
 import { NotFound } from '../NotFound';
 import { VerifyEmail } from './VerifyEmail';
-
-const Home: React.FC<RouteComponentProps> = () => <div>Home</div>;
+import { Home } from '../Home';
 
 interface AuthProps extends RouteComponentProps {
   confirmEmail: boolean;

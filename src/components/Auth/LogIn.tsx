@@ -104,14 +104,14 @@ const LogInComponent: React.FC<RouteComponentProps> = () => {
           <Grid container>
             <Grid item xs>
               <Link to="/forgot-password">
-                <StyledLink component="span" variant="body2">
+                <StyledLink component="span" color="textSecondary" variant="caption">
                   Forgot password?
                 </StyledLink>
               </Link>
             </Grid>
             <Grid item>
               <Link to="/register">
-                <StyledLink component="span" variant="body2">
+                <StyledLink component="span" color="textSecondary" variant="caption">
                   Don't have an account? Sign Up
                 </StyledLink>
               </Link>

@@ -47,7 +47,7 @@ const AppComponent: React.FC = () => {
   return (
     <div className={`${classes.root} App`}>
       <Notification message={message} open={open} variant={variant} handleClose={dismissNotification} />
-      <AppBar position="static" color="default" elevation={0} className={classes.appBar}>
+      <AppBar position="static" color="primary" elevation={0} className={classes.appBar}>
         <Toolbar isLoggedIn={isLoggedIn} onLogOut={onLogOut} />
       </AppBar>
 

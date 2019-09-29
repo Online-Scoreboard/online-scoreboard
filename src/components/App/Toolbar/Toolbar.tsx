@@ -15,36 +15,37 @@ const ToolbarComponent: React.FC<ToolbarProps> = ({ isLoggedIn, onLogOut }) => {
   return (
     <MaterialToolbar className={classes.toolbar}>
       <Typography variant="h6" noWrap className={classes.toolbarTitle}>
-        Online Scoreboard
+        <Link to="/">
+          <LinkButton variant="h6" component="span" color="textPrimary">
+            Online Scoreboard
+          </LinkButton>
+        </Link>
       </Typography>
       <nav>
-        <Link to="/features">
-          <LinkButton variant="button" component="span" color="textPrimary" className={classes.link}>
-            Features
-          </LinkButton>
-        </Link>
+        {isLoggedIn ? (
+          <Button color="inherit" variant="outlined" className={classes.link} onClick={onLogOut}>
+            Log out
+          </Button>
+        ) : (
+          <>
+            <Link to="/About">
+              <LinkButton variant="button" component="span" color="textPrimary" className={classes.link}>
+                About
+              </LinkButton>
+            </Link>
 
-        <Link to="/enterprise">
-          <LinkButton variant="button" component="span" color="textPrimary" className={classes.link}>
-            Enterprise
-          </LinkButton>
-        </Link>
+            <Link to="/Features">
+              <LinkButton variant="button" component="span" color="textPrimary" className={classes.link}>
+                Features
+              </LinkButton>
+            </Link>
 
-        <Link to="/support">
-          <LinkButton variant="button" component="span" underline="hover" color="textPrimary" className={classes.link}>
-            Support
-          </LinkButton>
-        </Link>
+            <Button variant="outlined" href="/login" className={classes.link}>
+              Log in
+            </Button>
+          </>
+        )}
       </nav>
-      {isLoggedIn ? (
-        <Button color="primary" variant="outlined" className={classes.link} onClick={onLogOut}>
-          Log out
-        </Button>
-      ) : (
-        <Button color="primary" variant="outlined" href="/login" className={classes.link}>
-          Log in
-        </Button>
-      )}
     </MaterialToolbar>
   );
 };

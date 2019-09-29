@@ -102,7 +102,7 @@ const RegisterComponent: React.FC<RouteComponentProps> = () => {
             <Grid item xs />
             <Grid item>
               <Link to="/login">
-                <StyledLink component="span" variant="body2">
+                <StyledLink component="span" color="textSecondary" variant="caption">
                   Already registered? Log In
                 </StyledLink>
               </Link>

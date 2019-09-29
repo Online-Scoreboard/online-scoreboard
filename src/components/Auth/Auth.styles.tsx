@@ -9,7 +9,8 @@ export default makeStyles(theme => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.text.primary,
+    background: theme.palette.primary.main,
   },
   form: {
     width: '100%',

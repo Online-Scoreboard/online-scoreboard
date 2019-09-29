@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useCallback, memo } from 'react';
 import { Button, Container, Avatar, Typography, TextField, Grid, Link, CircularProgress } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { navigate } from '@reach/router';
+import { navigate, RouteComponentProps } from '@reach/router';
 
 import { useAuth } from './useAuth';
 import { useForm } from '../../hooks/useForm';
 import useStyles from './Auth.styles';
 
-const VerifyEmailComponent: React.FC = () => {
+const VerifyEmailComponent: React.FC<RouteComponentProps> = () => {
   const initialData = { code: '' };
 
   const classes = useStyles();
@@ -87,12 +87,14 @@ const VerifyEmailComponent: React.FC = () => {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link variant="body2" component="button" onClick={resendCodeHandler}>
+              <Link variant="caption" color="textSecondary" component="button" onClick={resendCodeHandler}>
                 Send another code
               </Link>
             </Grid>
             <Grid item>
-              <Link href="/login">Back to Log In</Link>
+              <Link variant="caption" color="textSecondary" href="/login">
+                Back to Log In
+              </Link>
             </Grid>
           </Grid>
         </form>
