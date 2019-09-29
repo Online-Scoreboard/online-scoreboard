@@ -10,7 +10,8 @@
     "build": "react-scripts build",
     "now-build": "bash ./scripts/version.sh && react-scripts build",
     "test": "react-scripts test --watchAll",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext=ts,tsx src/**/*"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.1",
@@ -41,6 +42,7 @@
     "enzyme-adapter-react-16": "^1.14.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "husky": "^3.0.7",
     "prettier": "^1.18.2",
     "react-test-renderer": "^16.9.0",
     "typescript": "3.6.3"
@@ -56,5 +58,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   }
 }
