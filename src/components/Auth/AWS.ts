@@ -39,3 +39,8 @@ export const getCurrentUser = () => Auth.currentUserInfo();
 export const awsVerifyEmail = (username: string, code: string) => Auth.confirmSignUp(username, code);
 
 export const awsResendCode = (username: string) => Auth.resendSignUp(username);
+
+export const awsResetPassword = (email: string) => Auth.forgotPassword(email);
+
+export const awsResetPasswordConfirm = (username: string, code: string, newPassword: string) =>
+  Auth.forgotPasswordSubmit(username, code, newPassword);

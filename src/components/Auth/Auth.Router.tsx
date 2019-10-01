@@ -4,6 +4,7 @@ import { LogIn } from './LogIn';
 import { Register } from './Register';
 import { NotFound } from '../NotFound';
 import { VerifyEmail } from './VerifyEmail';
+import { ForgottenPassword } from './ForgottenPassword';
 import { Home } from '../Home';
 
 interface AuthProps extends RouteComponentProps {
@@ -21,6 +22,7 @@ const AuthComponent: React.FC<AuthProps> = ({ confirmEmail }) => {
       <Home path="/" />
       <LogIn path="login" />
       <Register path="register" />
+      <ForgottenPassword path="/forgot-password" />
       <NotFound default />
     </Router>
   );

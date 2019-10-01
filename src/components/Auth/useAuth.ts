@@ -2,7 +2,15 @@ import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import { Resolvers } from 'apollo-boost';
 import gql from 'graphql-tag';
 
-import { awsSignIn, awsSignOut, awsRegister, getCurrentUser, awsVerifyEmail, awsResendCode } from './AWS';
+import {
+  awsSignIn,
+  awsSignOut,
+  awsRegister,
+  getCurrentUser,
+  awsVerifyEmail,
+  awsResendCode,
+  awsResetPassword,
+} from './AWS';
 import { DEFAULT_ERROR_MESSAGE, LOGIN_WELCOME_MESSAGE } from '../../helpers/strings';
 
 const GET_USER = gql`
@@ -51,6 +59,12 @@ const VERIFY_EMAIL = gql`
 const RESEND_CODE = gql`
   mutation ResendCode {
     resendCode @client
+  }
+`;
+
+const RESET_PASSWORD = gql`
+  mutation ResetPassword($resetPasswordData: ResetPasswordData!) {
+    resetPassword(resetPasswordData: $resetPasswordData) @client
   }
 `;
 
@@ -221,6 +235,26 @@ const resolvers: Resolvers = {
       cache.writeData({ data: { user: userData } });
     },
 
+    async resetPassword(_, { resetPasswordData }, { cache }): Promise<void> {
+      const currState = cache.readQuery({ query: GET_USER });
+      const userData: UserData = { ...currState.user };
+      const { email } = resetPasswordData;
+
+      userData.error = '';
+      userData.info = '';
+
+      try {
+        await awsResetPassword(email);
+      } catch (err) {
+        userData.error = (err.message && err.message.trim()) || DEFAULT_ERROR_MESSAGE;
+        cache.writeData({ data: { user: userData } });
+        return;
+      }
+
+      userData.info = `Reset password code correctly sent to ${email}`;
+      cache.writeData({ data: { user: userData } });
+    },
+
     async logOut(_, __, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
       const userData: UserData = { ...currState.user };
@@ -255,6 +289,7 @@ export const useAuth = () => {
   const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
   const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
   const [_resendCode, { loading: resendCodeLoading }] = useMutation<void>(RESEND_CODE);
+  const [_forgottenPassword, { loading: forgottenPasswordLoading }] = useMutation<void>(RESET_PASSWORD);
   const [resetErrors] = useMutation<void>(RESET_ERRORS);
 
   const user = data && data.user;
@@ -268,7 +303,13 @@ export const useAuth = () => {
     isLoggedIn,
     confirmEmail,
     loading: userLoading,
-    operationLoading: logInLoading || logOutLoading || registerLoading || verifyEmailLoading || resendCodeLoading,
+    operationLoading:
+      logInLoading ||
+      logOutLoading ||
+      registerLoading ||
+      verifyEmailLoading ||
+      resendCodeLoading ||
+      forgottenPasswordLoading,
     error: user && user.error,
     info: user && user.info,
     success,
@@ -291,6 +332,10 @@ export const useAuth = () => {
     logOut: async () => {
       await resetErrors();
       return _logOut();
+    },
+    forgottenPassword: async (email: string) => {
+      await resetErrors();
+      return _forgottenPassword({ variables: { resetPasswordData: { email } } });
     },
   };
 };
