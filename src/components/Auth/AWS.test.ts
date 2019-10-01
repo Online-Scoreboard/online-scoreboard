@@ -1,5 +1,13 @@
 import { Auth } from 'aws-amplify';
-import { awsSignIn, awsRegister, awsSignOut, getCurrentUser, awsVerifyEmail, awsResendCode } from './AWS';
+import {
+  awsSignIn,
+  awsRegister,
+  awsSignOut,
+  getCurrentUser,
+  awsVerifyEmail,
+  awsResendCode,
+  awsResetPassword,
+} from './AWS';
 import { DEFAULT_ERROR_MESSAGE } from '../../helpers/strings';
 
 jest.mock('aws-amplify');
@@ -203,6 +211,19 @@ describe('AWS', () => {
 
       // Assert
       expect(Auth.resendSignUp).toHaveBeenCalledWith('username');
+    });
+  });
+
+  describe('awsResetPassword', () => {
+    it('should invoke the confirmSignUp AWS method', async () => {
+      // Arrange
+      const testUsername = 'username@mail.com';
+
+      // Act
+      await awsResetPassword(testUsername);
+
+      // Assert
+      expect(Auth.forgotPassword).toHaveBeenCalledWith(testUsername);
     });
   });
 });
