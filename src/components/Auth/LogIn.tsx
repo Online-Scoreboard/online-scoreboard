@@ -66,14 +66,14 @@ const LogInComponent: React.FC<RouteComponentProps> = () => {
           <TextField
             variant="outlined"
             margin="normal"
-            required
-            fullWidth
             id="username"
             label="Username"
             name="username"
             autoComplete="email"
             value={formData.username}
             onChange={setFormField}
+            required
+            fullWidth
             autoFocus
           />
           <TextField
