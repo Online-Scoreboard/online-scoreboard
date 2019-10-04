@@ -45,15 +45,13 @@ interface NotificationProps {
   handleClose?: () => void;
 }
 
-const NotificationComponent: React.FC<NotificationProps> = ({ message, variant, open, handleClose }) => {
-  const handleCloseCb = handleClose || (() => undefined);
-
+const NotificationComponent: React.FC<NotificationProps> = ({ message, variant, open }) => {
   if (!message) {
     return null;
   }
 
   return (
-    <Snackbar open={open} onClose={handleCloseCb} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+    <Snackbar open={open} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
       <NotificationContent message={message} variant={variant} />
     </Snackbar>
   );

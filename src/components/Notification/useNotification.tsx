@@ -148,22 +148,10 @@ export const useNotification = (timeout = 4000) => {
     [timeout, _openNotification]
   );
 
-  const dismissNotification = () => {
-    _openNotification({
-      variables: {
-        openNotificationInput: {
-          message: '',
-          openStatus: false,
-        },
-      },
-    });
-  };
-
   return {
     open,
     message,
     variant,
     openNotification,
-    dismissNotification,
   };
 };

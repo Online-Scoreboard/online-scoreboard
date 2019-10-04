@@ -14,7 +14,7 @@ import useAppStyles from './App.styles';
 const AppComponent: React.FC = () => {
   const classes = useAppStyles();
   const { isLoggedIn, confirmEmail, logOut, loading, error, info, success } = useAuth();
-  const { open, variant, message, openNotification, dismissNotification } = useNotification();
+  const { open, variant, message, openNotification } = useNotification();
 
   useEffect(() => {
     if (error) {
@@ -46,7 +46,7 @@ const AppComponent: React.FC = () => {
 
   return (
     <div className={`${classes.root} App`}>
-      <Notification message={message} open={open} variant={variant} handleClose={dismissNotification} />
+      <Notification message={message} open={open} variant={variant} />
       <AppBar position="static" color="primary" elevation={0} className={classes.appBar}>
         <Toolbar isLoggedIn={isLoggedIn} onLogOut={onLogOut} />
       </AppBar>
