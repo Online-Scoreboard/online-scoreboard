@@ -10,6 +10,7 @@ import {
   awsVerifyEmail,
   awsResendCode,
   awsResetPassword,
+  awsResetPasswordConfirm,
 } from './AWS';
 import { DEFAULT_ERROR_MESSAGE, LOGIN_WELCOME_MESSAGE } from '../../helpers/strings';
 
@@ -18,6 +19,7 @@ const GET_USER = gql`
     user @client(always: true) {
       isLoggedIn
       confirmEmail
+      resetPassword
       username
       email
       error
@@ -62,6 +64,12 @@ const RESEND_CODE = gql`
   }
 `;
 
+const FORGOTTEN_PASSWORD = gql`
+  mutation ForgottenPassword($forgottenPasswordData: ForgottenPasswordData!) {
+    forgottenPassword(forgottenPasswordData: $forgottenPasswordData) @client
+  }
+`;
+
 const RESET_PASSWORD = gql`
   mutation ResetPassword($resetPasswordData: ResetPasswordData!) {
     resetPassword(resetPasswordData: $resetPasswordData) @client
@@ -80,6 +88,7 @@ interface UserData {
   __typename: string;
   isLoggedIn: boolean;
   confirmEmail: boolean;
+  resetPassword: boolean;
   username: string;
   email: string;
   error: string;
@@ -95,6 +104,7 @@ const resolvers: Resolvers = {
         __typename: 'UserSession',
         isLoggedIn: false,
         confirmEmail: false,
+        resetPassword: false,
         username: '',
         email: '',
         error: '',
@@ -112,6 +122,7 @@ const resolvers: Resolvers = {
       if (user) {
         data.isLoggedIn = true;
         data.confirmEmail = false;
+        data.resetPassword = false;
         data.username = user.username;
         data.email = user.attributes.email;
       }
@@ -142,7 +153,7 @@ const resolvers: Resolvers = {
         await awsSignIn(loginData.username, loginData.password);
         user = await getCurrentUser();
       } catch (err) {
-        if (err && err.code === 'UserNotConfirmedException') {
+        if (err && err.message === 'User not verified') {
           userData.confirmEmail = true;
           userData.email = loginData.username;
         } else {
@@ -235,23 +246,42 @@ const resolvers: Resolvers = {
       cache.writeData({ data: { user: userData } });
     },
 
-    async resetPassword(_, { resetPasswordData }, { cache }): Promise<void> {
+    async forgottenPassword(_, { forgottenPasswordData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
       const userData: UserData = { ...currState.user };
-      const { email } = resetPasswordData;
+      const { email } = forgottenPasswordData;
 
-      userData.error = '';
-      userData.info = '';
+      userData.resetPassword = false;
 
       try {
         await awsResetPassword(email);
       } catch (err) {
         userData.error = (err.message && err.message.trim()) || DEFAULT_ERROR_MESSAGE;
         cache.writeData({ data: { user: userData } });
-        return;
+        throw new Error(err);
       }
 
       userData.info = `Reset password code correctly sent to ${email}`;
+      userData.resetPassword = true;
+      cache.writeData({ data: { user: userData } });
+    },
+
+    async resetPassword(_, { resetPasswordData }, { cache }): Promise<void> {
+      const currState = cache.readQuery({ query: GET_USER });
+      const userData: UserData = { ...currState.user };
+      const { username, code, newPassword } = resetPasswordData;
+
+      try {
+        await awsResetPasswordConfirm(username, code, newPassword);
+      } catch (err) {
+        userData.error = (err.message && err.message.trim()) || DEFAULT_ERROR_MESSAGE;
+        userData.resetPassword = true;
+        cache.writeData({ data: { user: userData } });
+        throw new Error(err);
+      }
+
+      userData.info = `Password correctly reset. Please log in`;
+      userData.resetPassword = false;
       cache.writeData({ data: { user: userData } });
     },
 
@@ -289,19 +319,22 @@ export const useAuth = () => {
   const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
   const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
   const [_resendCode, { loading: resendCodeLoading }] = useMutation<void>(RESEND_CODE);
-  const [_forgottenPassword, { loading: forgottenPasswordLoading }] = useMutation<void>(RESET_PASSWORD);
+  const [_forgottenPassword, { loading: forgottenPasswordLoading }] = useMutation<void>(FORGOTTEN_PASSWORD);
+  const [_resetPassword, { loading: resetPasswordLoading }] = useMutation<void>(RESET_PASSWORD);
   const [resetErrors] = useMutation<void>(RESET_ERRORS);
 
   const user = data && data.user;
 
   const isLoggedIn = Boolean(user && user.isLoggedIn);
   const confirmEmail = Boolean(user && user.confirmEmail);
+  const showResetPassword = Boolean(user && user.resetPassword);
   const success = isLoggedIn && LOGIN_WELCOME_MESSAGE;
 
   return {
     user,
     isLoggedIn,
     confirmEmail,
+    showResetPassword,
     loading: userLoading,
     operationLoading:
       logInLoading ||
@@ -309,6 +342,7 @@ export const useAuth = () => {
       registerLoading ||
       verifyEmailLoading ||
       resendCodeLoading ||
+      resetPasswordLoading ||
       forgottenPasswordLoading,
     error: user && user.error,
     info: user && user.info,
@@ -335,7 +369,11 @@ export const useAuth = () => {
     },
     forgottenPassword: async (email: string) => {
       await resetErrors();
-      return _forgottenPassword({ variables: { resetPasswordData: { email } } });
+      return _forgottenPassword({ variables: { forgottenPasswordData: { email } } });
+    },
+    resetPassword: async (username: string, code: string, newPassword: string) => {
+      await resetErrors();
+      return _resetPassword({ variables: { resetPasswordData: { username, code, newPassword } } });
     },
   };
 };
