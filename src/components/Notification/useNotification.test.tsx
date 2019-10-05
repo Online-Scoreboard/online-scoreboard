@@ -137,38 +137,6 @@ describe('useNotification', () => {
     expect(useMutationMock).not.toHaveBeenCalled();
   });
 
-  it('should dismiss an opened notification', () => {
-    // Arrange
-    const testMessage = 'message';
-    const testVariation = 'info';
-    const testTimeout = 1000;
-    wrapper = shallow(<TestComponent timeout={testTimeout} />);
-
-    const {
-      hook: { openNotification, dismissNotification },
-    } = wrapper.find(Div).props();
-
-    // Act
-    openNotification(testMessage, testVariation);
-    jest.runTimersToTime(500);
-
-    // Assert
-    expect(setTimeout).toHaveBeenCalledTimes(1);
-    expect(useMutationMock).toHaveBeenCalledWith({
-      variables: {
-        openNotificationInput: { message: testMessage, variant: testVariation, openStatus: true },
-      },
-    });
-
-    // Act
-    dismissNotification();
-
-    // Assert
-    expect(useMutationMock).toHaveBeenCalledWith({
-      variables: { openNotificationInput: { message: '', openStatus: false } },
-    });
-  });
-
   it('should dismiss the first notification when another comes in', () => {
     // Arrange
     const testMessage = 'message';
