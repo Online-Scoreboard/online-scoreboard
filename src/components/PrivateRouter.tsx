@@ -15,6 +15,8 @@ const PrivateRouterComponent: React.FC<PrivateRouterProps> = React.memo(({ isLog
     return (
       <Router>
         <Dashboard path="/home" />
+        <Dashboard path="/profile" />
+        <Dashboard path="/account" />
         <NotFound default />
       </Router>
     );

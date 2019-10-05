@@ -11,12 +11,30 @@ import {
   awsResendCode,
   awsResetPassword,
   awsResetPasswordConfirm,
+  AWSUser,
 } from './AWS';
 import { DEFAULT_ERROR_MESSAGE, LOGIN_WELCOME_MESSAGE } from '../../helpers/strings';
+import { useEffect } from 'react';
+
+interface UserSessionData {
+  __typename: string;
+  isLoggedIn: boolean;
+  confirmEmail: boolean;
+  resetPassword: boolean;
+  username: string;
+  email: string;
+  error: string;
+  info: string;
+  avatar?: string;
+}
+
+interface UserData {
+  avatar: string;
+}
 
 const GET_USER = gql`
   query GetUser {
-    user @client(always: true) {
+    user @client {
       isLoggedIn
       confirmEmail
       resetPassword
@@ -24,6 +42,17 @@ const GET_USER = gql`
       email
       error
       info
+    }
+    whoAmI {
+      avatar
+    }
+  }
+`;
+
+const CREATE_USER = gql`
+  mutation CreateUser {
+    createUser {
+      id
     }
   }
 `;
@@ -76,31 +105,12 @@ const RESET_PASSWORD = gql`
   }
 `;
 
-interface User {
-  attributes: {
-    email: string;
-    email_verified: boolean;
-  };
-  username: string;
-}
-
-interface UserData {
-  __typename: string;
-  isLoggedIn: boolean;
-  confirmEmail: boolean;
-  resetPassword: boolean;
-  username: string;
-  email: string;
-  error: string;
-  info: string;
-}
-
 const resolvers: Resolvers = {
   Query: {
     async user(parent) {
       const currUser = parent.user;
 
-      const data: UserData = {
+      const data: UserSessionData = {
         __typename: 'UserSession',
         isLoggedIn: false,
         confirmEmail: false,
@@ -112,7 +122,7 @@ const resolvers: Resolvers = {
         ...currUser,
       };
 
-      let user: User | void = undefined;
+      let user: AWSUser | void = undefined;
       try {
         user = await getCurrentUser();
       } catch (err) {
@@ -134,7 +144,7 @@ const resolvers: Resolvers = {
   Mutation: {
     async resetErrors(_, __, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserData = { ...currState.user };
+      const userData: UserSessionData = { ...currState.user };
 
       userData.error = '';
       userData.info = '';
@@ -143,12 +153,12 @@ const resolvers: Resolvers = {
 
     async logIn(_, { loginData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserData = { ...currState.user };
+      const userData: UserSessionData = { ...currState.user };
 
       userData.error = '';
       userData.info = '';
 
-      let user: User | void = undefined;
+      let user: AWSUser | void = undefined;
       try {
         await awsSignIn(loginData.username, loginData.password);
         user = await getCurrentUser();
@@ -179,7 +189,7 @@ const resolvers: Resolvers = {
 
     async register(_, { registerData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserData = { ...currState.user };
+      const userData: UserSessionData = { ...currState.user };
 
       userData.error = '';
       userData.info = '';
@@ -207,7 +217,7 @@ const resolvers: Resolvers = {
 
     async verifyEmail(_, { verifyEmailData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserData = { ...currState.user };
+      const userData: UserSessionData = { ...currState.user };
       const { code } = verifyEmailData;
 
       userData.error = '';
@@ -229,7 +239,7 @@ const resolvers: Resolvers = {
 
     async resendCode(_, __, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserData = { ...currState.user };
+      const userData: UserSessionData = { ...currState.user };
 
       userData.error = '';
       userData.info = '';
@@ -248,7 +258,7 @@ const resolvers: Resolvers = {
 
     async forgottenPassword(_, { forgottenPasswordData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserData = { ...currState.user };
+      const userData: UserSessionData = { ...currState.user };
       const { email } = forgottenPasswordData;
 
       userData.resetPassword = false;
@@ -268,7 +278,7 @@ const resolvers: Resolvers = {
 
     async resetPassword(_, { resetPasswordData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserData = { ...currState.user };
+      const userData: UserSessionData = { ...currState.user };
       const { username, code, newPassword } = resetPasswordData;
 
       try {
@@ -287,7 +297,7 @@ const resolvers: Resolvers = {
 
     async logOut(_, __, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserData = { ...currState.user };
+      const userData: UserSessionData = { ...currState.user };
 
       try {
         await awsSignOut();
@@ -313,8 +323,9 @@ export const useAuth = () => {
   const client = useApolloClient();
   client.addResolvers(resolvers);
 
-  const { loading: userLoading, data } = useQuery<{ user: UserData }>(GET_USER);
+  const { loading: userLoading, data } = useQuery<{ user: UserSessionData; whoAmI: UserData }>(GET_USER);
   const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
+  const [createUser, { loading: createUserLoading }] = useMutation<void>(CREATE_USER);
   const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN);
   const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
   const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
@@ -324,11 +335,18 @@ export const useAuth = () => {
   const [resetErrors] = useMutation<void>(RESET_ERRORS);
 
   const user = data && data.user;
+  const whoAmI = data && data.whoAmI;
 
   const isLoggedIn = Boolean(user && user.isLoggedIn);
   const confirmEmail = Boolean(user && user.confirmEmail);
   const showResetPassword = Boolean(user && user.resetPassword);
   const success = isLoggedIn && LOGIN_WELCOME_MESSAGE;
+
+  useEffect(() => {
+    if (user && isLoggedIn && (!whoAmI || !whoAmI.avatar)) {
+      createUser();
+    }
+  }, [user, whoAmI, isLoggedIn, createUser]);
 
   return {
     user,
@@ -338,6 +356,7 @@ export const useAuth = () => {
     loading: userLoading,
     operationLoading:
       logInLoading ||
+      createUserLoading ||
       logOutLoading ||
       registerLoading ||
       verifyEmailLoading ||
