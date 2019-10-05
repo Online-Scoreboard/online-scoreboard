@@ -1,6 +1,14 @@
 import { Auth } from 'aws-amplify';
 import { DEFAULT_ERROR_MESSAGE } from '../../helpers/strings';
 
+export interface AWSUser {
+  attributes: {
+    email: string;
+    email_verified: boolean;
+  };
+  username: string;
+}
+
 export const awsSignIn = async (username: string, password: string) => {
   let res;
 
