@@ -15,4 +15,20 @@ export default makeStyles(({ spacing, palette }) => ({
   heroLogin: {
     marginTop: spacing(6),
   },
+  section: {
+    padding: spacing(6, 0),
+    backgroundColor: palette.background.paper,
+  },
+  article: {
+    marginBottom: spacing(6),
+  },
+  icon: {
+    fill: palette.primary.main,
+  },
+  featuresList: {
+    marginLeft: '2em',
+  },
+  featuresListItems: {
+    listStyleType: 'square',
+  },
 }));
