@@ -43,7 +43,13 @@ const GET_USER = gql`
       error
       info
     }
+  }
+`;
+
+const GET_USER_DATA = gql`
+  query GetUserData {
     whoAmI {
+      id
       avatar
     }
   }
@@ -323,7 +329,8 @@ export const useAuth = () => {
   const client = useApolloClient();
   client.addResolvers(resolvers);
 
-  const { loading: userLoading, data } = useQuery<{ user: UserSessionData; whoAmI: UserData }>(GET_USER);
+  const { loading: userLoading, data } = useQuery<{ user: UserSessionData }>(GET_USER);
+  const { loading: userDataLoading, data: whoAmIData } = useQuery<{ whoAmI: UserData }>(GET_USER_DATA);
   const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
   const [createUser, { loading: createUserLoading }] = useMutation<void>(CREATE_USER);
   const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN);
@@ -335,7 +342,7 @@ export const useAuth = () => {
   const [resetErrors] = useMutation<void>(RESET_ERRORS);
 
   const user = data && data.user;
-  const whoAmI = data && data.whoAmI;
+  const userData = whoAmIData && whoAmIData.whoAmI;
 
   const isLoggedIn = Boolean(user && user.isLoggedIn);
   const confirmEmail = Boolean(user && user.confirmEmail);
@@ -343,10 +350,10 @@ export const useAuth = () => {
   const success = isLoggedIn && LOGIN_WELCOME_MESSAGE;
 
   useEffect(() => {
-    if (user && isLoggedIn && (!whoAmI || !whoAmI.avatar)) {
+    if (user && isLoggedIn && !userLoading && !userDataLoading && !userData && typeof userData === 'object') {
       createUser();
     }
-  }, [user, whoAmI, isLoggedIn, createUser]);
+  }, [user, userData, userLoading, userDataLoading, isLoggedIn, createUser]);
 
   return {
     user,
@@ -356,6 +363,7 @@ export const useAuth = () => {
     loading: userLoading,
     operationLoading:
       logInLoading ||
+      userDataLoading ||
       createUserLoading ||
       logOutLoading ||
       registerLoading ||

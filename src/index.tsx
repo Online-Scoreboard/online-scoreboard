@@ -9,7 +9,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import * as serviceWorker from './serviceWorker';
 import { AMPLIFY, API_URL, APP_NAME, APP_VERSION } from './config';
-import { notificationInitialData } from './components/Notification';
+import { notificationInitialState } from './components/Notification';
 import { App } from './components/App';
 import theme from './theme';
 
@@ -19,7 +19,7 @@ Amplify.configure(AMPLIFY);
 const rootState = {
   data: {
     appName: APP_NAME,
-    ...notificationInitialData,
+    ...notificationInitialState,
   },
 };
 

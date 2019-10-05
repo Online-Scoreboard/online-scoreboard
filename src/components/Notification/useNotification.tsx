@@ -21,7 +21,7 @@ interface NotificationData {
   };
 }
 
-export const notificationInitialData: NotificationData = {
+export const notificationInitialState: NotificationData = {
   notification: {
     __typename: 'Notification',
     message: '',
