@@ -24,7 +24,16 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: '"Bungee", "Roboto", sans-serif',
+    fontFamily: '"Raleway", sans-serif',
+    fontSize: 14,
+    fontWeightMedium: 600,
+    h1: { fontFamily: '"Bungee", sans-serif' },
+    h2: { fontFamily: '"Bungee", sans-serif' },
+    h3: { fontFamily: '"Bungee", sans-serif' },
+    h4: { fontFamily: '"Bungee", sans-serif' },
+    h5: { fontFamily: '"Bungee", sans-serif' },
+    h6: { fontFamily: '"Bungee", sans-serif' },
+    caption: { fontWeight: 600 },
   },
 });
 
