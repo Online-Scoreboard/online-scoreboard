@@ -7,6 +7,7 @@ import {
   awsVerifyEmail,
   awsResendCode,
   awsResetPassword,
+  awsResetPasswordConfirm,
 } from './AWS';
 import { DEFAULT_ERROR_MESSAGE } from '../../helpers/strings';
 
@@ -224,6 +225,21 @@ describe('AWS', () => {
 
       // Assert
       expect(Auth.forgotPassword).toHaveBeenCalledWith(testUsername);
+    });
+
+    describe('awsResetPasswordConfirm', () => {
+      it('should invoke the forgotPasswordSubmit AWS method', async () => {
+        // Arrange
+        const testUsername = 'username@mail.com';
+        const testCode = '1234';
+        const testNewPassword = 'Passw0rd';
+
+        // Act
+        await awsResetPasswordConfirm(testUsername, testCode, testNewPassword);
+
+        // Assert
+        expect(Auth.forgotPasswordSubmit).toHaveBeenCalledWith(testUsername, testCode, testNewPassword);
+      });
     });
   });
 });
