@@ -1,0 +1,93 @@
+version: 2
+
+jobs:
+  install_dependencies:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - npm-dependencies-{{ checksum "package-lock.json" }}
+          - npm-dependencies-
+      - run:
+          name: "Install node dependencies"
+          command: npm ci
+      - save_cache:
+          name: Caching node_modules
+          key: npm-dependencies-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+  unit_tests:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restoring node_modules
+          key: npm-dependencies-{{ checksum "package-lock.json" }}
+      - run:
+          name: "Jest Test Suite"
+          command: npm run test:ci -- --reporters=default --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: "reports/junit"
+            JEST_JUNIT_OUTPUT_NAME: "jest-test-results.xml"
+      - store_test_results:
+          path: reports
+      - store_artifacts:
+          name: "Uploading JUnit artifacts"
+          path: reports/junit
+      - store_artifacts:
+          name: "Uploading code coverage artifacts"
+          path: coverage
+  eslint:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restoring node_modules
+          key: npm-dependencies-{{ checksum "package-lock.json" }}
+      - run:
+          name: "Run ESlint"
+          command: ./node_modules/.bin/eslint --format junit -o reports/junit/js-lint-results.xml --ext=ts,tsx src/**/*
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: "reports/junit"
+            JEST_JUNIT_OUTPUT_NAME: "jest-test-results.xml"
+      - store_test_results:
+          path: reports
+      - store_artifacts:
+          name: "Uploading JUnit artifacts"
+          path: reports/junit
+  e2e:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restoring node_modules
+          key: npm-dependencies-{{ checksum "package-lock.json" }}
+      - run:
+          name: Prepare Environment variables
+          command: bash scripts/create-env.sh
+      - run:
+          name: Run Now
+          command: |
+            npx now dev > /dev/null &
+            # Run Cucumber
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - install_dependencies
+      - eslint:
+          requires:
+            - install_dependencies
+      - unit_tests:
+          requires:
+            - install_dependencies
+      - e2e:
+          requires:
+              - unit_tests
+              - eslint
