@@ -75,11 +75,12 @@ const ForgottenPasswordComponent: React.FC<RouteComponentProps> = () => {
           <TextField
             variant="outlined"
             margin="normal"
-            placeholder="Enter your Email address"
+            placeholder="Your Email address"
             type="email"
             id="email"
             name="email"
             label="Email"
+            autoComplete="username"
             value={formData.email}
             onChange={setFormField}
             required
@@ -106,7 +107,7 @@ const ForgottenPasswordComponent: React.FC<RouteComponentProps> = () => {
               variant="outlined"
               margin="normal"
               type="password"
-              placeholder="Enter your new password"
+              placeholder="Your new password"
               id="newPassword"
               name="newPassword"
               label="New Password"

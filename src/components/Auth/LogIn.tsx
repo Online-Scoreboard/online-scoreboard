@@ -67,9 +67,10 @@ const LogInComponent: React.FC<RouteComponentProps> = () => {
             variant="outlined"
             margin="normal"
             id="username"
-            label="Username"
+            label="Email"
+            placeholder="Your email address"
             name="username"
-            autoComplete="email"
+            autoComplete="username"
             value={formData.username}
             onChange={setFormField}
             required
@@ -79,15 +80,16 @@ const LogInComponent: React.FC<RouteComponentProps> = () => {
           <TextField
             variant="outlined"
             margin="normal"
-            required
-            fullWidth
             name="password"
             label="Password"
             type="password"
             id="password"
+            placeholder="Your password"
             autoComplete="current-password"
             value={formData.password}
             onChange={setFormField}
+            required
+            fullWidth
           />
           <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
           <Button
