@@ -8,6 +8,7 @@
   "include": [
     "step_definitions",
     "support",
-    "typings.d.ts"
+    "typings.d.ts",
+    "reporting/reporter.ts"
   ]
 }

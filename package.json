@@ -13,7 +13,9 @@
     "test": "react-scripts test --watchAll --coverage",
     "test:ci": "react-scripts test --ci --coverage --watchAll=false",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext=ts,tsx src/**/*"
+    "e2e": "./node_modules/.bin/cucumber-js --require-module ts-node/register './e2e/features/' --require './e2e/step_definitions/*.ts' --require './e2e/support/*.ts' -f json:e2e/reporting/json-report.json --format summary",
+    "e2e-report": "ts-node e2e/reporting/reporter.ts",
+    "lint": "eslint --ext=ts,tsx src/**/* e2e/support e2e/step_definitions"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.2",
@@ -31,6 +33,7 @@
   },
   "devDependencies": {
     "@testing-library/react-hooks": "^2.0.3",
+    "@types/cucumber": "^4.0.7",
     "@types/dotenv": "^6.1.1",
     "@types/enzyme": "^3.10.3",
     "@types/enzyme-adapter-react-16": "^1.0.5",
@@ -39,8 +42,11 @@
     "@types/reach__router": "^1.2.5",
     "@types/react": "^16.9.5",
     "@types/react-dom": "^16.9.1",
+    "@types/selenium-webdriver": "^4.0.3",
     "@typescript-eslint/eslint-plugin": "^2.3.3",
     "@typescript-eslint/parser": "^2.3.3",
+    "cucumber": "^5.1.0",
+    "cucumber-html-reporter": "^5.0.2",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "eslint-config-prettier": "^6.4.0",
@@ -49,6 +55,8 @@
     "jest-junit": "^8.0.0",
     "prettier": "^1.18.2",
     "react-test-renderer": "^16.10.2",
+    "selenium-webdriver": "^4.0.0-alpha.5",
+    "ts-node": "^8.4.1",
     "typescript": "3.6.3"
   },
   "browserslist": {

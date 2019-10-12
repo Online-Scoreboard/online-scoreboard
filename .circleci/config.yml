@@ -61,20 +61,37 @@ jobs:
           path: reports/junit
   e2e:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:jessie-browsers
+
     steps:
       - checkout
+      - run:
+          name: Make log dir for selenium
+          command: mkdir selenium-logs
+
+      - run:
+          name: Download Selenium
+          command: curl -O http://selenium-release.storage.googleapis.com/3.5/selenium-server-standalone-3.5.3.jar
+
+      - run:
+          name: Start Selenium
+          command: java -jar selenium-server-standalone-3.5.3.jar -log selenium-logs/selenium.log
+          background: true
+
       - restore_cache:
           name: Restoring node_modules
           key: npm-dependencies-{{ checksum "package-lock.json" }}
+
       - run:
-          name: Prepare Environment variables
-          command: bash scripts/create-env.sh
-      - run:
-          name: Run Now
-          command: |
-            npx now dev > /dev/null &
-            # Run Cucumber
+          name: Host website locally
+          command: npm run server
+          background: true
+
+      - run: npm run e2e
+      - run: npm run report
+
+      - store_artifacts:
+          path: /e2e/reporting/html-report.html
 
 workflows:
   version: 2
