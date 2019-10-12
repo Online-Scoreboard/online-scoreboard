@@ -64,7 +64,8 @@ jobs:
   e2e:
     docker:
       - image: circleci/node:jessie-browsers
-
+        environment:
+          TS_NODE_PROJECT: "e2e/tsconfig.json"
     steps:
       - checkout
       - run:
