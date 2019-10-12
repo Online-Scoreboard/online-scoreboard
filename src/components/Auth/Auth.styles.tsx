@@ -16,6 +16,8 @@ export default makeStyles(theme => ({
     width: '100%',
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(4),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
   },
   loader: {
     marginRight: theme.spacing(1),
