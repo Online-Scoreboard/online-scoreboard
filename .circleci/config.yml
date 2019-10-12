@@ -4,6 +4,8 @@ jobs:
   install_dependencies:
     docker:
       - image: circleci/node:10
+        environment:
+          TS_NODE_PROJECT: e2e/tsconfig.json
     steps:
       - checkout
       - restore_cache:
@@ -88,10 +90,15 @@ jobs:
           background: true
 
       - run: npm run e2e
-      - run: npm run report
+      - run: npm run e2e-report
 
       - store_artifacts:
-          path: /e2e/reporting/html-report.html
+          name: Store test artifacts - json, html
+          path: e2e/reporting
+
+      - store_artifacts:
+          name: Store selenium logs
+          path: selenium-logs
 
 workflows:
   version: 2
