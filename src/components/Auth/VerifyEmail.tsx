@@ -67,6 +67,7 @@ const VerifyEmailComponent: React.FC<RouteComponentProps> = () => {
             margin="normal"
             id="code"
             label="Verification Code"
+            placeholder="Enter your verification code"
             name="code"
             value={formData.code}
             onChange={setFormField}

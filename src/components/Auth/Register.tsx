@@ -64,28 +64,30 @@ const RegisterComponent: React.FC<RouteComponentProps> = () => {
           <TextField
             variant="outlined"
             margin="normal"
-            required
-            fullWidth
             id="username"
-            label="Username"
             name="username"
-            autoComplete="email"
+            autoComplete="username"
+            label="Email"
+            placeholder="Your email address"
             value={formData.username}
             onChange={setFormField}
+            required
+            fullWidth
             autoFocus
           />
           <TextField
             variant="outlined"
             margin="normal"
-            required
-            fullWidth
             name="password"
             label="Password"
             type="password"
             id="password"
-            autoComplete="current-password"
+            autoComplete="password"
+            placeholder="Enter a password (min. 6 characters)"
             value={formData.password}
             onChange={setFormField}
+            required
+            fullWidth
           />
           <Button
             type="submit"
