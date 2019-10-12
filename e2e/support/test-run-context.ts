@@ -1,4 +1,4 @@
-import { BrowserCapabilities } from '../typings';
+import { BrowserCapabilities } from './browser-capabilities';
 
 export class TestRunContext {
   static capabilities: BrowserCapabilities;

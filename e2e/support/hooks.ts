@@ -1,6 +1,6 @@
-import { After, Before, BeforeAll, Status } from 'cucumber';
+import { After, Before, BeforeAll, Status, setDefaultTimeout } from 'cucumber';
 import { Builder } from 'selenium-webdriver';
-import { IMPLICIT_TIMEOUT, PAGE_LOAD_TIMEOUT, SCRIPT_TIMEOUT } from './consts';
+import { IMPLICIT_TIMEOUT, PAGE_LOAD_TIMEOUT, SCRIPT_TIMEOUT, CUCUMBER_STEP_TIMEOUT } from './consts';
 import { envConfig } from '../env-keys';
 import { getBrowserCapabilities } from './browser-capabilities';
 import { TestRunContext } from './test-run-context';
@@ -11,6 +11,8 @@ BeforeAll(async function() {
 });
 
 Before(async function() {
+  setDefaultTimeout(CUCUMBER_STEP_TIMEOUT);
+
   try {
     this.browser = await new Builder()
       .withCapabilities(TestRunContext.capabilities)

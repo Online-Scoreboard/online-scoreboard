@@ -68,22 +68,22 @@ jobs:
           TS_NODE_PROJECT: "e2e/tsconfig.json"
     steps:
       - checkout
+      - restore_cache:
+          name: Restoring node_modules
+          key: npm-dependencies-{{ checksum "package-lock.json" }}
+
       - run:
           name: Make log dir for selenium
           command: mkdir selenium-logs
 
       - run:
-          name: Download Selenium
-          command: curl -O http://selenium-release.storage.googleapis.com/3.5/selenium-server-standalone-3.5.3.jar
+          name: Updating Selenium Webdriver
+          command: npm run webdriver:update
 
       - run:
           name: Start Selenium
-          command: java -jar selenium-server-standalone-3.5.3.jar -log selenium-logs/selenium.log
+          command: npm run webdriver:start
           background: true
-
-      - restore_cache:
-          name: Restoring node_modules
-          key: npm-dependencies-{{ checksum "package-lock.json" }}
 
       - run:
           name: Prepare Environment variables

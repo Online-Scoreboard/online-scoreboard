@@ -25,3 +25,4 @@ yarn-error.log*
 # DotEnv
 .env
 .env.build
+/e2e/reporting/
