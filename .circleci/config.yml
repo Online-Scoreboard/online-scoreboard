@@ -84,7 +84,7 @@ jobs:
 
       - run:
           name: Host website locally
-          command: npm run server
+          command: npm run serve
           background: true
 
       - run: npm run e2e
