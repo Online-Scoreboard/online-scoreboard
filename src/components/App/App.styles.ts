@@ -17,6 +17,15 @@ export default makeStyles(theme => ({
     a: {
       textDecoration: 'none',
     },
+    'input:-webkit-autofill': {
+      '-webkit-box-shadow': '0 0 0 30px #610f46 inset !important',
+      '-webkit-text-fill-color': '#eee !important',
+
+      '&:hover, &:focus, &:active': {
+        '-webkit-box-shadow': '0 0 0 30px #610f46 inset !important',
+        '-webkit-text-fill-color': '#eee !important',
+      },
+    },
   },
   root: {
     display: 'flex',
