@@ -81,6 +81,7 @@ jobs:
       - run:
           name: Host website
           command: npm run serve
+          background: true
 
       - run:
           name: Run E2E
