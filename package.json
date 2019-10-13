@@ -34,7 +34,6 @@
   },
   "devDependencies": {
     "@testing-library/react-hooks": "^2.0.3",
-    "@types/chromedriver": "^2.38.0",
     "@types/cucumber": "^4.0.7",
     "@types/dotenv": "^6.1.1",
     "@types/enzyme": "^3.10.3",
@@ -47,7 +46,6 @@
     "@types/selenium-webdriver": "^4.0.3",
     "@typescript-eslint/eslint-plugin": "^2.3.3",
     "@typescript-eslint/parser": "^2.3.3",
-    "chromedriver": "^77.0.0",
     "cucumber": "^5.1.0",
     "cucumber-html-reporter": "^5.0.2",
     "enzyme": "^3.10.0",

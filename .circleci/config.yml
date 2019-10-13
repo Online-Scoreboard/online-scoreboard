@@ -84,6 +84,10 @@ jobs:
           background: true
 
       - run:
+          name: Wait for a ready environment
+          command: bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:3000)" != "200" ]]; do sleep 5; done'
+
+      - run:
           name: Run E2E
           command: npm run e2e
 
