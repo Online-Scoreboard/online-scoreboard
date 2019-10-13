@@ -92,23 +92,9 @@ const ToolbarComponent: React.FC<ToolbarProps> = ({ isLoggedIn, onLogOut, user }
             </Menu>
           </>
         ) : (
-          <>
-            <Link to="/About">
-              <LinkButton variant="button" component="span" color="textPrimary" className={classes.link}>
-                About
-              </LinkButton>
-            </Link>
-
-            <Link to="/Features">
-              <LinkButton variant="button" component="span" color="textPrimary" className={classes.link}>
-                Features
-              </LinkButton>
-            </Link>
-
-            <Button variant="outlined" href="/login" className={classes.link}>
-              Log in
-            </Button>
-          </>
+          <Button variant="outlined" href="/login" className={classes.link}>
+            Log in
+          </Button>
         )}
       </nav>
     </MaterialToolbar>

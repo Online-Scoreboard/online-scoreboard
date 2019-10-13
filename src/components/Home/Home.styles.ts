@@ -2,11 +2,12 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles(({ spacing, palette }) => ({
   root: {
-    background: 'hsl(14, 100%, 95%)',
+    background: 'hsl(14, 100%, 97%)',
     color: palette.primary.main,
+    overflowX: 'hidden',
   },
   heroContent: {
-    padding: spacing(6, 0, 10),
+    padding: spacing(6, 0, 18),
   },
   heroImage: {
     width: '100%',
@@ -18,6 +19,19 @@ export default makeStyles(({ spacing, palette }) => ({
   section: {
     padding: spacing(6, 0),
     backgroundColor: palette.background.paper,
+    position: 'relative',
+
+    '&:before': {
+      height: '100px',
+      width: '110%',
+      content: '"c"',
+      display: 'block',
+      backgroundColor: palette.background.paper,
+      marginTop: '-115px',
+      marginLeft: '-5%',
+      transform: 'rotateZ(-2deg)',
+      position: 'absolute',
+    },
   },
   article: {
     marginBottom: spacing(6),

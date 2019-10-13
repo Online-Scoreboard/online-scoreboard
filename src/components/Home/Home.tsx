@@ -47,11 +47,11 @@ export const Home: React.FC<RouteComponentProps> = () => {
 
       <section className={section}>
         <Container maxWidth="md" component="article" className={article}>
-          <Grid container alignItems="center" spacing={5}>
-            <Grid item md={2}>
+          <Grid container alignItems="center" justify="center" spacing={5}>
+            <Grid item xs={4} sm={2}>
               <What className={icon} />
             </Grid>
-            <Grid item md={10}>
+            <Grid item xs={12} sm={10}>
               <Typography variant="h4" gutterBottom>
                 What
               </Typography>
@@ -64,11 +64,11 @@ export const Home: React.FC<RouteComponentProps> = () => {
         </Container>
 
         <Container maxWidth="md" component="article" className={article}>
-          <Grid container alignItems="center" spacing={5}>
-            <Grid item md={2}>
+          <Grid container alignItems="center" justify="center" spacing={5}>
+            <Grid item xs={4} sm={2}>
               <Why className={icon} />
             </Grid>
-            <Grid item md={10}>
+            <Grid item xs={12} sm={10}>
               <Typography variant="h4" gutterBottom>
                 Why
               </Typography>
@@ -84,11 +84,11 @@ export const Home: React.FC<RouteComponentProps> = () => {
         </Container>
 
         <Container maxWidth="md" component="article" className={article}>
-          <Grid container alignItems="center" spacing={5}>
-            <Grid item md={2}>
+          <Grid container alignItems="center" justify="center" spacing={5}>
+            <Grid item xs={4} sm={2}>
               <Features className={icon} />
             </Grid>
-            <Grid item md={10}>
+            <Grid item xs={12} sm={10}>
               <Typography variant="h4" gutterBottom>
                 Features
               </Typography>
