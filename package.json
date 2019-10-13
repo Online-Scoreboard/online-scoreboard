@@ -13,8 +13,9 @@
     "test": "react-scripts test --watchAll --coverage",
     "test:ci": "react-scripts test --ci --coverage --watchAll=false",
     "eject": "react-scripts eject",
-    "e2e": "./node_modules/.bin/cucumber-js --require-module ts-node/register './e2e/features/' --require './e2e/step_definitions/*.ts' --require './e2e/support/*.ts' -f json:e2e/reporting/json/json-report.json --format summary",
-    "e2e-report": "ts-node e2e/reporting/reporter.ts",
+    "e2e": "TS_NODE_PROJECT=e2e/tsconfig.json cucumber-js --require-module ts-node/register './e2e/features/' --require './e2e/step_definitions/*.ts' --require './e2e/support/*.ts' -f json:e2e/reporting/json/json-report.json --format summary",
+    "e2e:local": "SELENIUM_BROWSER=chrome TS_NODE_PROJECT=e2e/tsconfig.json cucumber-js --require-module ts-node/register './e2e/features/' --require './e2e/step_definitions/*.ts' --require './e2e/support/*.ts'",
+    "e2e-report": "TS_NODE_PROJECT=e2e/tsconfig.json ts-node e2e/reporting/reporter.ts",
     "lint": "eslint --ext=ts,tsx src/**/* e2e/support e2e/step_definitions"
   },
   "dependencies": {
