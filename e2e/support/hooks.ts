@@ -1,9 +1,11 @@
 import { After, Before, BeforeAll, Status } from 'cucumber';
 import { Builder } from 'selenium-webdriver';
+import { ServiceBuilder, setDefaultService } from 'selenium-webdriver/chrome';
 import { IMPLICIT_TIMEOUT, PAGE_LOAD_TIMEOUT, SCRIPT_TIMEOUT } from './consts';
 import { envConfig } from '../env-keys';
 import { getBrowserCapabilities } from './browser-capabilities';
 import { TestRunContext } from './test-run-context';
+import geckoDriver from 'chromedriver';
 
 BeforeAll(async function() {
   const capabilities = getBrowserCapabilities(envConfig.BROWSER);
@@ -12,6 +14,9 @@ BeforeAll(async function() {
 
 Before(async function() {
   try {
+    const service = new ServiceBuilder(geckoDriver.path).build();
+    setDefaultService(service);
+
     this.browser = await new Builder().withCapabilities(TestRunContext.capabilities).build();
 
     await this.browser
