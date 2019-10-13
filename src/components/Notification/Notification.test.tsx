@@ -32,6 +32,12 @@ describe('Notification', () => {
 
   it('should render a notification component when opened', () => {
     // Arrange
+    (global as any).matchMedia = (media: any) => ({
+      addListener: () => {},
+      removeListener: () => {},
+      matches: true,
+    });
+
     const el = <Notification message="Allo" open={true} variant="info" />;
 
     // Act
