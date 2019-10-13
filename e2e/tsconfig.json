@@ -6,9 +6,9 @@
     "esModuleInterop": true
   },
   "include": [
+    "typings.d.ts",
     "step_definitions",
     "support",
-    "typings.d.ts",
     "reporting/reporter.ts"
   ]
 }

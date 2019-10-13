@@ -1,4 +1,11 @@
-import { BrowserCapabilities } from '../typings';
+interface ChromeOptions {
+  w3c: boolean;
+}
+
+export interface BrowserCapabilities {
+  browserName: string;
+  'goog:chromeOptions'?: ChromeOptions;
+}
 
 export const getBrowserCapabilities = (browserName: string): BrowserCapabilities => {
   switch (browserName) {

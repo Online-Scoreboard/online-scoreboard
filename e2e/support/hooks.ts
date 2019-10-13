@@ -12,10 +12,7 @@ BeforeAll(async function() {
 
 Before(async function() {
   try {
-    this.browser = await new Builder()
-      .withCapabilities(TestRunContext.capabilities)
-      .usingServer(envConfig.SELENIUM_URL)
-      .build();
+    this.browser = await new Builder().withCapabilities(TestRunContext.capabilities).build();
 
     await this.browser
       .manage()

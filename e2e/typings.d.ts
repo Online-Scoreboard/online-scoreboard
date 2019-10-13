@@ -6,12 +6,3 @@ declare module 'cucumber' {
     attach: Function;
   }
 }
-
-interface ChromeOptions {
-  w3c: boolean;
-}
-
-export interface BrowserCapabilities {
-  browserName: string;
-  'goog:chromeOptions'?: ChromeOptions;
-}
