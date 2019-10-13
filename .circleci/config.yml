@@ -65,7 +65,6 @@ jobs:
     docker:
       - image: circleci/node:jessie-browsers
         environment:
-          TS_NODE_PROJECT: "e2e/tsconfig.json"
           SELENIUM_BROWSER: "chrome"
     steps:
       - checkout
