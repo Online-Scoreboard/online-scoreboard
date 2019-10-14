@@ -30,6 +30,21 @@ Lint the code using ESLint and the rules listed in the `.eslintrc` file.
 Launches the test runner in the interactive watch mode.<br>
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+### `npm run e2e`
+
+Runs all the e2e test suites under `e2e/features`
+
+Mandatory:
+- export `TS_NODE_PROJECT=e2e/tsconfig.json`
+
+Optional:
+ - `SELENIUM_BROWSER` - specify what browser to use. Defaults to chrome.
+ - `HOMEPAGE_URL` - specify base URL which will be used to access the online-scoreboard. Defaults to http:localhost:3000.
+ 
+### `npm run e2e-report`
+
+Generates an html report from the cucumber report json
+ 
 ### `npm run build`
 
 Builds the app for production to the `build` folder.<br>

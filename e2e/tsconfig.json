@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "typings.d.ts",
+    "step_definitions",
+    "support",
+    "reporting/reporter.ts"
+  ]
+}
