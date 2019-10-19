@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Container, Typography } from '@material-ui/core';
 import { RouteComponentProps } from '@reach/router';
+
 import useStyles from './Dashboard.styles';
 
 const DashboardComponent: React.FC<RouteComponentProps> = () => {

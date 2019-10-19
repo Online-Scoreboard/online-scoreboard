@@ -4,8 +4,9 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import WarningIcon from '@material-ui/icons/Warning';
 import InfoIcon from '@material-ui/icons/Info';
-import { useStyles } from './Notification.styles';
 import withWidth, { WithWidth, isWidthDown } from '@material-ui/core/withWidth';
+
+import { useStyles } from './Notification.styles';
 
 const variantIcon = {
   success: CheckCircleIcon,

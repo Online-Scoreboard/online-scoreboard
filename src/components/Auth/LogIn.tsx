@@ -14,8 +14,8 @@ import {
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { RouteComponentProps, Link } from '@reach/router';
 
-import { useAuth } from './useAuth';
 import { useForm } from '../../hooks/useForm';
+import { useData } from '../../hooks/useData';
 import useStyles from './Auth.styles';
 
 const LogInComponent: React.FC<RouteComponentProps> = () => {
@@ -23,7 +23,7 @@ const LogInComponent: React.FC<RouteComponentProps> = () => {
 
   const classes = useStyles();
   const { formData, setFormField, resetForm } = useForm(initialData);
-  const { logIn, operationLoading, error } = useAuth();
+  const { logIn, operationLoading, error } = useData();
   const [errorState, setErrorState] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import * as Auth from '../Auth';
+import * as Auth from '../../hooks/useData';
 import * as Notification from '../Notification';
 import { Loading } from '../Loading';
 
 import { App } from './App';
 
-jest.mock('../Auth/useAuth');
+jest.mock('../../hooks/useData');
 jest.mock('../Notification');
 
 describe('App', () => {
@@ -21,7 +21,7 @@ describe('App', () => {
     __typename: 'UserSession',
   };
 
-  jest.spyOn(Auth, 'useAuth').mockImplementation(
+  jest.spyOn(Auth, 'useData').mockImplementation(
     () =>
       ({
         user: testUser,

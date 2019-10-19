@@ -4,8 +4,8 @@ import { AppBar } from '@material-ui/core';
 
 import { PrivateRouter } from '../PrivateRouter';
 import { useNotification, Notification } from '../Notification';
+import { useData } from '../../hooks/useData';
 import { Loading } from '../Loading';
-import { useAuth } from '../Auth/useAuth';
 import { Toolbar } from './Toolbar';
 import { Footer } from './Footer';
 
@@ -13,7 +13,7 @@ import useAppStyles from './App.styles';
 
 const AppComponent: React.FC = () => {
   const classes = useAppStyles();
-  const { isLoggedIn, confirmEmail, logOut, loading, error, info, success, user } = useAuth();
+  const { isLoggedIn, confirmEmail, logOut, loading, error, info, success, user } = useData();
   const { open, variant, message, openNotification } = useNotification();
 
   useEffect(() => {

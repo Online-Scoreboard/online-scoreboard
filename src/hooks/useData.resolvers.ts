@@ -1,6 +1,4 @@
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import { Resolvers } from 'apollo-boost';
-import gql from 'graphql-tag';
 
 import {
   awsSignIn,
@@ -13,10 +11,10 @@ import {
   awsResetPasswordConfirm,
   AWSUser,
 } from './AWS';
-import { DEFAULT_ERROR_MESSAGE, LOGIN_WELCOME_MESSAGE } from '../../helpers/strings';
-import { useEffect } from 'react';
+import { GET_USER } from './useData.graph';
+import { DEFAULT_ERROR_MESSAGE } from '../helpers/strings';
 
-interface UserSessionData {
+export interface UserSessionData {
   __typename: string;
   isLoggedIn: boolean;
   confirmEmail: boolean;
@@ -26,92 +24,10 @@ interface UserSessionData {
   error: string;
   info: string;
   avatar?: string;
+  id?: string;
 }
 
-interface UserData {
-  avatar: string;
-}
-
-const GET_USER = gql`
-  query GetUser {
-    user @client {
-      isLoggedIn
-      confirmEmail
-      resetPassword
-      username
-      email
-      error
-      info
-    }
-  }
-`;
-
-const GET_USER_DATA = gql`
-  query GetUserData {
-    whoAmI {
-      id
-      avatar
-    }
-  }
-`;
-
-const CREATE_USER = gql`
-  mutation CreateUser {
-    createUser {
-      id
-    }
-  }
-`;
-
-const RESET_ERRORS = gql`
-  mutation ResetErrors {
-    resetErrors @client
-  }
-`;
-
-const LOG_IN = gql`
-  mutation LogIn($loginData: LogInData!) {
-    logIn(loginData: $loginData) @client
-  }
-`;
-
-const LOG_OUT = gql`
-  mutation LogOut {
-    logOut @client
-  }
-`;
-
-const REGISTER = gql`
-  mutation Register($registerData: RegisterData!) {
-    register(registerData: $registerData) @client
-  }
-`;
-
-const VERIFY_EMAIL = gql`
-  mutation VerifyEmail($verifyEmailData: VerifyEmailData!) {
-    verifyEmail(verifyEmailData: $verifyEmailData) @client
-  }
-`;
-
-const RESEND_CODE = gql`
-  mutation ResendCode {
-    resendCode @client
-  }
-`;
-
-const FORGOTTEN_PASSWORD = gql`
-  mutation ForgottenPassword($forgottenPasswordData: ForgottenPasswordData!) {
-    forgottenPassword(forgottenPasswordData: $forgottenPasswordData) @client
-  }
-`;
-
-const RESET_PASSWORD = gql`
-  mutation ResetPassword($resetPasswordData: ResetPasswordData!) {
-    resetPassword(resetPasswordData: $resetPasswordData) @client
-  }
-`;
-
-const resolvers: Resolvers = {
+export const resolvers: Resolvers = {
   Query: {
     async user(parent) {
       const currUser = parent.user;
@@ -139,7 +55,6 @@ const resolvers: Resolvers = {
         data.isLoggedIn = true;
         data.confirmEmail = false;
         data.resetPassword = false;
-        data.username = user.username;
         data.email = user.attributes.email;
       }
 
@@ -323,84 +238,4 @@ const resolvers: Resolvers = {
       cache.writeData({ data: { user: userData } });
     },
   },
-};
-
-export const useAuth = () => {
-  const client = useApolloClient();
-  client.addResolvers(resolvers);
-
-  const { loading: userLoading, data } = useQuery<{ user: UserSessionData }>(GET_USER);
-  const { loading: userDataLoading, data: whoAmIData } = useQuery<{ whoAmI: UserData }>(GET_USER_DATA);
-  const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
-  const [createUser, { loading: createUserLoading }] = useMutation<void>(CREATE_USER);
-  const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN);
-  const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
-  const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
-  const [_resendCode, { loading: resendCodeLoading }] = useMutation<void>(RESEND_CODE);
-  const [_forgottenPassword, { loading: forgottenPasswordLoading }] = useMutation<void>(FORGOTTEN_PASSWORD);
-  const [_resetPassword, { loading: resetPasswordLoading }] = useMutation<void>(RESET_PASSWORD);
-  const [resetErrors] = useMutation<void>(RESET_ERRORS);
-
-  const user = data && data.user;
-  const userData = whoAmIData && whoAmIData.whoAmI;
-
-  const isLoggedIn = Boolean(user && user.isLoggedIn);
-  const confirmEmail = Boolean(user && user.confirmEmail);
-  const showResetPassword = Boolean(user && user.resetPassword);
-  const success = isLoggedIn && LOGIN_WELCOME_MESSAGE;
-
-  useEffect(() => {
-    if (user && isLoggedIn && !userLoading && !userDataLoading && !userData && typeof userData === 'object') {
-      createUser();
-    }
-  }, [user, userData, userLoading, userDataLoading, isLoggedIn, createUser]);
-
-  return {
-    user,
-    isLoggedIn,
-    confirmEmail,
-    showResetPassword,
-    loading: userLoading,
-    operationLoading:
-      logInLoading ||
-      userDataLoading ||
-      createUserLoading ||
-      logOutLoading ||
-      registerLoading ||
-      verifyEmailLoading ||
-      resendCodeLoading ||
-      resetPasswordLoading ||
-      forgottenPasswordLoading,
-    error: user && user.error,
-    info: user && user.info,
-    success,
-    logIn: async (username: string, password: string) => {
-      await resetErrors();
-      return _logIn({ variables: { loginData: { username, password } } });
-    },
-    register: async (username: string, password: string) => {
-      await resetErrors();
-      return _register({ variables: { registerData: { username, password } } });
-    },
-    verifyEmail: async (code: string) => {
-      await resetErrors();
-      return _verifyEmail({ variables: { verifyEmailData: { code } } });
-    },
-    resendCode: async () => {
-      await resetErrors();
-      return _resendCode();
-    },
-    logOut: async () => {
-      await resetErrors();
-      return _logOut();
-    },
-    forgottenPassword: async (email: string) => {
-      await resetErrors();
-      return _forgottenPassword({ variables: { forgottenPasswordData: { email } } });
-    },
-    resetPassword: async (username: string, code: string, newPassword: string) => {
-      await resetErrors();
-      return _resetPassword({ variables: { resetPasswordData: { username, code, newPassword } } });
-    },
-  };
 };

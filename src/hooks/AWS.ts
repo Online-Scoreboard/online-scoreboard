@@ -1,5 +1,5 @@
 import { Auth } from 'aws-amplify';
-import { DEFAULT_ERROR_MESSAGE } from '../../helpers/strings';
+import { DEFAULT_ERROR_MESSAGE } from '../helpers/strings';
 
 export interface AWSUser {
   attributes: {
