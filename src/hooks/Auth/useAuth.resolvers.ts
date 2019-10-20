@@ -13,26 +13,14 @@ import {
 } from './AWS';
 import { GET_USER } from './useAuth.graph';
 import { DEFAULT_ERROR_MESSAGE } from '../../helpers/strings';
-
-export interface UserSessionData {
-  __typename: string;
-  isLoggedIn: boolean;
-  confirmEmail: boolean;
-  resetPassword: boolean;
-  username: string;
-  email: string;
-  error: string;
-  info: string;
-  avatar?: string;
-  id?: string;
-}
+import { User } from './types';
 
 export const resolvers: Resolvers = {
   Query: {
     async user(parent) {
       const currUser = parent.user;
 
-      const data: UserSessionData = {
+      const data: User = {
         __typename: 'UserSession',
         isLoggedIn: false,
         confirmEmail: false,
@@ -65,7 +53,7 @@ export const resolvers: Resolvers = {
   Mutation: {
     async resetErrors(_, __, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserSessionData = { ...currState.user };
+      const userData: User = { ...currState.user };
 
       userData.error = '';
       userData.info = '';
@@ -74,7 +62,7 @@ export const resolvers: Resolvers = {
 
     async logIn(_, { loginData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserSessionData = { ...currState.user };
+      const userData: User = { ...currState.user };
 
       userData.error = '';
       userData.info = '';
@@ -110,7 +98,7 @@ export const resolvers: Resolvers = {
 
     async register(_, { registerData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserSessionData = { ...currState.user };
+      const userData: User = { ...currState.user };
 
       userData.error = '';
       userData.info = '';
@@ -138,7 +126,7 @@ export const resolvers: Resolvers = {
 
     async verifyEmail(_, { verifyEmailData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserSessionData = { ...currState.user };
+      const userData: User = { ...currState.user };
       const { code } = verifyEmailData;
 
       userData.error = '';
@@ -160,7 +148,7 @@ export const resolvers: Resolvers = {
 
     async resendCode(_, __, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserSessionData = { ...currState.user };
+      const userData: User = { ...currState.user };
 
       userData.error = '';
       userData.info = '';
@@ -179,7 +167,7 @@ export const resolvers: Resolvers = {
 
     async forgottenPassword(_, { forgottenPasswordData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserSessionData = { ...currState.user };
+      const userData: User = { ...currState.user };
       const { email } = forgottenPasswordData;
 
       userData.resetPassword = false;
@@ -199,7 +187,7 @@ export const resolvers: Resolvers = {
 
     async resetPassword(_, { resetPasswordData }, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserSessionData = { ...currState.user };
+      const userData: User = { ...currState.user };
       const { username, code, newPassword } = resetPasswordData;
 
       try {
@@ -218,7 +206,7 @@ export const resolvers: Resolvers = {
 
     async logOut(_, __, { cache }): Promise<void> {
       const currState = cache.readQuery({ query: GET_USER });
-      const userData: UserSessionData = { ...currState.user };
+      const userData: User = { ...currState.user };
 
       try {
         await awsSignOut();

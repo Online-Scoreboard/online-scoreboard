@@ -78,12 +78,3 @@ export const RESET_PASSWORD = gql`
     resetPassword(resetPasswordData: $resetPasswordData) @client
   }
 `;
-
-export const SHUFFLE_AVATAR = gql`
-  mutation UpdateUser($updateUserInput: UpdateUserInput!) {
-    updateUser(input: $updateUserInput) {
-      username
-      avatar
-    }
-  }
-`;
