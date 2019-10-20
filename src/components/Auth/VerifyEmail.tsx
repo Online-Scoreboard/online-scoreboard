@@ -53,14 +53,17 @@ const VerifyEmailComponent: React.FC<RouteComponentProps> = () => {
   );
 
   return (
-    <Container component="main" maxWidth="xs">
-      <div className={classes.paper}>
+    <Container component="main" maxWidth="xs" className={`${classes.root} VerifyEmail`}>
+      <Grid container direction="column" alignItems="center">
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="h4">
           Verify Email
         </Typography>
+      </Grid>
+
+      <div className={classes.paper}>
         <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <TextField
             variant="outlined"
