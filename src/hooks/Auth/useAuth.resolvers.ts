@@ -11,8 +11,8 @@ import {
   awsResetPasswordConfirm,
   AWSUser,
 } from './AWS';
-import { GET_USER } from './useData.graph';
-import { DEFAULT_ERROR_MESSAGE } from '../helpers/strings';
+import { GET_USER } from './useAuth.graph';
+import { DEFAULT_ERROR_MESSAGE } from '../../helpers/strings';
 
 export interface UserSessionData {
   __typename: string;

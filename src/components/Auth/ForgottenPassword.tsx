@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { RouteComponentProps, Link, navigate } from '@reach/router';
 
 import { useForm } from '../../hooks/useForm';
-import { useData } from '../../hooks/useData';
+import { useAuth } from '../../hooks/Auth';
 import useStyles from './Auth.styles';
 
 const ForgottenPasswordComponent: React.FC<RouteComponentProps> = () => {
@@ -21,7 +21,7 @@ const ForgottenPasswordComponent: React.FC<RouteComponentProps> = () => {
 
   const classes = useStyles();
   const { formData, setFormField } = useForm(initialData);
-  const { forgottenPassword, operationLoading, showResetPassword, resetPassword } = useData();
+  const { forgottenPassword, operationLoading, showResetPassword, resetPassword } = useAuth();
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {

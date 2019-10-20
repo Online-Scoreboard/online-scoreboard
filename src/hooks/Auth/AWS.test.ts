@@ -9,7 +9,7 @@ import {
   awsResetPassword,
   awsResetPasswordConfirm,
 } from './AWS';
-import { DEFAULT_ERROR_MESSAGE } from '../helpers/strings';
+import { DEFAULT_ERROR_MESSAGE } from '../../helpers/strings';
 
 jest.mock('aws-amplify');
 

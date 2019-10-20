@@ -4,7 +4,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { navigate, RouteComponentProps } from '@reach/router';
 
 import { useForm } from '../../hooks/useForm';
-import { useData } from '../../hooks/useData';
+import { useAuth } from '../../hooks/Auth';
 import useStyles from './Auth.styles';
 
 const VerifyEmailComponent: React.FC<RouteComponentProps> = () => {
@@ -12,7 +12,7 @@ const VerifyEmailComponent: React.FC<RouteComponentProps> = () => {
 
   const classes = useStyles();
   const { formData, setFormField, resetForm } = useForm(initialData);
-  const { verifyEmail, resendCode, operationLoading, error } = useData();
+  const { verifyEmail, resendCode, operationLoading, error } = useAuth();
   const [errorState, setErrorState] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
 

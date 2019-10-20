@@ -1,9 +1,8 @@
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
-import { uniqueNamesGenerator } from 'unique-names-generator';
-
 import { useEffect, useCallback } from 'react';
-import { resolvers, UserSessionData } from './useData.resolvers';
-import { LOGIN_WELCOME_MESSAGE } from '../helpers/strings';
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+
+import { LOGIN_WELCOME_MESSAGE } from '../../helpers/strings';
+import { resolvers, UserSessionData } from './useAuth.resolvers';
 import {
   GET_USER,
   GET_USER_DATA,
@@ -17,13 +16,13 @@ import {
   FORGOTTEN_PASSWORD,
   RESET_PASSWORD,
   SHUFFLE_AVATAR,
-} from './useData.graph';
+} from './useAuth.graph';
 
 interface UserData {
   avatar: string;
 }
 
-export const useData = () => {
+export const useAuth = () => {
   const client = useApolloClient();
   client.addResolvers(resolvers);
 
@@ -79,37 +78,48 @@ export const useData = () => {
     error: user && user.error,
     info: user && user.info,
     success,
-    shuffleAvatar: useCallback(() => {
-      const hash = uniqueNamesGenerator();
-      _shuffleAvatar({ variables: { updateUserInput: { avatar: hash } } });
-    }, [_shuffleAvatar]),
-    logIn: async (username: string, password: string) => {
-      await resetErrors();
-      return _logIn({ variables: { loginData: { username, password } } });
-    },
-    register: async (username: string, password: string) => {
-      await resetErrors();
-      return _register({ variables: { registerData: { username, password } } });
-    },
-    verifyEmail: async (code: string) => {
-      await resetErrors();
-      return _verifyEmail({ variables: { verifyEmailData: { code } } });
-    },
-    resendCode: async () => {
+    logIn: useCallback(
+      async (username: string, password: string) => {
+        await resetErrors();
+        return _logIn({ variables: { loginData: { username, password } } });
+      },
+      [resetErrors, _logIn]
+    ),
+    register: useCallback(
+      async (username: string, password: string) => {
+        await resetErrors();
+        return _register({ variables: { registerData: { username, password } } });
+      },
+      [resetErrors, _register]
+    ),
+    verifyEmail: useCallback(
+      async (code: string) => {
+        await resetErrors();
+        return _verifyEmail({ variables: { verifyEmailData: { code } } });
+      },
+      [resetErrors, _verifyEmail]
+    ),
+    resendCode: useCallback(async () => {
       await resetErrors();
       return _resendCode();
-    },
-    logOut: async () => {
+    }, [resetErrors, _resendCode]),
+    logOut: useCallback(async () => {
       await resetErrors();
       return _logOut();
-    },
-    forgottenPassword: async (email: string) => {
-      await resetErrors();
-      return _forgottenPassword({ variables: { forgottenPasswordData: { email } } });
-    },
-    resetPassword: async (username: string, code: string, newPassword: string) => {
-      await resetErrors();
-      return _resetPassword({ variables: { resetPasswordData: { username, code, newPassword } } });
-    },
+    }, [resetErrors, _logOut]),
+    forgottenPassword: useCallback(
+      async (email: string) => {
+        await resetErrors();
+        return _forgottenPassword({ variables: { forgottenPasswordData: { email } } });
+      },
+      [resetErrors, _forgottenPassword]
+    ),
+    resetPassword: useCallback(
+      async (username: string, code: string, newPassword: string) => {
+        await resetErrors();
+        return _resetPassword({ variables: { resetPasswordData: { username, code, newPassword } } });
+      },
+      [resetErrors, _resetPassword]
+    ),
   };
 };
