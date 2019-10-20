@@ -30,7 +30,7 @@ export const useAuth = () => {
   const { loading: userDataLoading, data: whoAmIData } = useQuery<{ whoAmI: UserData }>(GET_USER_DATA);
   const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
   const [createUser, { loading: createUserLoading }] = useMutation<void>(CREATE_USER);
-  const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN);
+  const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN, { refetchQueries: ['GetUserData'] });
   const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
   const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
   const [_resendCode, { loading: resendCodeLoading }] = useMutation<void>(RESEND_CODE);
