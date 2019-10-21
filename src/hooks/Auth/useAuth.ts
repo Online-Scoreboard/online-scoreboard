@@ -2,7 +2,8 @@ import { useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 
 import { LOGIN_WELCOME_MESSAGE } from '../../helpers/strings';
-import { resolvers, UserSessionData } from './useAuth.resolvers';
+import { resolvers } from './useAuth.resolvers';
+import { User } from './types';
 import {
   GET_USER,
   GET_USER_DATA,
@@ -15,7 +16,6 @@ import {
   RESET_ERRORS,
   FORGOTTEN_PASSWORD,
   RESET_PASSWORD,
-  SHUFFLE_AVATAR,
 } from './useAuth.graph';
 
 interface UserData {
@@ -26,20 +26,17 @@ export const useAuth = () => {
   const client = useApolloClient();
   client.addResolvers(resolvers);
 
-  const { loading: userLoading, data } = useQuery<{ user: UserSessionData }>(GET_USER);
+  const { loading: userLoading, data } = useQuery<{ user: User }>(GET_USER);
   const { loading: userDataLoading, data: whoAmIData } = useQuery<{ whoAmI: UserData }>(GET_USER_DATA);
   const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
   const [createUser, { loading: createUserLoading }] = useMutation<void>(CREATE_USER);
-  const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN);
+  const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN, { refetchQueries: ['GetUserData'] });
   const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
   const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
   const [_resendCode, { loading: resendCodeLoading }] = useMutation<void>(RESEND_CODE);
   const [resetErrors] = useMutation<void>(RESET_ERRORS);
   const [_forgottenPassword, { loading: forgottenPasswordLoading }] = useMutation<void>(FORGOTTEN_PASSWORD);
   const [_resetPassword, { loading: resetPasswordLoading }] = useMutation<void>(RESET_PASSWORD);
-  const [_shuffleAvatar, { loading: shuffleAvatarLoading }] = useMutation<void>(SHUFFLE_AVATAR, {
-    refetchQueries: ['GetUserData'],
-  });
 
   const user = data && data.user;
   const userData = whoAmIData && whoAmIData.whoAmI;
@@ -59,11 +56,11 @@ export const useAuth = () => {
     user: {
       ...user,
       ...userData,
-    } as UserSessionData,
+    } as User,
     isLoggedIn,
     confirmEmail,
     showResetPassword,
-    loading: userLoading,
+    loading: userLoading || userDataLoading,
     operationLoading:
       logInLoading ||
       userDataLoading ||
@@ -73,7 +70,6 @@ export const useAuth = () => {
       verifyEmailLoading ||
       resendCodeLoading ||
       resetPasswordLoading ||
-      shuffleAvatarLoading ||
       forgottenPasswordLoading,
     error: user && user.error,
     info: user && user.info,

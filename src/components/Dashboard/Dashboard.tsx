@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Container, Typography } from '@material-ui/core';
+import { Container, Typography, Grid } from '@material-ui/core';
 import { RouteComponentProps } from '@reach/router';
 
 import useStyles from './Dashboard.styles';
@@ -8,13 +8,13 @@ const DashboardComponent: React.FC<RouteComponentProps> = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <Container maxWidth="md" component="main" className={classes.heroContent}>
+    <Container component="main" maxWidth="md" className={`${classes.root} Dashboard`}>
+      <Grid container direction="column" alignItems="center">
         <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
           Welcome!
         </Typography>
-      </Container>
-    </div>
+      </Grid>
+    </Container>
   );
 };
 

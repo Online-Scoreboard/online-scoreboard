@@ -68,7 +68,7 @@ const ToolbarComponent: React.FC<ToolbarProps> = ({ isLoggedIn, onLogOut, user }
               onClick={handleMenu}
             >
               <div className={classes.avatarWrapper}>
-                <Avatar size="40px" hash={user.avatar || user.username} className={classes.avatarIcon} />
+                <Avatar size="40px" hash={user.avatar} className={classes.avatarIcon} />
               </div>
             </IconButton>
             <Menu

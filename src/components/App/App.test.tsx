@@ -1,12 +1,12 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import * as Auth from '../../hooks/Auth/useAuth';
+import * as Auth from '../../hooks/Auth';
 import * as Notification from '../Notification';
 import { Loading } from '../Loading';
 
 import { App } from './App';
 
-jest.mock('../../hooks/Auth/useAuth');
+jest.mock('../../hooks/Auth');
 jest.mock('../Notification');
 
 describe('App', () => {

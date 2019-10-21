@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { Router, Redirect, RouteComponentProps } from '@reach/router';
 import { Auth } from './Auth';
 import { Dashboard } from './Dashboard';
+import { Profile } from './Profile';
 
 export interface PrivateRouterProps {
   isLoggedIn: boolean;
@@ -15,7 +16,7 @@ const PrivateRouterComponent: React.FC<PrivateRouterProps> = React.memo(({ isLog
     return (
       <Router>
         <Dashboard path="/home" />
-        <Dashboard path="/profile" />
+        <Profile path="/profile" />
         <Dashboard path="/account" />
         <NotFound default />
       </Router>
