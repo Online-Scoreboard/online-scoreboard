@@ -15,6 +15,7 @@ describe('Profile', () => {
   let mockUserData = {};
 
   beforeEach(() => {
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
     jest.spyOn(Auth, 'useAuth').mockImplementation(() => {
       return {
         user: mockUserData,

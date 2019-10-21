@@ -1,12 +1,17 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-export default makeStyles(theme => ({
+export type Classes = Record<
+  'root' | 'content' | 'card' | 'cardTitle' | 'cardAction' | 'cardAction' | 'avatar',
+  string
+>;
+
+export const useStyles = makeStyles(theme => ({
   root: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(6),
   },
-  heroContent: {
-    padding: theme.spacing(8, 0, 6),
+  content: {
+    marginBottom: theme.spacing(4),
   },
   card: {
     padding: theme.spacing(2),
