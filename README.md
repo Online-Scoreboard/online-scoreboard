@@ -1,5 +1,7 @@
 # Online Scoreboard
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d2700d18225345bd95c9ca74616db080)](https://www.codacy.com/manual/andreasonny83/online-scoreboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Online-Scoreboard/online-scoreboard&amp;utm_campaign=Badge_Grade)
+
 This project is running live at: [online-scoreboard.now.sh](https://online-scoreboard.now.sh)
 against the latest changes on the master branch of this repository
 
@@ -40,11 +42,11 @@ Mandatory:
 Optional:
  - `SELENIUM_BROWSER` - specify what browser to use. Defaults to chrome.
  - `HOMEPAGE_URL` - specify base URL which will be used to access the online-scoreboard. Defaults to http:localhost:3000.
- 
+
 ### `npm run e2e-report`
 
 Generates an html report from the cucumber report json
- 
+
 ### `npm run build`
 
 Builds the app for production to the `build` folder.<br>
