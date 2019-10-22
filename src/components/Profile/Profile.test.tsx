@@ -12,6 +12,7 @@ jest.mock('../../hooks/Auth');
 
 describe('Profile', () => {
   const wait = (amount = 0) => new Promise(resolve => setTimeout(resolve, amount));
+
   let mockUserData = {};
 
   beforeEach(() => {
@@ -33,7 +34,7 @@ describe('Profile', () => {
     expect(profile.find(ProfileComponent).exists()).toBe(true);
   });
 
-  it('should render without crashing', async () => {
+  it('should display a loading spinner when shuffleAvatarLoading is set', async () => {
     const testAvatar = 'testAvatar';
 
     const testUser = {
@@ -94,6 +95,7 @@ describe('Profile', () => {
     await act(async () => {
       await wait();
     });
+
     profile.update();
 
     // The user should be updated and shuffleAvatarLoading should be back to false
