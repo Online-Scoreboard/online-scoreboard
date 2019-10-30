@@ -17,16 +17,16 @@ import { Classes } from './Profile.styles';
 
 interface ProfileComponentProps {
   user: User;
-  shuffleAvatar: () => void;
-  saveUsername: (username: string) => void;
+  classes: Classes;
   shuffleAvatarLoading: boolean;
   saveUsernameLoading: boolean;
-  classes: Classes;
+  shuffleAvatar: () => void;
+  saveUsername: (username: string) => void;
 }
 
 export const ProfileComponent: React.FC<ProfileComponentProps> = memo(
   ({ shuffleAvatar, shuffleAvatarLoading, saveUsername, saveUsernameLoading, user, classes }) => {
-    const { root, content, card, cardTitle, cardAction, avatar } = classes;
+    const { root, pageTitle, content, card, cardTitle, cardAction, avatar } = classes;
 
     const [username, setUsername] = useState(user.username);
 
@@ -40,7 +40,7 @@ export const ProfileComponent: React.FC<ProfileComponentProps> = memo(
 
     return (
       <Container component="main" className={`${root} Profile`}>
-        <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
+        <Typography component="h1" variant="h2" align="center" color="textPrimary" className={pageTitle}>
           Profile
         </Typography>
 

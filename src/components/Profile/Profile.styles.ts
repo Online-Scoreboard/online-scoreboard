@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export type Classes = Record<
-  'root' | 'content' | 'card' | 'cardTitle' | 'cardAction' | 'cardAction' | 'avatar',
+  'root' | 'pageTitle' | 'content' | 'card' | 'cardTitle' | 'cardAction' | 'cardAction' | 'avatar',
   string
 >;
 
@@ -9,6 +9,9 @@ export const useStyles = makeStyles(theme => ({
   root: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(6),
+  },
+  pageTitle: {
+    marginBottom: theme.spacing(8),
   },
   content: {
     marginBottom: theme.spacing(4),

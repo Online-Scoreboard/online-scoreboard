@@ -5,8 +5,9 @@ import { MockedProvider } from '@apollo/react-testing';
 import * as uniqueNamesGenerator from 'unique-names-generator';
 
 import * as Auth from '../../hooks/Auth';
+import { SHUFFLE_AVATAR } from './Profile.graphql';
 import { ProfileComponent } from './ProfileComponent';
-import { Profile, SHUFFLE_AVATAR } from './Profile';
+import { Profile } from './Profile';
 
 jest.mock('../../hooks/Auth');
 

@@ -2,27 +2,11 @@ import React, { memo, useCallback } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { RouteComponentProps } from '@reach/router';
 import { uniqueNamesGenerator } from 'unique-names-generator';
-import gql from 'graphql-tag';
 
 import { useAuth } from '../../hooks/Auth';
 import { useStyles } from './Profile.styles';
 import { ProfileComponent } from './ProfileComponent';
-
-export const SHUFFLE_AVATAR = gql`
-  mutation UpdateUser($updateUserInput: UpdateUserInput!) {
-    updateUser(input: $updateUserInput) {
-      avatar
-    }
-  }
-`;
-
-export const UPDATE_USERNAME = gql`
-  mutation UpdateUser($updateUserInput: UpdateUserInput!) {
-    updateUser(input: $updateUserInput) {
-      username
-    }
-  }
-`;
+import { SHUFFLE_AVATAR, UPDATE_USERNAME } from './Profile.graphql';
 
 type ShuffleAvatarVariables = {
   updateUserInput: {
