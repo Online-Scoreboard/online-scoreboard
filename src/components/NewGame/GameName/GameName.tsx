@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStyles } from '../NewGame.styles';
-import { Container, Card, CardHeader, CardContent, TextField } from '@material-ui/core';
+import { Grid, Card, CardHeader, CardContent, TextField } from '@material-ui/core';
 
 interface GameNameProps {
   gameName: string;
@@ -8,10 +8,10 @@ interface GameNameProps {
 }
 
 export const GameName: React.FC<GameNameProps> = ({ gameName, handleChange }) => {
-  const { content, card, cardTitle } = useStyles();
+  const { card, cardTitle } = useStyles();
 
   return (
-    <Container maxWidth="sm" className={content}>
+    <Grid item xs={12} sm={10} md={9}>
       <Card className={card} elevation={12}>
         <CardHeader title="Game Name" classes={{ title: cardTitle }} />
         <CardContent>
@@ -26,6 +26,6 @@ export const GameName: React.FC<GameNameProps> = ({ gameName, handleChange }) =>
           />
         </CardContent>
       </Card>
-    </Container>
+    </Grid>
   );
 };

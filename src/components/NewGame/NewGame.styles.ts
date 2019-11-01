@@ -1,22 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-export type Classes = Record<
-  | 'root'
-  | 'pageTitle'
-  | 'content'
-  | 'card'
-  | 'cardTitle'
-  | 'cardAction'
-  | 'playersSlider'
-  | 'playersSliderLabel'
-  | 'redCheckbox'
-  | 'cardCenteredContent',
-  string
->;
-
 const playerCheckboBase = {
   '& svg': {
-    fontSize: '3em',
+    fontSize: '2.4em',
   },
 };
 
@@ -33,6 +19,7 @@ export const useStyles = makeStyles(theme => ({
   },
   card: {
     padding: theme.spacing(2),
+    marginBottom: theme.spacing(4),
   },
   cardTitle: {
     textAlign: 'center',

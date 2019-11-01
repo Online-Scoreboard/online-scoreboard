@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Container, Card, CardHeader, CardContent, Typography, Slider, Checkbox } from '@material-ui/core';
+import { Grid, Card, CardHeader, CardContent, Typography, Slider, Checkbox } from '@material-ui/core';
 
 import { useStyles } from '../NewGame.styles';
 import { PlayerColor } from '../NewGameTypes';
@@ -19,7 +19,7 @@ export const GamePlayers: React.FC<GamePlayersProps> = ({
   onPlayersChange,
   onPlayersColorsChange,
 }) => {
-  const { content, card, cardTitle, playersSlider, playersSliderLabel, cardCenteredContent, ...classes } = useStyles();
+  const { card, cardTitle, playersSlider, playersSliderLabel, cardCenteredContent, ...classes } = useStyles();
 
   const getCheckboxClass = useCallback(
     (color: string) => {
@@ -49,48 +49,44 @@ export const GamePlayers: React.FC<GamePlayersProps> = ({
   );
 
   return (
-    <Container>
-      <Container maxWidth="sm" className={content}>
-        <Card className={card} elevation={12}>
-          <CardHeader title="Players" classes={{ title: cardTitle }} />
-          <CardContent>
-            <Typography id="players-slider" gutterBottom>
-              How many players/team are going to participate?
-            </Typography>
+    <Grid item xs={12} sm={10} md={9}>
+      <Card className={card} elevation={12}>
+        <CardHeader title="Players" classes={{ title: cardTitle }} />
+        <CardContent>
+          <Typography id="players-slider" gutterBottom>
+            How many players/teams are going to participate?
+          </Typography>
 
-            <Slider
-              className={playersSlider}
-              classes={{ thumb: playersSliderLabel }}
-              aria-labelledby="players-slider"
-              valueLabelDisplay="on"
-              onChange={handleSlider}
-              defaultValue={players}
-              min={1}
-              max={12}
-              step={1}
-              marks
+          <Slider
+            className={playersSlider}
+            classes={{ thumb: playersSliderLabel }}
+            aria-labelledby="players-slider"
+            valueLabelDisplay="on"
+            onChange={handleSlider}
+            defaultValue={players}
+            min={1}
+            max={12}
+            step={1}
+            marks
+          />
+        </CardContent>
+      </Card>
+
+      <Card className={card} elevation={12}>
+        <CardHeader title="Colors" classes={{ title: cardTitle }} />
+        <CardContent className={cardCenteredContent}>
+          <Typography gutterBottom>Chose some colors for your players</Typography>
+          {colors.map(color => (
+            <Checkbox
+              key={color}
+              color="default"
+              checked={playersColors.indexOf(color) >= 0}
+              classes={{ root: getCheckboxClass(color) }}
+              onChange={handleChange(color)}
             />
-          </CardContent>
-        </Card>
-      </Container>
-
-      <Container maxWidth="sm" className={content}>
-        <Card className={card} elevation={12}>
-          <CardHeader title="Colors" classes={{ title: cardTitle }} />
-          <CardContent className={cardCenteredContent}>
-            <Typography gutterBottom>Chose some colors for your players</Typography>
-            {colors.map(color => (
-              <Checkbox
-                key={color}
-                color="default"
-                checked={playersColors.indexOf(color) >= 0}
-                classes={{ root: getCheckboxClass(color) }}
-                onChange={handleChange(color)}
-              />
-            ))}
-          </CardContent>
-        </Card>
-      </Container>
-    </Container>
+          ))}
+        </CardContent>
+      </Card>
+    </Grid>
   );
 };
