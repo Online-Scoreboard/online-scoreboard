@@ -44,7 +44,7 @@ const FooterComponent: React.FC = () => {
           </Grid>
         ))}
       </Grid>
-      <Box mt={5}>
+      <Box mt={5} className="copyright">
         <Typography variant="body2" color="textSecondary" align="center">
           {'Copyright © '}
           <Link color="inherit" href="https://github.com/andreasonny83/">
