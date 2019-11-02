@@ -13,6 +13,7 @@ BeforeAll(async function() {
 Before(async function() {
   try {
     this.browser = await new Builder().withCapabilities(TestRunContext.capabilities).build();
+    TestRunContext.setBrowser(this.browser);
 
     await this.browser
       .manage()
