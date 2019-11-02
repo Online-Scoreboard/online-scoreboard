@@ -16,6 +16,7 @@ interface NewGameComponentProps {
 const getSteps = () => ['Setting up the game', 'Chose the players', 'Set the rules'];
 
 const colors: PlayerColor[] = [
+  'black',
   'white',
   'red',
   'yellow',
@@ -27,7 +28,6 @@ const colors: PlayerColor[] = [
   'lime',
   'teal',
   'purple',
-  'black',
 ];
 const defaultPlayerColors: PlayerColor[] = ['black', 'white'];
 const defaultPlayers = 2;
@@ -51,7 +51,7 @@ export const NewGameComponent: React.FC<NewGameComponentProps> = memo(({ newGame
 
   const handlePlayersColorsChange = (playerColor: PlayerColor) => {
     if (playersColors.indexOf(playerColor) >= 0) {
-      if (playersColors.length > 1) {
+      if (playersColors.length) {
         setPlayersColors(playersColors.filter(color => color !== playerColor));
         return;
       }
@@ -82,7 +82,8 @@ export const NewGameComponent: React.FC<NewGameComponentProps> = memo(({ newGame
     }
 
     if (newPlayers > playersColors.length) {
-      const availableColors = colors.filter(playerColor => playersColors.indexOf(playerColor) === -1);
+      const availableColors = colors.filter(playerColor => playersColors.indexOf(playerColor) === -1).reverse();
+
       const newPlayersColors = new Array(newPlayers - playersColors.length)
         .fill(true)
         .reduce(totPlayers => [...totPlayers, availableColors.pop()], playersColors);
