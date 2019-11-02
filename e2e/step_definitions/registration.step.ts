@@ -9,6 +9,7 @@ When(/^I navigate to 'Registration' page$/, async function() {
 });
 
 Then(/^I should see 'Registration' page$/, async function() {
+  await new Promise(r => setTimeout(r, 300)); // wait for page navigation
   const urlRegister = '/register';
   await this.browser.wait(until.urlContains(urlRegister), 5000, `Expected url path to be /register`);
 

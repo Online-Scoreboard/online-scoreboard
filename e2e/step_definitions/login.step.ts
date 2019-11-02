@@ -9,6 +9,7 @@ When(/^I navigate to 'Login' page$/, async function() {
 });
 
 Then(/^I should see 'Login' page$/, async function() {
+  await new Promise(r => setTimeout(r, 300)); // wait for page navigation
   const urlLogin = '/login';
   await this.browser.wait(until.urlContains(urlLogin), 5000, `Expected url path to be /login`);
 

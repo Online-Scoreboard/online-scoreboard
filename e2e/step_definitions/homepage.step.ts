@@ -10,6 +10,7 @@ Given(/^I am on the Online Scoreboard homepage$/, async function() {
 });
 
 Then(/^I should be on the Online Scoreboard homepage$/, async function() {
+  await new Promise(r => setTimeout(r, 300)); // wait for page navigation
   const actualTitle = await this.browser.getTitle();
   assert.deepStrictEqual(
     actualTitle,
