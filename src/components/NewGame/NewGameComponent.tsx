@@ -1,19 +1,21 @@
 import React, { memo, useState, useCallback } from 'react';
-import { Container, Typography, Stepper, Step, StepLabel, Fab, Grid } from '@material-ui/core';
+import { Container, Typography, Fab, Grid, Card } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
+import { Stepper } from './Stepper';
 import { GameName } from './GameName';
 import { GamePlayers } from './GamePlayers';
 import { PlayerColor } from './NewGameTypes';
 import { useStyles } from './NewGame.styles';
+import { PlayersColors } from './PlayersColors';
 
-interface NewGameComponentProps {
+interface NewGameProps {
   newGameLoading: boolean;
   newGame: () => void;
 }
 
-const getSteps = () => ['Setting up the game', 'Chose the players', 'Set the rules'];
+const getSteps = () => ['Setup', 'Players', 'Colors', 'Rules'];
 
 const colors: PlayerColor[] = [
   'black',
@@ -32,8 +34,8 @@ const colors: PlayerColor[] = [
 const defaultPlayerColors: PlayerColor[] = ['black', 'white'];
 const defaultPlayers = 2;
 
-export const NewGameComponent: React.FC<NewGameComponentProps> = memo(({ newGameLoading }) => {
-  const { root, pageTitle, content } = useStyles();
+export const NewGameComponent: React.FC<NewGameProps> = memo(({ newGameLoading }) => {
+  const { root, pageTitle, content, card } = useStyles();
 
   const [gameName, setGameName] = useState('');
   const [activeStep, setActiveStep] = useState(0);
@@ -43,8 +45,8 @@ export const NewGameComponent: React.FC<NewGameComponentProps> = memo(({ newGame
   const steps = getSteps();
 
   const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setGameName(event.target.value);
+    (value: string) => {
+      setGameName(value);
     },
     [setGameName]
   );
@@ -105,19 +107,18 @@ export const NewGameComponent: React.FC<NewGameComponentProps> = memo(({ newGame
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <GameName gameName={gameName} handleChange={handleChange} />;
+        return <GameName gameName={gameName} onChange={handleChange} />;
       case 1:
+        return <GamePlayers players={players} onPlayersChange={handlePlayersChange} />;
+      case 2:
         return (
-          <GamePlayers
-            colors={colors}
+          <PlayersColors
             players={players}
+            colors={colors}
             playersColors={playersColors}
             onPlayersColorsChange={handlePlayersColorsChange}
-            onPlayersChange={handlePlayersChange}
           />
         );
-      case 2:
-        return 'This is the bit I really care about!';
       default:
         return 'Unknown step';
     }
@@ -129,35 +130,30 @@ export const NewGameComponent: React.FC<NewGameComponentProps> = memo(({ newGame
         Create A New Game
       </Typography>
 
-      <Grid container className={content} justify="center">
+      <Grid container justify="center">
         <Grid item xs={12} md={10}>
-          <Stepper square={false} activeStep={activeStep}>
-            {steps.map((label: string, index: number) => {
-              const stepProps = {};
-              const labelProps = {};
-
-              return (
-                <Step key={label} {...stepProps}>
-                  <StepLabel {...labelProps}>{label}</StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
+          <Card className={card} elevation={10}>
+            <Stepper activeStep={activeStep} steps={steps} />
+            {getStepContent(activeStep)}
+          </Card>
         </Grid>
       </Grid>
 
       <Grid container className={content} justify="center">
-        {getStepContent(activeStep)}
-      </Grid>
-
-      <Grid container className={content} justify="center">
         <Grid item xs={12} md={10}>
-          <Grid container className={content} justify="space-between">
-            <Fab variant="extended" color="primary" aria-label="prev" disabled={!activeStep} onClick={handlePrevStep}>
+          <Grid container justify="space-between">
+            <Fab
+              className="prevStep"
+              variant="extended"
+              color="primary"
+              aria-label="prev"
+              disabled={!activeStep}
+              onClick={handlePrevStep}
+            >
               <NavigateBeforeIcon />
               Prev
             </Fab>
-            <Fab variant="extended" color="primary" aria-label="next" onClick={handleNextStep}>
+            <Fab className="nextStep" variant="extended" color="primary" aria-label="next" onClick={handleNextStep}>
               Next
               <NavigateNextIcon />
             </Fab>

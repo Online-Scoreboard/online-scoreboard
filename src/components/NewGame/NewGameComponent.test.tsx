@@ -4,17 +4,10 @@ import { act } from 'react-dom/test-utils';
 
 import { NewGameComponent } from './NewGameComponent';
 import { GamePlayers } from './GamePlayers';
-import { PlayerColor } from './NewGameTypes';
+import { Stepper } from './Stepper';
+import { GameName } from './GameName';
 
 describe('NewGameComponent', () => {
-  beforeEach(() => {
-    jest.spyOn(console, 'warn').mockImplementation(msg => {
-      if (msg !== 'Warning: [JSS] Could not find the referenced rule "checked" in "makeStyles".') {
-        console.log(msg);
-      }
-    });
-  });
-
   it('should render without crashing', () => {
     const newGame = jest.fn();
 
@@ -26,103 +19,91 @@ describe('NewGameComponent', () => {
   describe('handlePlayersChange', () => {
     const newGame = jest.fn();
 
-    it('should set some default players', () => {
-      const expectedPlayers = 2;
-      const expectedPlayersColors: PlayerColor[] = ['black', 'white'];
+    it('should render a Stepper component', () => {
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      const stepper = wrapper.find(Stepper);
+
+      expect(stepper.exists()).toBe(true);
+    });
+
+    it('should render a Stepper initialized to the first step', () => {
+      const expectedActiveStep = 0;
 
       const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
-      const players = wrapper.find(GamePlayers).prop('players');
-      const playersColors = wrapper.find(GamePlayers).prop('playersColors');
+      const stepper = wrapper.find(Stepper);
+      const activeStep = stepper.prop('activeStep');
 
-      expect(players).toBe(expectedPlayers);
-      expect(playersColors).toEqual(expectedPlayersColors);
+      expect(activeStep).toBe(expectedActiveStep);
     });
 
-    it('should fail to select a third player color when only 2 players/teams are selected for the game', () => {
-      const expectedPlayers = 2;
-      const expectedPlayersColors: PlayerColor[] = ['black', 'white'];
-      const newPlayerColor: PlayerColor = 'lime';
+    it('should render a GameName content in the initial active step', () => {
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
+      const gameName = wrapper.find(GameName);
+      const gamePlayers = wrapper.find(GamePlayers);
+
+      expect(gameName.exists()).toBe(true);
+      expect(gamePlayers.exists()).not.toBe(true);
+    });
+
+    it('should have a "previous" and a "next" step navigation buttons', () => {
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      const prevButton = wrapper.find('.prevStep');
+      const nextButton = wrapper.find('.nextStep');
+
+      expect(prevButton.exists()).toBe(true);
+      expect(nextButton.exists()).toBe(true);
+    });
+
+    it('should have a "previous" step navigation button disabled and the "next" one enabled on the first step', () => {
+      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      const prevButton = wrapper.find('.prevStep');
+      const nextButton = wrapper.find('.nextStep');
+
+      expect(prevButton.find('button').prop('disabled')).toBe(true);
+      expect(nextButton.find('button').prop('disabled')).toBe(false);
+    });
+
+    it('should have both the "previous" and the "next" step navigation buttons enabled on the second step', () => {
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       act(() => {
-        wrapper.find(GamePlayers).prop('onPlayersColorsChange')(newPlayerColor);
+        wrapper
+          .find('.nextStep')
+          .find('button')
+          .simulate('click');
       });
 
       wrapper.update();
 
-      expect(wrapper.find(GamePlayers).prop('players')).toBe(expectedPlayers);
-      expect(wrapper.find(GamePlayers).prop('playersColors')).toEqual(expectedPlayersColors);
+      const prevButton = wrapper.find('.prevStep');
+      const nextButton = wrapper.find('.nextStep');
+
+      expect(prevButton.find('button').prop('disabled')).toBe(false);
+      expect(nextButton.find('button').prop('disabled')).toBe(false);
     });
 
-    it('should remove any extra selected players color when reducing the players/teams size', () => {
-      const defaultPlayersColors: PlayerColor[] = ['black', 'white'];
-      const newPlayers = 3;
-      const expectedPlayers = 2;
-      const newPlayerColor: PlayerColor = 'lime';
-
+    it('should render the GamePlayers component as a second step', () => {
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       act(() => {
-        wrapper.find(GamePlayers).prop('onPlayersChange')(newPlayers);
+        wrapper
+          .find('.nextStep')
+          .find('button')
+          .simulate('click');
       });
 
       wrapper.update();
 
-      act(() => {
-        wrapper.find(GamePlayers).prop('onPlayersColorsChange')(newPlayerColor);
-      });
+      const gameName = wrapper.find(GameName);
+      const gamePlayers = wrapper.find(GamePlayers);
 
-      wrapper.update();
-
-      act(() => {
-        wrapper.find(GamePlayers).prop('onPlayersChange')(expectedPlayers);
-      });
-
-      wrapper.update();
-
-      expect(wrapper.find(GamePlayers).prop('players')).toBe(expectedPlayers);
-      expect(wrapper.find(GamePlayers).prop('playersColors')).toEqual(defaultPlayersColors);
-    });
-
-    it('should select some new players colors when increasing the players/teams size', () => {
-      const newPlayers = 3;
-
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
-
-      act(() => {
-        wrapper.find(GamePlayers).prop('onPlayersChange')(newPlayers);
-      });
-
-      wrapper.update();
-
-      expect(wrapper.find(GamePlayers).prop('players')).toBe(newPlayers);
-      expect(wrapper.find(GamePlayers).prop('playersColors').length).toBe(newPlayers);
-    });
-
-    it('should allow removing a third player color when 3 players/teams are selected for the game', () => {
-      const newPlayers = 3;
-      const removedColor: PlayerColor = 'white';
-      const expectedPlayers = 3;
-      const expectedColors: PlayerColor[] = ['black', 'purple'];
-
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
-
-      act(() => {
-        wrapper.find(GamePlayers).prop('onPlayersChange')(newPlayers);
-      });
-
-      wrapper.update();
-
-      act(() => {
-        wrapper.find(GamePlayers).prop('onPlayersColorsChange')(removedColor);
-      });
-
-      wrapper.update();
-
-      expect(wrapper.find(GamePlayers).prop('players')).toBe(expectedPlayers);
-      expect(wrapper.find(GamePlayers).prop('playersColors')).toEqual(expectedColors);
+      expect(gamePlayers.exists()).toBe(true);
+      expect(gameName.exists()).not.toBe(true);
     });
   });
 });

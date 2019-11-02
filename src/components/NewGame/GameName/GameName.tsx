@@ -1,31 +1,36 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useStyles } from '../NewGame.styles';
-import { Grid, Card, CardHeader, CardContent, TextField } from '@material-ui/core';
+import { CardHeader, CardContent, TextField } from '@material-ui/core';
 
 interface GameNameProps {
   gameName: string;
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (value: string) => void;
 }
 
-export const GameName: React.FC<GameNameProps> = ({ gameName, handleChange }) => {
-  const { card, cardTitle } = useStyles();
+export const GameName: React.FC<GameNameProps> = ({ gameName, onChange }) => {
+  const { cardTitle } = useStyles();
+
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange(event.target.value);
+    },
+    [onChange]
+  );
 
   return (
-    <Grid item xs={12} sm={10} md={9}>
-      <Card className={card} elevation={12}>
-        <CardHeader title="Game Name" classes={{ title: cardTitle }} />
-        <CardContent>
-          <TextField
-            className="gameName"
-            label="Chose a name for your game"
-            placeholder="Game Name"
-            variant="outlined"
-            value={gameName}
-            onChange={handleChange}
-            fullWidth
-          />
-        </CardContent>
-      </Card>
-    </Grid>
+    <>
+      <CardHeader title="Game Name" classes={{ title: cardTitle }} />
+      <CardContent>
+        <TextField
+          className="gameName"
+          label="Chose a name for your game"
+          placeholder="Game Name"
+          variant="outlined"
+          value={gameName}
+          onChange={handleChange}
+          fullWidth
+        />
+      </CardContent>
+    </>
   );
 };

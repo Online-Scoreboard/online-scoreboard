@@ -45,7 +45,7 @@ export const ProfileComponent: React.FC<ProfileComponentProps> = memo(
         </Typography>
 
         <Container maxWidth="sm" className={content}>
-          <Card className={card} elevation={12}>
+          <Card className={card} elevation={10}>
             <CardHeader title="Username" classes={{ title: cardTitle }} />
             <CardContent>
               <TextField
@@ -71,7 +71,7 @@ export const ProfileComponent: React.FC<ProfileComponentProps> = memo(
         </Container>
 
         <Container maxWidth="sm" className={content}>
-          <Card className={card} elevation={12}>
+          <Card className={card} elevation={10}>
             <CardHeader title="Avatar" classes={{ title: cardTitle }} />
             <CardContent>
               <Avatar hash={user.avatar} className={avatar} />

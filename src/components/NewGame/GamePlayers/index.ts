@@ -1,1 +1,1 @@
-export { GamePlayers } from './GamePlayers';
+export * from './GamePlayers';
