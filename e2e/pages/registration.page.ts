@@ -3,19 +3,19 @@ import { TestRunContext } from '../support/test-run-context';
 import { envConfig } from '../env-keys';
 
 export default class RegistrationPage {
-  static getMainHeading(): By {
+  public static getMainHeading(): By {
     return By.css(`div > h1`);
   }
-  static navigateToRegistrationPage(): Promise<void> {
+  public static navigateToRegistrationPage(): Promise<void> {
     return TestRunContext.browser.get(envConfig.HOMEPAGE_URL + '/register');
   }
-  static getUsernameInput(): By {
+  public static getUsernameInput(): By {
     return By.css('input#username');
   }
-  static getPasswordInput(): By {
+  public static getPasswordInput(): By {
     return By.css('input#password');
   }
-  static getLoginButton(): By {
+  public static getLoginButton(): By {
     return By.xpath('//button');
   }
 }
