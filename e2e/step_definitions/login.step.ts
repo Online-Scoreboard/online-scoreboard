@@ -9,6 +9,9 @@ When(/^I navigate to 'Login' page$/, async function() {
 });
 
 Then(/^I should see 'Login' page$/, async function() {
+  const urlLogin = '/login';
+  await this.browser.wait(until.urlContains(urlLogin), 5000, `Expected url path to be /login`);
+
   const expected = 'Log In';
   const h1 = await this.browser.findElement(LoginPage.getMainHeading()).getText();
   assert.deepStrictEqual(h1, expected, `Expected login page heading to be: Log In, got: ${h1}`);

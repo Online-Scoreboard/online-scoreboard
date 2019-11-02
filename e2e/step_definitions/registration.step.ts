@@ -9,6 +9,9 @@ When(/^I navigate to 'Registration' page$/, async function() {
 });
 
 Then(/^I should see 'Registration' page$/, async function() {
+  const urlRegister = '/register';
+  await this.browser.wait(until.urlContains(urlRegister), 5000, `Expected url path to be /register`);
+
   const h1 = await this.browser.findElement(RegistrationPage.getMainHeading()).getText();
   assert.deepStrictEqual(h1, 'Register', `Expected registration heading to be: Register, got: ${h1}`);
 });
