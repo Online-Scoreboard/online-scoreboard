@@ -28,6 +28,7 @@ export const GameName: React.FC<GameNameProps> = ({ gameName, onChange }) => {
           variant="outlined"
           value={gameName}
           onChange={handleChange}
+          autoFocus
           fullWidth
         />
       </CardContent>

@@ -2,13 +2,13 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 
-import * as NewGameConstants from './NewGameConstants';
 import { Component as NewGameComponent } from './NewGameComponent';
 import { GamePlayers } from './GamePlayers';
 import { Stepper } from './Stepper';
 import { GameName } from './GameName';
 import { PlayerColors } from './PlayerColors';
 import { PlayerColor } from './NewGameTypes';
+import * as NewGameConstants from './NewGameConstants';
 
 jest.mock('./NewGameConstants', () => jest.requireActual('./NewGameConstants'));
 
@@ -55,33 +55,25 @@ describe('NewGameComponent', () => {
       expect(nextButton.exists()).toBe(true);
     });
 
-    it('should have a "previous" step navigation button disabled and the "next" one enabled on the first step', () => {
+    it('should have both the "previous" and the "next" step navigation buttons disabled on the first step', () => {
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       const prevButton = wrapper.find('.prevStep');
       const nextButton = wrapper.find('.nextStep');
 
       expect(prevButton.find('button').prop('disabled')).toBe(true);
-      expect(nextButton.find('button').prop('disabled')).toBe(false);
+      expect(nextButton.find('button').prop('disabled')).toBe(true);
     });
 
-    it('should have both the "previous" and the "next" step navigation buttons enabled on the second step', () => {
+    it('should have the "previous" step navigation buttons enabled on the second step', () => {
+      const startingStep = 1;
+      jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => startingStep);
+
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
-      act(() => {
-        wrapper
-          .find('.nextStep')
-          .find('button')
-          .simulate('click');
-      });
-
-      wrapper.update();
-
       const prevButton = wrapper.find('.prevStep');
-      const nextButton = wrapper.find('.nextStep');
 
       expect(prevButton.find('button').prop('disabled')).toBe(false);
-      expect(nextButton.find('button').prop('disabled')).toBe(false);
     });
 
     it('should allow going back from the step 2 to 1', () => {
@@ -131,20 +123,68 @@ describe('NewGameComponent', () => {
       const res = wrapper.find(GameName).prop('gameName');
       expect(res).toBe(testGameName);
     });
+
+    it('should disabled the "next" step navigation button when the game name is too short', () => {
+      const testGameName = 'test';
+      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      act(() => {
+        const gameName = wrapper.find(GameName);
+        gameName.props().onChange(testGameName);
+      });
+
+      wrapper.update();
+
+      const prevButton = wrapper.find('.prevStep');
+      const nextButton = wrapper.find('.nextStep');
+
+      expect(prevButton.find('button').prop('disabled')).toBe(true);
+      expect(nextButton.find('button').prop('disabled')).toBe(true);
+    });
+
+    it('should disabled the "next" step navigation button when the game name is too long', () => {
+      const testGameName = 'names longer than 30 characters will be invalid';
+      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      act(() => {
+        const gameName = wrapper.find(GameName);
+        gameName.props().onChange(testGameName);
+      });
+
+      wrapper.update();
+
+      const prevButton = wrapper.find('.prevStep');
+      const nextButton = wrapper.find('.nextStep');
+
+      expect(prevButton.find('button').prop('disabled')).toBe(true);
+      expect(nextButton.find('button').prop('disabled')).toBe(true);
+    });
+
+    it('should enable the "next" step navigation button once the game name is valid', () => {
+      const testGameName = 'testGameName';
+      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      act(() => {
+        const gameName = wrapper.find(GameName);
+        gameName.props().onChange(testGameName);
+      });
+
+      wrapper.update();
+
+      const prevButton = wrapper.find('.prevStep');
+      const nextButton = wrapper.find('.nextStep');
+
+      expect(prevButton.find('button').prop('disabled')).toBe(true);
+      expect(nextButton.find('button').prop('disabled')).toBe(false);
+    });
   });
 
   describe('GamePlayers', () => {
     it('should render the GamePlayers component as a second step', () => {
+      const startingStep = 1;
+      jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => startingStep);
+
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
-
-      act(() => {
-        wrapper
-          .find('.nextStep')
-          .find('button')
-          .simulate('click');
-      });
-
-      wrapper.update();
 
       const gameName = wrapper.find(GameName);
       const gamePlayers = wrapper.find(GamePlayers);
@@ -190,28 +230,12 @@ describe('NewGameComponent', () => {
 
   describe('PlayerColors', () => {
     it('should render the PlayerColors component as a third step', () => {
+      const startingStep = 2;
+      jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => startingStep);
+
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
-      act(() => {
-        wrapper
-          .find('.nextStep')
-          .find('button')
-          .simulate('click');
-      });
-
-      wrapper.update();
-
-      act(() => {
-        wrapper
-          .find('.nextStep')
-          .find('button')
-          .simulate('click');
-      });
-
-      wrapper.update();
-
       const playerColors = wrapper.find(PlayerColors);
-
       expect(playerColors.exists()).toBe(true);
     });
 
