@@ -5,11 +5,11 @@ import { useMutation } from '@apollo/react-hooks';
 import { NEW_GAME } from './NewGame.graphql';
 import { Component as NewGameComponent } from './NewGameComponent';
 
-type NewGameVariables = {
+interface NewGameVariables {
   newGameInput: {
     id: string;
   };
-};
+}
 
 const NewGame: React.FC<RouteComponentProps> = () => {
   const [newGame, { loading: newGameLoading }] = useMutation<void, NewGameVariables>(NEW_GAME);

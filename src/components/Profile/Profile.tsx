@@ -8,17 +8,17 @@ import { useStyles } from './Profile.styles';
 import { ProfileComponent } from './ProfileComponent';
 import { SHUFFLE_AVATAR, UPDATE_USERNAME } from './Profile.graphql';
 
-type ShuffleAvatarVariables = {
+interface ShuffleAvatarVariables {
   updateUserInput: {
     avatar: string;
   };
-};
+}
 
-type UpdateUsernameVariables = {
+interface UpdateUsernameVariables {
   updateUserInput: {
     username: string;
   };
-};
+}
 
 export const Profile: React.FC<RouteComponentProps> = memo(() => {
   const classes = useStyles();

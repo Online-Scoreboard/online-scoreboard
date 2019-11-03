@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 
 export const Background = () => (
   <svg width="300" height="250" viewBox="0 0 1080 900">
