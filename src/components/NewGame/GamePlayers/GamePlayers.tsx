@@ -5,10 +5,10 @@ import { useStyles } from '../NewGame.styles';
 
 interface GamePlayersProps {
   players: number;
-  onPlayersChange: (newPlayers: number) => void;
+  onChange: (newPlayers: number) => void;
 }
 
-export const GamePlayers: React.FC<GamePlayersProps> = ({ players, onPlayersChange }) => {
+export const GamePlayers: React.FC<GamePlayersProps> = ({ players, onChange }) => {
   const { cardTitle, playersSlider, playersSliderLabel } = useStyles();
 
   const handleSlider = useCallback(
@@ -17,9 +17,9 @@ export const GamePlayers: React.FC<GamePlayersProps> = ({ players, onPlayersChan
         return;
       }
 
-      onPlayersChange(value);
+      onChange(value);
     },
-    [onPlayersChange]
+    [onChange]
   );
 
   return (

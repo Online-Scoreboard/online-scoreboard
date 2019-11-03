@@ -7,16 +7,11 @@ import { PlayerColor } from '../NewGameTypes';
 interface GamePlayersProps {
   players: number;
   colors: PlayerColor[];
-  playersColors: PlayerColor[];
-  onPlayersColorsChange: (playersColors: PlayerColor) => void;
+  playerColors: PlayerColor[];
+  onChange: (playerColors: PlayerColor) => void;
 }
 
-export const PlayersColors: React.FC<GamePlayersProps> = ({
-  players,
-  colors,
-  playersColors,
-  onPlayersColorsChange,
-}) => {
+export const PlayerColors: React.FC<GamePlayersProps> = ({ players, colors, playerColors, onChange }) => {
   const { card, cardTitle, playersSlider, playersSliderLabel, cardCentredContent, ...classes } = useStyles();
 
   const getCheckboxClass = useCallback(
@@ -30,9 +25,9 @@ export const PlayersColors: React.FC<GamePlayersProps> = ({
 
   const handleChange = useCallback(
     (playerColor: PlayerColor) => (_event: React.ChangeEvent<HTMLInputElement>, _checked: boolean) => {
-      return onPlayersColorsChange(playerColor);
+      return onChange(playerColor);
     },
-    [onPlayersColorsChange]
+    [onChange]
   );
 
   return (
@@ -49,7 +44,7 @@ export const PlayersColors: React.FC<GamePlayersProps> = ({
           <Checkbox
             key={color}
             color="default"
-            checked={playersColors.indexOf(color) >= 0}
+            checked={playerColors.indexOf(color) >= 0}
             classes={{ root: getCheckboxClass(color) }}
             onChange={handleChange(color)}
           />

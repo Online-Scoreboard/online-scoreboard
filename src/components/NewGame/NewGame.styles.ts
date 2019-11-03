@@ -33,6 +33,12 @@ export const useStyles = makeStyles(theme => ({
   cardAction: {
     marginLeft: 'auto',
   },
+  cardValidationRed: {
+    color: theme.palette.error.light,
+  },
+  cardValidationGreen: {
+    color: theme.palette.text.primary,
+  },
   playersSlider: {
     marginTop: theme.spacing(8),
   },

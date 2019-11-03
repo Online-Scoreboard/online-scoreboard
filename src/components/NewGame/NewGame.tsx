@@ -3,7 +3,7 @@ import { RouteComponentProps } from '@reach/router';
 import { useMutation } from '@apollo/react-hooks';
 
 import { NEW_GAME } from './NewGame.graphql';
-import { NewGameComponent } from './NewGameComponent';
+import { Component as NewGameComponent } from './NewGameComponent';
 
 type NewGameVariables = {
   newGameInput: {
@@ -11,7 +11,7 @@ type NewGameVariables = {
   };
 };
 
-export const NewGame: React.FC<RouteComponentProps> = memo(() => {
+const NewGame: React.FC<RouteComponentProps> = () => {
   const [newGame, { loading: newGameLoading }] = useMutation<void, NewGameVariables>(NEW_GAME);
 
   const handleNewGame = useCallback(() => {
@@ -23,4 +23,6 @@ export const NewGame: React.FC<RouteComponentProps> = memo(() => {
   }, [newGame]);
 
   return <NewGameComponent newGame={handleNewGame} newGameLoading={newGameLoading} />;
-});
+};
+
+export const NewGameWrapper = memo(NewGame);

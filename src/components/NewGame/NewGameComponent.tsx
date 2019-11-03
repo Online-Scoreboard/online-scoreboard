@@ -1,100 +1,132 @@
-import React, { memo, useState, useCallback } from 'react';
-import { Container, Typography, Fab, Grid, Card } from '@material-ui/core';
+import React, { memo, useState, useCallback, useReducer } from 'react';
+import { Container, Typography, Fab, Grid, Card, CardActions } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
+import {
+  getSteps,
+  getStartingStep,
+  getColors,
+  getDefaultPlayerColors,
+  getDefaultPlayers,
+  getMinGameNameLength,
+  getMaxGameNameLength,
+} from './NewGameConstants';
+import { NewGameState, newGameReducer } from './NewGameReducer';
+import { PlayerColor } from './NewGameTypes';
+import { useStyles } from './NewGame.styles';
 import { Stepper } from './Stepper';
 import { GameName } from './GameName';
 import { GamePlayers } from './GamePlayers';
-import { PlayerColor } from './NewGameTypes';
-import { useStyles } from './NewGame.styles';
-import { PlayersColors } from './PlayersColors';
+import { PlayerColors } from './PlayerColors';
+
+const getInitialState = (): NewGameState => ({
+  setup: {
+    gameName: '',
+  },
+  players: getDefaultPlayers(),
+  playerColors: getDefaultPlayerColors(),
+});
 
 interface NewGameProps {
   newGameLoading: boolean;
   newGame: () => void;
 }
 
-const getSteps = () => ['Setup', 'Players', 'Colors', 'Rules'];
-
-const colors: PlayerColor[] = [
-  'black',
-  'white',
-  'red',
-  'yellow',
-  'blue',
-  'green',
-  'gray',
-  'pink',
-  'brown',
-  'lime',
-  'teal',
-  'purple',
-];
-const defaultPlayerColors: PlayerColor[] = ['black', 'white'];
-const defaultPlayers = 2;
-
-export const NewGameComponent: React.FC<NewGameProps> = memo(({ newGameLoading }) => {
-  const { root, pageTitle, content, card } = useStyles();
-
-  const [gameName, setGameName] = useState('');
-  const [activeStep, setActiveStep] = useState(0);
-  const [players, setPlayers] = useState(defaultPlayers);
-  const [playersColors, setPlayersColors] = useState(defaultPlayerColors);
-
+const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
+  const initialState = getInitialState();
   const steps = getSteps();
+  const startingStep = getStartingStep();
+  const { root, pageTitle, content, card, cardAction, cardValidationRed, cardValidationGreen } = useStyles();
+  const [state, dispatch] = useReducer(newGameReducer, initialState);
+  const [activeStep, setActiveStep] = useState(startingStep);
 
-  const handleChange = useCallback(
-    (value: string) => {
-      setGameName(value);
-    },
-    [setGameName]
-  );
+  const handleGameNameChange = useCallback((value: string) => {
+    dispatch({ type: 'SETUP', payload: value });
+  }, []);
 
-  const handlePlayersColorsChange = (playerColor: PlayerColor) => {
-    if (playersColors.indexOf(playerColor) >= 0) {
-      if (playersColors.length) {
-        setPlayersColors(playersColors.filter(color => color !== playerColor));
+  const handlePlayerColorsChange = useCallback(
+    (playerColor: PlayerColor) => {
+      const { playerColors, players } = state;
+
+      if (playerColors.indexOf(playerColor) >= 0) {
+        const newPlayerColors = playerColors.filter(color => color !== playerColor);
+        dispatch({ type: 'COLORS', payload: newPlayerColors });
         return;
       }
-      return;
-    }
 
-    if (playersColors.length >= players) {
-      return;
-    }
+      if (playerColors.length >= players) {
+        return;
+      }
 
-    setPlayersColors([...playersColors, playerColor]);
-  };
+      const newPlayerColors = [...playerColors, playerColor];
+      dispatch({ type: 'COLORS', payload: newPlayerColors });
+    },
+    [state]
+  );
 
-  const handlePlayersChange = (newPlayers: number) => {
-    if (newPlayers === players) {
-      return;
-    }
+  const checkStep = useCallback(
+    (step: number): boolean => {
+      const { setup, players, playerColors } = state;
+      const minGameNameLength = getMinGameNameLength();
+      const maxGameNameLength = getMaxGameNameLength();
 
-    if (newPlayers === playersColors.length) {
-      setPlayers(newPlayers);
-      return;
-    }
+      switch (step) {
+        case 0: {
+          return Boolean(
+            setup.gameName && setup.gameName.length >= minGameNameLength && setup.gameName.length < maxGameNameLength
+          );
+        }
+        case 1: {
+          return true;
+        }
+        case 2: {
+          return playerColors.length === players;
+        }
+        default: {
+          return false;
+        }
+      }
+    },
+    [state]
+  );
 
-    if (newPlayers <= playersColors.length) {
-      const newPlayersColors = playersColors.slice(0, newPlayers);
+  const getValidationNotes = useCallback(
+    (step: number): string => {
+      const { setup, players, playerColors } = state;
+      const minGameNameLength = getMinGameNameLength();
+      const maxGameNameLength = getMaxGameNameLength();
 
-      setPlayersColors(newPlayersColors);
-    }
+      switch (step) {
+        case 0: {
+          const diff = minGameNameLength - setup.gameName.length;
+          const overFlow = setup.gameName.length - maxGameNameLength;
 
-    if (newPlayers > playersColors.length) {
-      const availableColors = colors.filter(playerColor => playersColors.indexOf(playerColor) === -1).reverse();
+          if (diff > 0) {
+            return `Minimum name of ${minGameNameLength} characters. You must enter at lease ${diff} more characters`;
+          } else if (overFlow >= 0) {
+            return `Ops! That name is too long. A maximum of ${maxGameNameLength} characters is allowed`;
+          }
+          return 'Your game name looks amazing!';
+        }
+        case 1: {
+          return 'You can chose between 1 and 12 players/teams';
+        }
+        case 2: {
+          const diff = players - playerColors.length;
 
-      const newPlayersColors = new Array(newPlayers - playersColors.length)
-        .fill(true)
-        .reduce(totPlayers => [...totPlayers, availableColors.pop()], playersColors);
-
-      setPlayersColors(newPlayersColors);
-    }
-
-    setPlayers(newPlayers);
-  };
+          if (diff > 0) {
+            return `You must chose ${diff} more color${diff > 1 ? 's' : ''}`;
+          }
+          return 'All your players have a color!';
+        }
+        default: {
+          return '';
+        }
+      }
+    },
+    [state]
+  );
 
   const handleNextStep = useCallback(() => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -104,25 +136,77 @@ export const NewGameComponent: React.FC<NewGameProps> = memo(({ newGameLoading }
     setActiveStep(prevActiveStep => prevActiveStep - 1);
   }, []);
 
-  const getStepContent = (step: number) => {
-    switch (step) {
-      case 0:
-        return <GameName gameName={gameName} onChange={handleChange} />;
-      case 1:
-        return <GamePlayers players={players} onPlayersChange={handlePlayersChange} />;
-      case 2:
-        return (
-          <PlayersColors
-            players={players}
-            colors={colors}
-            playersColors={playersColors}
-            onPlayersColorsChange={handlePlayersColorsChange}
-          />
-        );
-      default:
-        return 'Unknown step';
-    }
-  };
+  const handlePlayersChange = useCallback(
+    (newPlayers: number) => {
+      const { playerColors, players } = state;
+      const colors = getColors();
+      let newPlayerColors = playerColors;
+
+      if (newPlayers === players) {
+        return;
+      }
+
+      if (newPlayers === playerColors.length) {
+        dispatch({
+          type: 'PLAYERS',
+          payload: {
+            players: newPlayers,
+          },
+        });
+
+        return;
+      }
+
+      if (newPlayers <= playerColors.length) {
+        newPlayerColors = playerColors.slice(0, newPlayers);
+      }
+
+      if (newPlayers > playerColors.length) {
+        const availableColors = colors.filter(playerColor => playerColors.indexOf(playerColor) === -1).reverse();
+
+        newPlayerColors = new Array(newPlayers - playerColors.length)
+          .fill(true)
+          .reduce(totPlayers => [...totPlayers, availableColors.pop()], playerColors);
+      }
+
+      dispatch({
+        type: 'PLAYERS',
+        payload: {
+          players: newPlayers,
+          playerColors: newPlayerColors,
+        },
+      });
+    },
+    [state]
+  );
+
+  const getStepContent = useCallback(
+    (step: number) => {
+      const { setup, players, playerColors } = state;
+      const colors = getColors();
+
+      switch (step) {
+        case 0:
+          return <GameName gameName={setup.gameName} onChange={handleGameNameChange} />;
+        case 1:
+          return <GamePlayers players={players} onChange={handlePlayersChange} />;
+        case 2:
+          return (
+            <PlayerColors
+              players={players}
+              colors={colors}
+              playerColors={playerColors}
+              onChange={handlePlayerColorsChange}
+            />
+          );
+        default:
+          return 'Unknown step';
+      }
+    },
+    [state, handleGameNameChange, handlePlayersChange, handlePlayerColorsChange]
+  );
+
+  const isValid = checkStep(activeStep);
 
   return (
     <Container maxWidth="md" component="main" className={`${root} NewGame`}>
@@ -135,6 +219,11 @@ export const NewGameComponent: React.FC<NewGameProps> = memo(({ newGameLoading }
           <Card className={card} elevation={10}>
             <Stepper activeStep={activeStep} steps={steps} />
             {getStepContent(activeStep)}
+            <CardActions className={isValid ? cardValidationGreen : cardValidationRed} disableSpacing>
+              <Typography align="right" className={cardAction}>
+                {getValidationNotes(activeStep)}
+              </Typography>
+            </CardActions>
           </Card>
         </Grid>
       </Grid>
@@ -153,7 +242,14 @@ export const NewGameComponent: React.FC<NewGameProps> = memo(({ newGameLoading }
               <NavigateBeforeIcon />
               Prev
             </Fab>
-            <Fab className="nextStep" variant="extended" color="primary" aria-label="next" onClick={handleNextStep}>
+            <Fab
+              className="nextStep"
+              variant="extended"
+              color="primary"
+              aria-label="next"
+              onClick={handleNextStep}
+              disabled={!isValid}
+            >
               Next
               <NavigateNextIcon />
             </Fab>
@@ -162,4 +258,6 @@ export const NewGameComponent: React.FC<NewGameProps> = memo(({ newGameLoading }
       </Grid>
     </Container>
   );
-});
+};
+
+export const Component = memo(NewGameComponent);

@@ -2,8 +2,8 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { MockedProvider } from '@apollo/react-testing';
 
-import { NewGameComponent } from './NewGameComponent';
-import { NewGame } from './NewGame';
+import { Component as NewGameComponent } from './NewGameComponent';
+import { NewGameWrapper as NewGame } from './NewGame';
 
 describe('NewGame', () => {
   it('should render without crashing', () => {
