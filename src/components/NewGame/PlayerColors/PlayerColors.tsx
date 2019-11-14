@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 import { CardContent, Typography, CardHeader, Checkbox } from '@material-ui/core';
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import PersonIcon from '@material-ui/icons/Person';
 
 import { useStyles } from '../NewGame.styles';
 import { PlayerColor } from '../NewGameTypes';
@@ -44,6 +46,8 @@ export const PlayerColors: React.FC<GamePlayersProps> = ({ players, colors, play
           <Checkbox
             key={color}
             color="default"
+            icon={<PersonOutlineIcon />}
+            checkedIcon={<PersonIcon />}
             checked={playerColors.indexOf(color) >= 0}
             classes={{ root: getCheckboxClass(color) }}
             onChange={handleChange(color)}

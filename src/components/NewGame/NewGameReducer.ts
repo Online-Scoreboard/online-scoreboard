@@ -1,6 +1,6 @@
-import { PlayerColor } from './NewGameTypes';
+import { PlayerColor, ScoringSystem } from './NewGameTypes';
 
-type NewGameActionType = 'SETUP' | 'PLAYERS' | 'COLORS';
+type NewGameActionType = 'SETUP' | 'PLAYERS' | 'COLORS' | 'RULES';
 
 interface NewGameAction {
   type: NewGameActionType;
@@ -13,6 +13,12 @@ export interface NewGameState {
   };
   players: number;
   playerColors: PlayerColor[];
+  rules: {
+    startingScore: number;
+    winningScore: number;
+    winningScoreEnabled: boolean;
+    scoringSystem: ScoringSystem;
+  };
 }
 
 export const newGameReducer = (state: NewGameState, action: NewGameAction): NewGameState => {
@@ -34,6 +40,14 @@ export const newGameReducer = (state: NewGameState, action: NewGameAction): NewG
       return {
         ...state,
         playerColors: action.payload,
+      };
+    case 'RULES':
+      return {
+        ...state,
+        rules: {
+          ...state.rules,
+          ...action.payload,
+        },
       };
     default:
       return state;

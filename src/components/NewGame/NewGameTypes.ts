@@ -10,4 +10,9 @@ export type PlayerColor =
   | 'lime'
   | 'teal'
   | 'purple'
+  | 'gold'
+  | 'aquamarine'
+  | 'darkorange'
   | 'black';
+
+export type ScoringSystem = 'increase' | 'decrease' | 'both';

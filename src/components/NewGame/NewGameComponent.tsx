@@ -1,5 +1,5 @@
 import React, { memo, useState, useCallback } from 'react';
-import { Container, Typography, Fab, Grid, Card, CardActions } from '@material-ui/core';
+import { Container, Typography, Fab, Grid, Card, CardActions, CircularProgress } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
@@ -10,6 +10,7 @@ import { Stepper } from './Stepper';
 import { GameName } from './GameName';
 import { GamePlayers } from './GamePlayers';
 import { PlayerColors } from './PlayerColors';
+import { GameRules } from './GameRules';
 
 interface NewGameProps {
   newGameLoading: boolean;
@@ -19,20 +20,28 @@ interface NewGameProps {
 const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
   const steps = getSteps();
   const startingStep = getStartingStep();
-  const { root, pageTitle, content, card, cardAction, cardValidationRed, cardValidationGreen } = useStyles();
+  const { root, pageTitle, content, card, cardAction, cardValidationRed, cardValidationGreen, loader } = useStyles();
   const [activeStep, setActiveStep] = useState(startingStep);
   const {
     state,
+    error,
     onGameNameChange,
     onPlayerColorsChange,
     onPlayersChange,
+    onGameRulesChange,
     getValidationNotes,
     checkStep,
+    gameCreationProgress,
+    showGameCreationProgress,
   } = useNewGame();
 
   const handleNextStep = useCallback(() => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
-  }, []);
+
+    if (activeStep === steps.length - 1) {
+      showGameCreationProgress();
+    }
+  }, [activeStep, showGameCreationProgress, steps.length]);
 
   const handlePrevStep = useCallback(() => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
@@ -40,7 +49,7 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
 
   const getStepContent = useCallback(
     (step: number) => {
-      const { setup, players, playerColors } = state;
+      const { setup, players, playerColors, rules } = state;
       const colors = getColors();
 
       switch (step) {
@@ -57,11 +66,44 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
               onChange={onPlayerColorsChange}
             />
           );
+        case 3:
+          return (
+            <GameRules
+              startingScore={rules.startingScore}
+              winningScore={rules.winningScore}
+              winningScoreEnabled={rules.winningScoreEnabled}
+              scoringSystem={rules.scoringSystem}
+              onChange={onGameRulesChange}
+            />
+          );
+        case 4:
+          return (
+            (!error && (
+              <div className={loader}>
+                <CircularProgress size={60} thickness={4} color="primary" className={content} />
+                <Typography>{gameCreationProgress}</Typography>
+              </div>
+            )) || (
+              <div className={loader}>
+                <Typography>{error}</Typography>
+              </div>
+            )
+          );
         default:
           return 'Unknown step';
       }
     },
-    [state, onGameNameChange, onPlayersChange, onPlayerColorsChange]
+    [
+      state,
+      onGameNameChange,
+      onPlayersChange,
+      onPlayerColorsChange,
+      onGameRulesChange,
+      error,
+      loader,
+      content,
+      gameCreationProgress,
+    ]
   );
 
   const isValid = checkStep(activeStep);
@@ -108,7 +150,7 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
               onClick={handleNextStep}
               disabled={!isValid}
             >
-              Next
+              {activeStep === steps.length - 1 ? "Let's Go!" : 'Next'}
               <NavigateNextIcon />
             </Fab>
           </Grid>

@@ -1,4 +1,4 @@
-import { useReducer, useCallback } from 'react';
+import { useReducer, useCallback, useState } from 'react';
 import { newGameReducer, NewGameState } from '../NewGameReducer';
 import {
   getDefaultPlayers,
@@ -6,6 +6,10 @@ import {
   getColors,
   getMinGameNameLength,
   getMaxGameNameLength,
+  getDefaultStartingScore,
+  getDefaultWinningScore,
+  getDefaultWinningScoreEnabled,
+  getDefaultScoringSystem,
 } from '../NewGameConstants';
 import { PlayerColor } from '../NewGameTypes';
 
@@ -15,11 +19,42 @@ const getInitialState = (): NewGameState => ({
   },
   players: getDefaultPlayers(),
   playerColors: getDefaultPlayerColors(),
+  rules: {
+    startingScore: getDefaultStartingScore(),
+    winningScore: getDefaultWinningScore(),
+    winningScoreEnabled: getDefaultWinningScoreEnabled(),
+    scoringSystem: getDefaultScoringSystem(),
+  },
 });
+
+const steps = [
+  'Sending your game information to the server...',
+  'Preparing your game...',
+  'Creating the scoreboard...',
+];
 
 export const useNewGame = () => {
   const initialState = getInitialState();
   const [state, dispatch] = useReducer(newGameReducer, initialState);
+  const [gameCreationProgress, setGameCreationProgress] = useState(steps[0]);
+  const [error, setError] = useState();
+
+  const showGameCreationProgress = () => {
+    const progressStep = (step = 1) =>
+      setTimeout(() => {
+        setGameCreationProgress(steps[step]);
+
+        if (step < steps.length) {
+          progressStep(++step);
+        } else {
+          setError(
+            'Ops! the scoreboard view is not available on this version of Online Scoreboard. Try again tomorrow.'
+          );
+        }
+      }, 2500);
+
+    progressStep();
+  };
 
   const handleGameNameChange = useCallback((value: string) => {
     dispatch({ type: 'SETUP', payload: value });
@@ -89,6 +124,13 @@ export const useNewGame = () => {
     [state]
   );
 
+  const handleGameRulesChange = useCallback((payload: { [name: string]: string | boolean }) => {
+    dispatch({
+      type: 'RULES',
+      payload,
+    });
+  }, []);
+
   const checkStep = useCallback(
     (step: number): boolean => {
       const { setup, players, playerColors } = state;
@@ -106,6 +148,9 @@ export const useNewGame = () => {
         }
         case 2: {
           return playerColors.length === players;
+        }
+        case 3: {
+          return true;
         }
         default: {
           return false;
@@ -154,10 +199,14 @@ export const useNewGame = () => {
 
   return {
     state,
+    error,
     onGameNameChange: handleGameNameChange,
     onPlayerColorsChange: handlePlayerColorsChange,
     onPlayersChange: handlePlayersChange,
+    onGameRulesChange: handleGameRulesChange,
     getValidationNotes,
     checkStep,
+    showGameCreationProgress,
+    gameCreationProgress,
   };
 };

@@ -45,6 +45,12 @@ export const useStyles = makeStyles(theme => ({
   playersSliderLabel: {
     transform: 'scale(1.25)',
   },
+  loader: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   redCheckbox: {
     ...playerCheckboBase,
     color: '#F44336',
@@ -92,5 +98,17 @@ export const useStyles = makeStyles(theme => ({
   pinkCheckbox: {
     ...playerCheckboBase,
     color: '#E91E63',
+  },
+  goldCheckbox: {
+    ...playerCheckboBase,
+    color: '#FFD700',
+  },
+  aquamarineCheckbox: {
+    ...playerCheckboBase,
+    color: '#7FFFD4',
+  },
+  darkorangeCheckbox: {
+    ...playerCheckboBase,
+    color: '#FF8C00',
   },
 }));

@@ -8,11 +8,11 @@ interface LoadingProps {
 }
 
 const LoadingComponent: React.FC<LoadingProps> = ({ show = true }) => {
-  const classes = useStyles();
+  const { root, progress } = useStyles();
 
   return show ? (
-    <div className={`${classes.root} Loading`}>
-      <CircularProgress size={60} thickness={4} color="primary" className={classes.progress} />
+    <div className={`${root} Loading`}>
+      <CircularProgress size={60} thickness={4} color="primary" className={progress} />
     </div>
   ) : null;
 };
