@@ -3,13 +3,13 @@ import { CardHeader, CardContent, Typography, Slider } from '@material-ui/core';
 
 import { useStyles } from '../NewGame.styles';
 
-interface GamePlayersProps {
-  players: number;
-  onChange: (newPlayers: number) => void;
+interface GameTeamsProps {
+  teams: number;
+  onChange: (newTeams: number) => void;
 }
 
-export const GamePlayers: React.FC<GamePlayersProps> = ({ players, onChange }) => {
-  const { cardTitle, playersSlider, playersSliderLabel } = useStyles();
+export const GameTeams: React.FC<GameTeamsProps> = ({ teams, onChange }) => {
+  const { cardTitle, teamsSlider, teamsSliderLabel } = useStyles();
 
   const handleSlider = useCallback(
     (event: React.ChangeEvent<{}>, value: number | number[]) => {
@@ -24,20 +24,19 @@ export const GamePlayers: React.FC<GamePlayersProps> = ({ players, onChange }) =
 
   return (
     <>
-      <CardHeader title="Players" classes={{ title: cardTitle }} />
+      <CardHeader title="Teams" classes={{ title: cardTitle }} />
 
       <CardContent>
-        <Typography id="players-slider" gutterBottom>
-          How many players/teams are going to participate?
+        <Typography id="teams-slider" gutterBottom>
+          How many teams are going to participate?
         </Typography>
 
         <Slider
-          className={playersSlider}
-          classes={{ thumb: playersSliderLabel }}
-          aria-labelledby="players-slider"
+          className={teamsSlider}
+          classes={{ thumb: teamsSliderLabel }}
           valueLabelDisplay="on"
           onChange={handleSlider}
-          defaultValue={players}
+          defaultValue={teams}
           min={1}
           max={12}
           step={1}

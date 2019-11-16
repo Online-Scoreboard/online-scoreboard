@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const playerCheckboBase = {
+const teamCheckboxBase = {
   '& svg': {
     fontSize: '2.4em',
   },
@@ -39,10 +39,10 @@ export const useStyles = makeStyles(theme => ({
   cardValidationGreen: {
     color: theme.palette.text.primary,
   },
-  playersSlider: {
+  teamsSlider: {
     marginTop: theme.spacing(8),
   },
-  playersSliderLabel: {
+  teamsSliderLabel: {
     transform: 'scale(1.25)',
   },
   loader: {
@@ -51,64 +51,68 @@ export const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  gameReviewTeamIcons: {
+    fontSize: '3em',
+    marginRight: theme.spacing(1),
+  },
   redCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#F44336',
   },
   yellowCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#FFEB3B',
   },
   blueCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#2196F3',
   },
   greenCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#4CAF50',
   },
   grayCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#9E9E9E',
   },
   brownCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#795548',
   },
   whiteCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#f5f5f5',
   },
   blackCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#212121',
   },
   limeCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#CDDC39',
   },
   tealCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#009688',
   },
   purpleCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#9C27B0',
   },
   pinkCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#E91E63',
   },
   goldCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#FFD700',
   },
   aquamarineCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#7FFFD4',
   },
   darkorangeCheckbox: {
-    ...playerCheckboBase,
+    ...teamCheckboxBase,
     color: '#FF8C00',
   },
 }));

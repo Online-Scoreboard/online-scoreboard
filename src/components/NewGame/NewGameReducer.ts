@@ -1,24 +1,30 @@
-import { PlayerColor, ScoringSystem } from './NewGameTypes';
+import { TeamColor, ScoringSystem } from './NewGameTypes';
 
-type NewGameActionType = 'SETUP' | 'PLAYERS' | 'COLORS' | 'RULES';
+type NewGameActionType = 'SETUP' | 'TEAMS' | 'COLORS' | 'RULES' | 'SUBMIT' | 'COMPLETE_STEP';
 
 interface NewGameAction {
   type: NewGameActionType;
-  payload: any;
+  payload?: any;
 }
 
 export interface NewGameState {
   setup: {
     gameName: string;
   };
-  players: number;
-  playerColors: PlayerColor[];
+  teams: number;
+  teamColors: TeamColor[];
   rules: {
     startingScore: number;
     winningScore: number;
     winningScoreEnabled: boolean;
     scoringSystem: ScoringSystem;
   };
+  steps: {
+    active: number;
+    completed: number[];
+  };
+  gameSubmitted: boolean;
+  error: boolean;
 }
 
 export const newGameReducer = (state: NewGameState, action: NewGameAction): NewGameState => {
@@ -30,16 +36,16 @@ export const newGameReducer = (state: NewGameState, action: NewGameAction): NewG
           gameName: action.payload,
         },
       };
-    case 'PLAYERS':
+    case 'TEAMS':
       return {
         ...state,
-        players: action.payload.players,
-        playerColors: action.payload.playerColors,
+        teams: action.payload.teams,
+        teamColors: action.payload.teamColors,
       };
     case 'COLORS':
       return {
         ...state,
-        playerColors: action.payload,
+        teamColors: action.payload,
       };
     case 'RULES':
       return {
@@ -49,6 +55,27 @@ export const newGameReducer = (state: NewGameState, action: NewGameAction): NewG
           ...action.payload,
         },
       };
+    case 'SUBMIT': {
+      const nextStep = state.steps.active + 1;
+
+      return {
+        ...state,
+        gameSubmitted: true,
+        steps: {
+          ...state.steps,
+          active: nextStep,
+        },
+      };
+    }
+    case 'COMPLETE_STEP': {
+      return {
+        ...state,
+        steps: {
+          active: action.payload.activeStep,
+          completed: action.payload.completedSteps,
+        },
+      };
+    }
     default:
       return state;
   }

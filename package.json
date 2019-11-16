@@ -27,6 +27,7 @@
     "@reach/router": "^1.2.1",
     "apollo-boost": "^0.4.4",
     "aws-amplify": "^1.1.40",
+    "bad-words": "^3.0.3",
     "dotenv": "^8.1.0",
     "graphql": "^14.5.8",
     "react": "^16.11.0",

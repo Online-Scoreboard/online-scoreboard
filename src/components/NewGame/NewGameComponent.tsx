@@ -1,16 +1,16 @@
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import { Container, Typography, Fab, Grid, Card, CardActions, CircularProgress } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
-import { getSteps, getStartingStep, getColors } from './NewGameConstants';
 import { useNewGame } from './hooks';
 import { useStyles } from './NewGame.styles';
 import { Stepper } from './Stepper';
 import { GameName } from './GameName';
-import { GamePlayers } from './GamePlayers';
-import { PlayerColors } from './PlayerColors';
+import { GameTeams } from './GameTeams';
+import { TeamColors } from './TeamColors';
 import { GameRules } from './GameRules';
+import { GameReview } from './GameReview';
 
 interface NewGameProps {
   newGameLoading: boolean;
@@ -18,55 +18,41 @@ interface NewGameProps {
 }
 
 const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
-  const steps = getSteps();
-  const startingStep = getStartingStep();
   const { root, pageTitle, content, card, cardAction, cardValidationRed, cardValidationGreen, loader } = useStyles();
-  const [activeStep, setActiveStep] = useState(startingStep);
   const {
-    state,
+    steps,
+    rules,
+    setup,
+    teamColors,
+    teams,
+    colorsList,
     error,
-    onGameNameChange,
-    onPlayerColorsChange,
-    onPlayersChange,
-    onGameRulesChange,
-    getValidationNotes,
     checkStep,
-    gameCreationProgress,
-    showGameCreationProgress,
+    activeStep,
+    completedSteps,
+    getValidationNotes,
+    gameSubmitted,
+    onSetStep,
+    onTeamsChange,
+    onGameNameChange,
+    onTeamColorsChange,
+    onGameRulesChange,
   } = useNewGame();
 
-  const handleNextStep = useCallback(() => {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-
-    if (activeStep === steps.length - 1) {
-      showGameCreationProgress();
-    }
-  }, [activeStep, showGameCreationProgress, steps.length]);
-
-  const handlePrevStep = useCallback(() => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
-  }, []);
+  const handleActiveStep = useCallback(
+    (step?: number) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      onSetStep(step);
+    },
+    [onSetStep]
+  );
 
   const getStepContent = useCallback(
     (step: number) => {
-      const { setup, players, playerColors, rules } = state;
-      const colors = getColors();
-
+      const { gameName } = setup;
       switch (step) {
         case 0:
-          return <GameName gameName={setup.gameName} onChange={onGameNameChange} />;
+          return <GameName gameName={gameName} onChange={onGameNameChange} />;
         case 1:
-          return <GamePlayers players={players} onChange={onPlayersChange} />;
-        case 2:
-          return (
-            <PlayerColors
-              players={players}
-              colors={colors}
-              playerColors={playerColors}
-              onChange={onPlayerColorsChange}
-            />
-          );
-        case 3:
           return (
             <GameRules
               startingScore={rules.startingScore}
@@ -76,12 +62,18 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
               onChange={onGameRulesChange}
             />
           );
+        case 2:
+          return <GameTeams teams={teams} onChange={onTeamsChange} />;
+        case 3:
+          return <TeamColors teams={teams} colors={colorsList} teamColors={teamColors} onChange={onTeamColorsChange} />;
         case 4:
+          return <GameReview gameName={gameName} rules={rules} teams={teams} teamColors={teamColors} />;
+        case 5:
           return (
             (!error && (
               <div className={loader}>
                 <CircularProgress size={60} thickness={4} color="primary" className={content} />
-                <Typography>{gameCreationProgress}</Typography>
+                <Typography>Please, wait for your scoreboard to be created...</Typography>
               </div>
             )) || (
               <div className={loader}>
@@ -94,15 +86,18 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
       }
     },
     [
-      state,
-      onGameNameChange,
-      onPlayersChange,
-      onPlayerColorsChange,
-      onGameRulesChange,
       error,
+      setup,
+      rules,
+      teams,
       loader,
       content,
-      gameCreationProgress,
+      teamColors,
+      colorsList,
+      onTeamsChange,
+      onGameNameChange,
+      onGameRulesChange,
+      onTeamColorsChange,
     ]
   );
 
@@ -117,7 +112,7 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
       <Grid container justify="center">
         <Grid item xs={12} md={10}>
           <Card className={card} elevation={10}>
-            <Stepper activeStep={activeStep} steps={steps} />
+            <Stepper activeStep={activeStep} steps={steps} onStepClick={handleActiveStep} completed={completedSteps} />
             {getStepContent(activeStep)}
             <CardActions className={isValid ? cardValidationGreen : cardValidationRed} disableSpacing>
               <Typography align="right" className={cardAction}>
@@ -131,28 +126,47 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
       <Grid container className={content} justify="center">
         <Grid item xs={12} md={10}>
           <Grid container justify="space-between">
-            <Fab
-              className="prevStep"
-              variant="extended"
-              color="primary"
-              aria-label="prev"
-              disabled={!activeStep}
-              onClick={handlePrevStep}
-            >
-              <NavigateBeforeIcon />
-              Prev
-            </Fab>
-            <Fab
-              className="nextStep"
-              variant="extended"
-              color="primary"
-              aria-label="next"
-              onClick={handleNextStep}
-              disabled={!isValid}
-            >
-              {activeStep === steps.length - 1 ? "Let's Go!" : 'Next'}
-              <NavigateNextIcon />
-            </Fab>
+            {activeStep <= steps.length && (
+              <Fab
+                className="prevStep"
+                variant="extended"
+                color="primary"
+                aria-label="prev"
+                disabled={!activeStep || gameSubmitted}
+                onClick={handleActiveStep(activeStep - 1)}
+              >
+                <NavigateBeforeIcon />
+                Prev
+              </Fab>
+            )}
+
+            {activeStep < steps.length && (
+              <Fab
+                className="nextStep"
+                variant="extended"
+                color="primary"
+                aria-label="next"
+                onClick={handleActiveStep()}
+                disabled={!isValid || gameSubmitted}
+              >
+                Next
+                <NavigateNextIcon />
+              </Fab>
+            )}
+
+            {activeStep === steps.length && (
+              <Fab
+                className="completeStep"
+                variant="extended"
+                color="primary"
+                aria-label="complete"
+                onClick={handleActiveStep()}
+                disabled={gameSubmitted || completedSteps.length < steps.length}
+              >
+                Let's Go!
+                <NavigateNextIcon />
+              </Fab>
+            )}
           </Grid>
         </Grid>
       </Grid>

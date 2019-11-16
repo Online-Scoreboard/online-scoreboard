@@ -74,10 +74,10 @@ export const GameRules: React.FC<GameRulesProps> = ({
         <TextField
           className={`${content} startingScore`}
           name="startingScore"
-          label="Players starting score"
-          placeholder="Players starting score"
+          label="Teams starting score"
+          placeholder="Teams starting score"
           variant="outlined"
-          helperText={`Players start at ${startingScore} points`}
+          helperText={`Teams start at ${startingScore} points`}
           type="number"
           value={startingScore}
           onChange={handleChange}
@@ -101,10 +101,10 @@ export const GameRules: React.FC<GameRulesProps> = ({
         <TextField
           className={`${content} endingScore`}
           name="winningScore"
-          label="Players winning score"
-          placeholder="Players winning score"
+          label="Teams winning score"
+          placeholder="Teams winning score"
           variant="outlined"
-          helperText="Players winning score"
+          helperText={`Teams win at ${winningScore} points`}
           type="number"
           value={winningScore}
           onChange={handleChange}
@@ -113,7 +113,7 @@ export const GameRules: React.FC<GameRulesProps> = ({
         />
 
         <FormControl component="fieldset" className="scoringSystem">
-          <FormLabel component="legend">Player scores should</FormLabel>
+          <FormLabel component="legend">Team scores should</FormLabel>
           <RadioGroup aria-label="scoring system" name="scoringSystem" value={scoringSystem} onChange={handleChange}>
             <FormControlLabel value="increase" control={<Radio color="primary" />} label="Increase" />
             <FormControlLabel value="decrease" control={<Radio color="primary" />} label="Decrease" />

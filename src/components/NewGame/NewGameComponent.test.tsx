@@ -3,11 +3,11 @@ import { shallow, mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 
 import { Component as NewGameComponent } from './NewGameComponent';
-import { GamePlayers } from './GamePlayers';
+import { GameTeams } from './GameTeams';
 import { Stepper } from './Stepper';
 import { GameName } from './GameName';
-import { PlayerColors } from './PlayerColors';
-import { PlayerColor } from './NewGameTypes';
+import { TeamColors } from './TeamColors';
+import { TeamColor } from './NewGameTypes';
 import * as NewGameConstants from './NewGameConstants';
 
 jest.mock('./NewGameConstants', () => jest.requireActual('./NewGameConstants'));
@@ -103,10 +103,10 @@ describe('NewGameComponent', () => {
       const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       const gameName = wrapper.find(GameName);
-      const gamePlayers = wrapper.find(GamePlayers);
+      const gameTeams = wrapper.find(GameTeams);
 
       expect(gameName.exists()).toBe(true);
-      expect(gamePlayers.exists()).not.toBe(true);
+      expect(gameTeams.exists()).not.toBe(true);
     });
 
     it('should update the reducer when updating the game name', () => {
@@ -179,131 +179,133 @@ describe('NewGameComponent', () => {
     });
   });
 
-  describe('GamePlayers', () => {
-    it('should render the GamePlayers component as a second step', () => {
-      const startingStep = 1;
+  describe('GameTeams', () => {
+    it('should render the GameTeams component as a third step', () => {
+      const startingStep = 2;
       jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => startingStep);
 
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       const gameName = wrapper.find(GameName);
-      const gamePlayers = wrapper.find(GamePlayers);
+      const gameTeams = wrapper.find(GameTeams);
 
-      expect(gamePlayers.exists()).toBe(true);
+      expect(gameTeams.exists()).toBe(true);
       expect(gameName.exists()).not.toBe(true);
     });
 
-    it('should update the reducer when updating the number of players', () => {
-      jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => 1);
-      const testPlayers = 11;
+    it('should update the reducer when updating the number of teams', () => {
+      const startingStep = 2;
+      jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => startingStep);
+      const testTeams = 11;
 
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       act(() => {
-        const gamePlayers = wrapper.find(GamePlayers);
-        gamePlayers.props().onChange(testPlayers);
+        const gameTeams = wrapper.find(GameTeams);
+        gameTeams.props().onChange(testTeams);
       });
 
       wrapper.update();
 
-      const res = wrapper.find(GamePlayers).prop('players');
-      expect(res).toBe(testPlayers);
+      const res = wrapper.find(GameTeams).prop('teams');
+      expect(res).toBe(testTeams);
     });
 
-    it('should not update the reducer when the updated number of players is not changed', () => {
-      jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => 1);
-      const testPlayers = NewGameConstants.getDefaultPlayers();
+    it('should not update the reducer when the updated number of teams is not changed', () => {
+      const startingStep = 2;
+      jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => startingStep);
+      const testTeams = NewGameConstants.getDefaultTeams();
 
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       act(() => {
-        const gamePlayers = wrapper.find(GamePlayers);
-        gamePlayers.props().onChange(testPlayers);
+        const gameTeams = wrapper.find(GameTeams);
+        gameTeams.props().onChange(testTeams);
       });
 
       wrapper.update();
 
-      const res = wrapper.find(GamePlayers).prop('players');
-      expect(res).toBe(testPlayers);
+      const res = wrapper.find(GameTeams).prop('teams');
+      expect(res).toBe(testTeams);
     });
   });
 
-  describe('PlayerColors', () => {
-    it('should render the PlayerColors component as a third step', () => {
-      const startingStep = 2;
+  describe('TeamColors', () => {
+    it('should render the TeamColors component as a third step', () => {
+      const startingStep = 3;
       jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => startingStep);
 
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
-      const playerColors = wrapper.find(PlayerColors);
-      expect(playerColors.exists()).toBe(true);
+      const teamColors = wrapper.find(TeamColors);
+      expect(teamColors.exists()).toBe(true);
     });
 
-    it('should add a new player color', () => {
-      const startingStep = 2;
-      const testPlayers = 3;
-      const testPlayerColor: PlayerColor = 'green';
-      const defaultPlayerColors = NewGameConstants.getDefaultPlayerColors();
+    it('should add a new team color', () => {
+      const startingStep = 3;
+      const testTeams = 3;
+      const testTeamColor: TeamColor = 'green';
+      const defaultTeamColors = NewGameConstants.getDefaultTeamColors();
 
-      jest.spyOn(NewGameConstants, 'getDefaultPlayers').mockImplementationOnce(() => testPlayers);
+      jest.spyOn(NewGameConstants, 'getDefaultTeams').mockImplementationOnce(() => testTeams);
       jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => startingStep);
 
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       act(() => {
-        const playerColors = wrapper.find(PlayerColors);
-        playerColors.props().onChange(testPlayerColor);
+        const teamColors = wrapper.find(TeamColors);
+        teamColors.props().onChange(testTeamColor);
       });
 
       wrapper.update();
 
-      const res = wrapper.find(PlayerColors).prop('playerColors');
-      expect(res).toEqual([...defaultPlayerColors, testPlayerColor]);
+      const res = wrapper.find(TeamColors).prop('teamColors');
+      expect(res).toEqual([...defaultTeamColors, testTeamColor]);
     });
 
-    it('should remove an existing player color', () => {
-      const startingStep = 2;
-      const testPlayers = 2;
-      const defaultPlayerColors = NewGameConstants.getDefaultPlayerColors();
-      const testPlayerColor: PlayerColor = defaultPlayerColors[0];
-      const expectedPlayerColors = defaultPlayerColors.filter((_color, index) => index > 0);
+    it('should remove an existing team color', () => {
+      const startingStep = 3;
+      const testTeams = 2;
+      const defaultTeamColors = NewGameConstants.getDefaultTeamColors();
+      const testTeamColor: TeamColor = defaultTeamColors[0];
+      const expectedTeamColors = defaultTeamColors.filter((_color, index) => index > 0);
 
-      jest.spyOn(NewGameConstants, 'getDefaultPlayers').mockImplementationOnce(() => testPlayers);
+      jest.spyOn(NewGameConstants, 'getDefaultTeams').mockImplementationOnce(() => testTeams);
       jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => startingStep);
 
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       act(() => {
-        const playerColors = wrapper.find(PlayerColors);
-        playerColors.props().onChange(testPlayerColor);
+        const teamColors = wrapper.find(TeamColors);
+        teamColors.props().onChange(testTeamColor);
       });
 
       wrapper.update();
 
-      const res = wrapper.find(PlayerColors).prop('playerColors');
-      expect(res).toEqual(expectedPlayerColors);
+      const res = wrapper.find(TeamColors).prop('teamColors');
+      expect(res).toEqual(expectedTeamColors);
     });
 
-    it('should not allow adding other colors when the maximum number of chosen players is already reached', () => {
-      const startingStep = 2;
-      const testPlayers = 2;
-      const defaultPlayerColors = NewGameConstants.getDefaultPlayerColors();
-      const testColor: PlayerColor = 'red';
+    it('should not allow adding other colors when the maximum number of chosen teams is already reached', () => {
+      const startingStep = 3;
+      const testTeams = 2;
+      const defaultTeamColors = NewGameConstants.getDefaultTeamColors();
+      const testColor: TeamColor = 'red';
 
-      jest.spyOn(NewGameConstants, 'getDefaultPlayers').mockImplementationOnce(() => testPlayers);
+      jest.spyOn(NewGameConstants, 'getDefaultTeams').mockImplementationOnce(() => testTeams);
       jest.spyOn(NewGameConstants, 'getStartingStep').mockImplementationOnce(() => startingStep);
 
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       act(() => {
-        const playerColors = wrapper.find(PlayerColors);
-        playerColors.props().onChange(testColor);
+        const teamColors = wrapper.find(TeamColors);
+        teamColors.props().onChange(testColor);
       });
 
       wrapper.update();
 
-      const res = wrapper.find(PlayerColors).prop('playerColors');
-      expect(res).toEqual(defaultPlayerColors);
+      const res = wrapper.find(TeamColors).prop('teamColors');
+      expect(res).toEqual(defaultTeamColors);
     });
   });
 });

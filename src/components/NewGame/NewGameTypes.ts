@@ -1,4 +1,4 @@
-export type PlayerColor =
+export type TeamColor =
   | 'white'
   | 'red'
   | 'yellow'

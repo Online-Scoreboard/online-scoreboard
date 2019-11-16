@@ -4,17 +4,17 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import PersonIcon from '@material-ui/icons/Person';
 
 import { useStyles } from '../NewGame.styles';
-import { PlayerColor } from '../NewGameTypes';
+import { TeamColor } from '../NewGameTypes';
 
-interface GamePlayersProps {
-  players: number;
-  colors: PlayerColor[];
-  playerColors: PlayerColor[];
-  onChange: (playerColors: PlayerColor) => void;
+interface TeamColorsProps {
+  teams: number;
+  colors: TeamColor[];
+  teamColors: TeamColor[];
+  onChange: (teamColors: TeamColor) => void;
 }
 
-export const PlayerColors: React.FC<GamePlayersProps> = ({ players, colors, playerColors, onChange }) => {
-  const { card, cardTitle, playersSlider, playersSliderLabel, cardCentredContent, ...classes } = useStyles();
+export const TeamColors: React.FC<TeamColorsProps> = ({ teams, colors, teamColors, onChange }) => {
+  const { card, cardTitle, teamsSlider, teamsSliderLabel, cardCentredContent, ...classes } = useStyles();
 
   const getCheckboxClass = useCallback(
     (color: string) => {
@@ -26,8 +26,8 @@ export const PlayerColors: React.FC<GamePlayersProps> = ({ players, colors, play
   );
 
   const handleChange = useCallback(
-    (playerColor: PlayerColor) => (_event: React.ChangeEvent<HTMLInputElement>, _checked: boolean) => {
-      return onChange(playerColor);
+    (teamColor: TeamColor) => (_event: React.ChangeEvent<HTMLInputElement>, _checked: boolean) => {
+      return onChange(teamColor);
     },
     [onChange]
   );
@@ -35,20 +35,20 @@ export const PlayerColors: React.FC<GamePlayersProps> = ({ players, colors, play
   return (
     <>
       <CardHeader
-        title="Players Colors"
-        subheader={`You must chose ${players} colors`}
+        title="Team Colors"
+        subheader={`You must chose ${teams} colors`}
         classes={{ title: cardTitle, subheader: cardTitle }}
       />
 
       <CardContent className={cardCentredContent}>
-        <Typography gutterBottom>Chose some colors for your players</Typography>
+        <Typography gutterBottom>Chose some colors for your teams</Typography>
         {colors.map(color => (
           <Checkbox
             key={color}
             color="default"
             icon={<PersonOutlineIcon />}
             checkedIcon={<PersonIcon />}
-            checked={playerColors.indexOf(color) >= 0}
+            checked={teamColors.indexOf(color) >= 0}
             classes={{ root: getCheckboxClass(color) }}
             onChange={handleChange(color)}
           />
