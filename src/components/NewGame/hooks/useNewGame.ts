@@ -108,23 +108,37 @@ export const useNewGame = () => {
   );
 
   const handleGameRulesChange = useCallback(
-    (payload: { [name: string]: string | boolean }) => {
+    (payload: { [name: string]: string | boolean | number }) => {
+      const { scoringSystem, winningScore, winningScoreEnabled, startingScore } = rules;
       const payloadUpdated = { ...payload };
       const isWinningScoreEnabled =
-        'winningScoreEnabled' in payload ? payload.winningScoreEnabled : rules.winningScoreEnabled;
+        'winningScoreEnabled' in payload ? payload.winningScoreEnabled : winningScoreEnabled;
 
       if (
         isWinningScoreEnabled &&
-        rules.scoringSystem === 'increase' &&
-        Number(payload.winningScore || rules.winningScore) < Number(payload.startingScore || rules.startingScore)
+        scoringSystem === 'increase' &&
+        Number(payload.winningScore || winningScore) < Number(payload.startingScore || startingScore)
       ) {
         payloadUpdated.scoringSystem = 'decrease';
       } else if (
         isWinningScoreEnabled &&
-        rules.scoringSystem === 'decrease' &&
-        Number(payload.winningScore || rules.winningScore) > Number(payload.startingScore || rules.startingScore)
+        scoringSystem === 'decrease' &&
+        Number(payload.winningScore || winningScore) > Number(payload.startingScore || startingScore)
       ) {
         payloadUpdated.scoringSystem = 'increase';
+      }
+
+      if (payload.isMatchesBased) {
+        payloadUpdated.startingScore = '0';
+      }
+
+      payloadUpdated.teams = teams;
+
+      if (payload.minTeamSize && teams < Number(payload.minTeamSize)) {
+        payloadUpdated.teams = Number(payload.minTeamSize);
+      }
+      if (payload.maxTeamSize && teams > Number(payload.maxTeamSize)) {
+        payloadUpdated.teams = Number(payload.maxTeamSize);
       }
 
       dispatch({
@@ -132,15 +146,27 @@ export const useNewGame = () => {
         payload: payloadUpdated,
       });
     },
-    [rules]
+    [rules, teams]
   );
 
-  const handlePredefinedGameRuleChange = useCallback((payload: GameListItem) => {
-    dispatch({
-      type: 'PREDEFINED_RULES',
-      payload: payload,
-    });
-  }, []);
+  const handlePredefinedGameRuleChange = useCallback(
+    (payload: GameListItem) => {
+      const payloadUpdated = { ...payload, teams };
+
+      if (payload.minTeamSize && teams < Number(payload.minTeamSize)) {
+        payloadUpdated.teams = Number(payload.minTeamSize);
+      }
+      if (payload.maxTeamSize && teams > Number(payload.maxTeamSize)) {
+        payloadUpdated.teams = Number(payload.maxTeamSize);
+      }
+
+      dispatch({
+        type: 'PREDEFINED_RULES',
+        payload: payloadUpdated,
+      });
+    },
+    [teams]
+  );
 
   const checkStep = useCallback(
     (step: number): boolean => {
@@ -158,7 +184,15 @@ export const useNewGame = () => {
           );
         }
         case 1: {
-          const { winningScoreEnabled, scoringSystem, winningScore, startingScore, isMatchesBased } = rules;
+          const {
+            winningScoreEnabled,
+            scoringSystem,
+            winningScore,
+            startingScore,
+            isMatchesBased,
+            minTeamSize,
+            maxTeamSize,
+          } = rules;
 
           if (winningScoreEnabled && scoringSystem === 'increase' && Number(winningScore) < Number(startingScore)) {
             return false;
@@ -166,10 +200,19 @@ export const useNewGame = () => {
           if (winningScoreEnabled && scoringSystem === 'decrease' && Number(winningScore) > Number(startingScore)) {
             return false;
           }
-          if (winningScoreEnabled && Number(winningScore) === Number(startingScore)) {
+          if (!isMatchesBased && winningScoreEnabled && Number(winningScore) === Number(startingScore)) {
+            return false;
+          }
+          if (winningScoreEnabled && isMatchesBased && Number(winningScore) < 1) {
             return false;
           }
           if (isMatchesBased && (scoringSystem === 'decrease' || scoringSystem === 'both')) {
+            return false;
+          }
+          if (minTeamSize > maxTeamSize) {
+            return false;
+          }
+          if (maxTeamSize < minTeamSize) {
             return false;
           }
 
@@ -177,10 +220,10 @@ export const useNewGame = () => {
         }
         case 2: {
           const { minTeamSize, maxTeamSize } = rules;
-          if (teams < minTeamSize) {
+          if (Number(teams) < Number(minTeamSize)) {
             return false;
           }
-          if (teams > maxTeamSize) {
+          if (Number(teams) > Number(maxTeamSize)) {
             return false;
           }
 
@@ -222,28 +265,45 @@ export const useNewGame = () => {
           return 'Your game name looks amazing!';
         }
         case 1: {
-          const { winningScoreEnabled, scoringSystem, winningScore, startingScore, isMatchesBased } = rules;
+          const {
+            winningScoreEnabled,
+            scoringSystem,
+            winningScore,
+            startingScore,
+            isMatchesBased,
+            minTeamSize,
+            maxTeamSize,
+          } = rules;
           if (winningScoreEnabled && scoringSystem === 'increase' && Number(winningScore) < Number(startingScore)) {
             return 'You cannot set a winning score lower than the starting one when the score increases';
           }
           if (winningScoreEnabled && scoringSystem === 'decrease' && Number(winningScore) > Number(startingScore)) {
             return 'You cannot set a winning score higher than the starting one when the score decreases';
           }
-          if (winningScoreEnabled && Number(winningScore) === Number(startingScore)) {
+          if (!isMatchesBased && winningScoreEnabled && Number(winningScore) === Number(startingScore)) {
             return 'You cannot set a winning score equal to the staring one';
+          }
+          if (winningScoreEnabled && isMatchesBased && Number(winningScore) < 1) {
+            return 'Games matched based must have a minimum of 1 winning match';
           }
           if (isMatchesBased && (scoringSystem === 'decrease' || scoringSystem === 'both')) {
             return 'Games matched based must always increase team scores';
+          }
+          if (minTeamSize > maxTeamSize) {
+            return 'Minimum team size cannot be bigger than the maximum one';
+          }
+          if (maxTeamSize < minTeamSize) {
+            return 'Maximum team size cannot be bigger than the minimum one';
           }
 
           return 'Define your game rules';
         }
         case 2: {
           const { minTeamSize, maxTeamSize } = rules;
-          if (teams < minTeamSize) {
+          if (Number(teams) < Number(minTeamSize)) {
             return `According to your Rules setup, this game will require at least ${minTeamSize} teams`;
           }
-          if (teams > maxTeamSize) {
+          if (Number(teams) > Number(maxTeamSize)) {
             return `According to your Rules setup, this game will require a maximum of ${maxTeamSize} teams`;
           }
 

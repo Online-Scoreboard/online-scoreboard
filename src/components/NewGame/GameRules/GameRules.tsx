@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   CardHeader,
   CardContent,
@@ -113,6 +113,15 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
     [onGameRuleChange]
   );
 
+  const getWinningScoreHelpingText = useMemo(() => {
+    const copy = 'Teams win at ';
+
+    if (isMatchesBased) {
+      return `${copy} at the end of ${winningScore} ${String(winningScore) === '1' ? 'match' : 'matches'}`;
+    }
+    return `${copy} ${winningScore} ${String(winningScore) === '1' ? 'point' : 'points'}`;
+  }, [isMatchesBased, winningScore]);
+
   return (
     <>
       <CardHeader title="Game Rules" classes={{ title: cardTitle }} />
@@ -143,6 +152,17 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <Grid container direction="column">
+              <FormControlLabel
+                className="isMatchesBased"
+                control={
+                  <Checkbox name="isMatchesBased" color="primary" checked={isMatchesBased} onChange={handleChange} />
+                }
+                label="Is the game matches based?"
+              />
+              <Typography variant="caption" className={content}>
+                Each point will be equal to a won match rather than a score within a single game
+              </Typography>
+
               <TextField
                 className={`${content} startingScore`}
                 name="startingScore"
@@ -153,6 +173,7 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
                 type="number"
                 value={startingScore}
                 onChange={handleChange}
+                disabled={isMatchesBased}
                 fullWidth
               />
 
@@ -166,16 +187,16 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
                     onChange={handleChange}
                   />
                 }
-                label="Enable winning score condition"
+                label={`Enable winning ${isMatchesBased ? 'matches' : 'score'} condition`}
               />
 
               <TextField
                 className={`${content} endingScore`}
                 name="winningScore"
-                label="Teams winning score"
-                placeholder="Teams winning score"
+                label={`Teams winning ${isMatchesBased ? 'matches' : 'score'}`}
+                placeholder={`Teams winning ${isMatchesBased ? 'matches' : 'score'}`}
                 variant="outlined"
-                helperText={`Teams win at ${winningScore} points`}
+                helperText={getWinningScoreHelpingText}
                 type="number"
                 value={winningScore}
                 onChange={handleChange}
@@ -192,21 +213,20 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
                   onChange={handleChange}
                 >
                   <FormControlLabel value="increase" control={<Radio color="primary" />} label="Increase" />
-                  <FormControlLabel value="decrease" control={<Radio color="primary" />} label="Decrease" />
-                  <FormControlLabel value="both" control={<Radio color="primary" />} label="Increase and Decrease" />
+                  <FormControlLabel
+                    value="decrease"
+                    disabled={isMatchesBased}
+                    control={<Radio color="primary" />}
+                    label="Decrease"
+                  />
+                  <FormControlLabel
+                    value="both"
+                    disabled={isMatchesBased}
+                    control={<Radio color="primary" />}
+                    label="Increase and Decrease"
+                  />
                 </RadioGroup>
               </FormControl>
-
-              <FormControlLabel
-                className="isMatchesBased"
-                control={
-                  <Checkbox name="isMatchesBased" color="primary" checked={isMatchesBased} onChange={handleChange} />
-                }
-                label="Is the game matches based?"
-              />
-              <Typography variant="caption" className={content}>
-                Each point will be equal to a won match rather than a score within a single game
-              </Typography>
 
               <TextField
                 className={`${content} minTeamSize`}
@@ -216,6 +236,7 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
                 variant="outlined"
                 helperText={`Minimum team size required by the game rules`}
                 type="number"
+                inputProps={{ min: '1', max: '12', step: '1' }}
                 value={minTeamSize}
                 onChange={handleChange}
                 fullWidth
@@ -229,6 +250,7 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
                 variant="outlined"
                 helperText={`Maximum team size required by the game rules`}
                 type="number"
+                inputProps={{ min: '1', max: '12', step: '1' }}
                 value={maxTeamSize}
                 onChange={handleChange}
                 fullWidth

@@ -50,6 +50,7 @@ export const newGameReducer = (state: NewGameState, action: NewGameAction): NewG
           ...action.payload,
           name: '',
         },
+        teams: action.payload.teams,
       };
     case 'PREDEFINED_RULES': {
       if (!action.payload) {
@@ -61,6 +62,7 @@ export const newGameReducer = (state: NewGameState, action: NewGameAction): NewG
         rules: {
           ...action.payload,
         },
+        teams: action.payload.teams,
       };
     }
     case 'SUBMIT': {
