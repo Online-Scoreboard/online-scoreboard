@@ -37,6 +37,7 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
     onGameNameChange,
     onTeamColorsChange,
     onGameRulesChange,
+    onPredefinedGameRuleChange,
   } = useNewGame();
 
   const handleActiveStep = useCallback(
@@ -53,15 +54,7 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
         case 0:
           return <GameName gameName={gameName} onChange={onGameNameChange} />;
         case 1:
-          return (
-            <GameRules
-              startingScore={rules.startingScore}
-              winningScore={rules.winningScore}
-              winningScoreEnabled={rules.winningScoreEnabled}
-              scoringSystem={rules.scoringSystem}
-              onChange={onGameRulesChange}
-            />
-          );
+          return <GameRules rules={rules} onChange={onGameRulesChange} onGameRuleChange={onPredefinedGameRuleChange} />;
         case 2:
           return <GameTeams teams={teams} onChange={onTeamsChange} />;
         case 3:
@@ -86,18 +79,19 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
       }
     },
     [
-      error,
       setup,
+      onGameNameChange,
       rules,
+      onGameRulesChange,
+      onPredefinedGameRuleChange,
       teams,
+      onTeamsChange,
+      colorsList,
+      teamColors,
+      onTeamColorsChange,
+      error,
       loader,
       content,
-      teamColors,
-      colorsList,
-      onTeamsChange,
-      onGameNameChange,
-      onGameRulesChange,
-      onTeamColorsChange,
     ]
   );
 
@@ -123,7 +117,7 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
         </Grid>
       </Grid>
 
-      <Grid container className={content} justify="center">
+      <Grid container justify="center">
         <Grid item xs={12} md={10}>
           <Grid container justify="space-between">
             {activeStep <= steps.length && (

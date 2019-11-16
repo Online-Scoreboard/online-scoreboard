@@ -3,22 +3,25 @@ import { CardHeader, CardContent, Typography } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 
 import { useStyles } from '../NewGame.styles';
-import { TeamColor, ScoringSystem } from '../NewGameTypes';
+import { TeamColor, GameListItem } from '../NewGameTypes';
 
 interface GameReviewProps {
   gameName: string;
-  rules: {
-    startingScore: number;
-    winningScore: number;
-    winningScoreEnabled: boolean;
-    scoringSystem: ScoringSystem;
-  };
+  rules: GameListItem;
   teams: number;
   teamColors: TeamColor[];
 }
 
 export const GameReview: React.FC<GameReviewProps> = ({ gameName, teams, teamColors, rules }) => {
   const { cardTitle, gameReviewTeamIcons, ...classes } = useStyles();
+  const {
+    scoringSystem,
+    winningScoreEnabled,
+    winningScore: winningScoreVal,
+    startingScore,
+    isMatchesBased,
+    name,
+  } = rules;
 
   const getColorClass = useCallback(
     (color: string) => {
@@ -29,8 +32,8 @@ export const GameReview: React.FC<GameReviewProps> = ({ gameName, teams, teamCol
     [classes]
   );
 
-  const score = rules.scoringSystem === 'both' ? 'increase and decrease' : rules.scoringSystem;
-  const winningScore = rules.winningScoreEnabled ? `to ${rules.winningScore}` : '';
+  const score = scoringSystem === 'both' ? 'increase and decrease' : scoringSystem;
+  const winningScore = winningScoreEnabled ? `to ${winningScoreVal}` : '';
 
   return (
     <>
@@ -39,14 +42,18 @@ export const GameReview: React.FC<GameReviewProps> = ({ gameName, teams, teamCol
         <Typography variant="h6" gutterBottom>
           {gameName}
         </Typography>
+        <Typography variant="subtitle1" gutterBottom>
+          {name ? `"${name}"` : 'A custom configuration'} has been used for setting this game base rules
+        </Typography>
         <Typography gutterBottom>{teams} teams</Typography>
         <Typography gutterBottom>
           {teamColors.map(color => (
             <PersonIcon key={color} className={`${gameReviewTeamIcons} ${getColorClass(color)}`} />
           ))}
         </Typography>
+        <Typography>This is a {isMatchesBased ? 'matches' : 'points'} based game</Typography>
         <Typography gutterBottom>
-          The teams score will {score} from {rules.startingScore} {winningScore} points
+          The teams score will {score} from {startingScore} {winningScore} points
         </Typography>
       </CardContent>
     </>

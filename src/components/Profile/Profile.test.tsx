@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import { MockedProvider } from '@apollo/react-testing';
-import * as uniqueNamesGenerator from 'unique-names-generator';
+import uniqueNamesGenerator from 'unique-names-generator';
 
 import * as Auth from '../../hooks/Auth';
 import { SHUFFLE_AVATAR } from './Profile.graphql';

@@ -1,6 +1,6 @@
-import { TeamColor, ScoringSystem } from './NewGameTypes';
+import { TeamColor, GameListItem } from './NewGameTypes';
 
-type NewGameActionType = 'SETUP' | 'TEAMS' | 'COLORS' | 'RULES' | 'SUBMIT' | 'COMPLETE_STEP';
+type NewGameActionType = 'SETUP' | 'TEAMS' | 'COLORS' | 'RULES' | 'PREDEFINED_RULES' | 'SUBMIT' | 'COMPLETE_STEP';
 
 interface NewGameAction {
   type: NewGameActionType;
@@ -13,12 +13,7 @@ export interface NewGameState {
   };
   teams: number;
   teamColors: TeamColor[];
-  rules: {
-    startingScore: number;
-    winningScore: number;
-    winningScoreEnabled: boolean;
-    scoringSystem: ScoringSystem;
-  };
+  rules: GameListItem;
   steps: {
     active: number;
     completed: number[];
@@ -53,8 +48,21 @@ export const newGameReducer = (state: NewGameState, action: NewGameAction): NewG
         rules: {
           ...state.rules,
           ...action.payload,
+          name: '',
         },
       };
+    case 'PREDEFINED_RULES': {
+      if (!action.payload) {
+        return state;
+      }
+
+      return {
+        ...state,
+        rules: {
+          ...action.payload,
+        },
+      };
+    }
     case 'SUBMIT': {
       const nextStep = state.steps.active + 1;
 
