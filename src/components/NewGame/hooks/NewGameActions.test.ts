@@ -1,11 +1,4 @@
-import {
-  setupAction,
-  teamsAction,
-  colorsAction,
-  customRulesAction,
-  predefinedRulesAction,
-  completeStepAction,
-} from './NewGameActions';
+import { setupAction, teamsAction, colorsAction, customRulesAction } from './NewGameActions';
 import { NewGameActionType, SETUP, TEAMS, COLORS, RULES } from './NewGameActionTypes';
 import { TeamColor, GameListItem } from '../NewGameTypes';
 
@@ -30,12 +23,12 @@ describe('NewGameActions', () => {
       const testTeamColors: TeamColor[] = ['black', 'blue'];
       const testNewTeams = testTeamColors.length;
 
-      const res = teamsAction(testColorList, testTeamColors, testNewTeams);
+      const res: any = teamsAction(testColorList, testTeamColors, testNewTeams);
 
       expect(res.type).toEqual(TEAMS);
       expect(res).toHaveProperty('payload');
-      expect((res as any).payload).toHaveProperty('teams');
-      expect((res as any).payload).toHaveProperty('teamColors');
+      expect(res.payload).toHaveProperty('teams');
+      expect(res.payload).toHaveProperty('teamColors');
     });
 
     it('should return the provided "newTeams" and "teamColors" when the new team size has not changed', () => {
@@ -187,7 +180,7 @@ describe('NewGameActions', () => {
       const testNewRules: Partial<GameListItem> = {
         name: 'test',
       };
-      const testRules = {} as GameListItem;
+      const testRules: any = {};
       const testTeams = 2;
 
       const res = customRulesAction(testNewRules, testRules, testTeams);
@@ -207,7 +200,7 @@ describe('NewGameActions', () => {
         maxTeamSize: 2,
         minTeamSize: 2,
       };
-      const testRules = {} as GameListItem;
+      const testRules: any = {};
       const testTeams = 2;
 
       const expectedScoringSystem = 'decrease';
@@ -236,7 +229,7 @@ describe('NewGameActions', () => {
         maxTeamSize: 2,
         minTeamSize: 2,
       };
-      const testRules = {} as GameListItem;
+      const testRules: any = {};
       const testTeams = 2;
 
       const expectedScoringSystem = 'increase';
@@ -266,7 +259,7 @@ describe('NewGameActions', () => {
         maxTeamSize: 2,
         minTeamSize: 2,
       };
-      const testRules = {} as GameListItem;
+      const testRules: any = {};
       const testTeams = 2;
 
       const expectedStartingScore = 0;
@@ -296,7 +289,7 @@ describe('NewGameActions', () => {
         maxTeamSize: 2,
         minTeamSize: 2,
       };
-      const testRules = {} as GameListItem;
+      const testRules: any = {};
       const testTeams = 2;
 
       const expectedScoringSystem = 'increase';

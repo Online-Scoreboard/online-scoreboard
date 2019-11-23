@@ -38,13 +38,15 @@ describe('NewGameReducer', () => {
   };
 
   it('should work without crashing', () => {
-    newGameReducer(initialState, {} as NewGameActionType);
+    const action: any = {};
+    newGameReducer(initialState, action);
 
     expect(true).toBe(true);
   });
 
   it('should return the initial state', () => {
-    const reducer = newGameReducer(initialState, {} as NewGameActionType);
+    const action: any = {};
+    const reducer = newGameReducer(initialState, action);
 
     expect(reducer).toEqual(initialState);
   });
@@ -144,11 +146,11 @@ describe('NewGameReducer', () => {
       const testMinTeamSize = initialState.rules.minTeamSize + 1;
       const testScoringSystem = 'both';
 
-      const testCustomRules = {
+      const testCustomRules: any = {
         maxTeamSize: testMaxTeamSize,
         minTeamSize: testMinTeamSize,
         scoringSystem: testScoringSystem,
-      } as RulesPayload;
+      };
 
       const expectedRules: GameListItem = {
         name: '',
@@ -209,11 +211,11 @@ describe('NewGameReducer', () => {
     it('should update the team size', () => {
       const testTeams = 12;
 
-      const testAction: NewGameActionType = {
+      const testAction: any = {
         type: 'PREDEFINED_RULES',
         payload: {
           teams: testTeams,
-        } as RulesPayload,
+        },
       };
 
       const reducer = newGameReducer(initialState, testAction);
@@ -222,9 +224,9 @@ describe('NewGameReducer', () => {
     });
 
     it('should always update the team size and result to undefined when not provided', () => {
-      const testAction: NewGameActionType = {
+      const testAction: any = {
         type: PREDEFINED_RULES,
-        payload: {} as RulesPayload,
+        payload: {},
       };
 
       const reducer = newGameReducer(initialState, testAction);

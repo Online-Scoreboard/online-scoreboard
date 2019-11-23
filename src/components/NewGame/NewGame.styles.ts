@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const teamCheckboxBase = {
-  opacity: 0.7,
+  // opacity: 0.7,
   '& svg': {
     fontSize: '2.75em',
   },
@@ -61,7 +61,7 @@ export const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1),
   },
   checkboxChecked: {
-    opacity: '1!important',
+    opacity: '1!important' as any,
     '& .MuiIconButton-label': {
       boxShadow: '1px 1px 13px rgba(0,0,0,0.35)',
       backgroundColor: 'rgba(255, 255, 255, 0.15)',

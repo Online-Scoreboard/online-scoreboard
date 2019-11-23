@@ -17,7 +17,7 @@ export type TeamColor =
 
 export type ScoringSystem = 'increase' | 'decrease' | 'both';
 
-export type GameListItem = {
+export interface GameListItem {
   name: string;
   minTeamSize: number;
   maxTeamSize: number;
@@ -26,4 +26,4 @@ export type GameListItem = {
   winningScoreEnabled: boolean;
   scoringSystem: ScoringSystem;
   isMatchesBased: boolean;
-};
+}
