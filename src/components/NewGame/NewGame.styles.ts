@@ -1,8 +1,13 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const teamCheckboxBase = {
+  opacity: 0.7,
   '& svg': {
-    fontSize: '2.4em',
+    fontSize: '2.75em',
+  },
+  '& .MuiIconButton-label': {
+    borderRadius: '50%',
+    padding: '3px',
   },
 };
 
@@ -54,6 +59,17 @@ export const useStyles = makeStyles(theme => ({
   gameReviewTeamIcons: {
     fontSize: '3em',
     marginRight: theme.spacing(1),
+  },
+  checkboxChecked: {
+    opacity: '1!important',
+    '& .MuiIconButton-label': {
+      boxShadow: '1px 1px 13px rgba(0,0,0,0.35)',
+      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    },
+    '& svg': {
+      stroke: 'black',
+      strokeWidth: '0.25px',
+    },
   },
   redCheckbox: {
     ...teamCheckboxBase,

@@ -1,5 +1,5 @@
-import { TeamColor, GameListItem } from './NewGameTypes';
-import { gamesList } from './GameRules/GameList';
+import { TeamColor, GameListItem } from '../NewGameTypes';
+import { gamesList } from '../GameRules/GameList';
 
 const startingStep = 0;
 const minGameNameLength = 6;

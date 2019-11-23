@@ -1,20 +1,28 @@
 import { useReducer, useCallback } from 'react';
 import Filter from 'bad-words';
 
-import { newGameReducer, NewGameState } from '../NewGameReducer';
+import { newGameReducer, NewGameState } from './NewGameReducer';
 import {
-  getDefaultTeams,
-  getDefaultTeamColors,
   getColors,
   getMinGameNameLength,
   getMaxGameNameLength,
-  getStartingStep,
   getSteps,
+  getDefaultTeams,
+  getDefaultTeamColors,
   getDefaultGameRules,
-} from '../NewGameConstants';
+  getStartingStep,
+} from './NewGameConstants';
 import { TeamColor, GameListItem } from '../NewGameTypes';
+import {
+  colorsAction,
+  predefinedRulesAction,
+  teamsAction,
+  customRulesAction,
+  completeStepAction,
+  setupAction,
+} from './NewGameActions';
 
-const getInitialState = (): NewGameState => ({
+const initialState: NewGameState = {
   setup: {
     gameName: '',
   },
@@ -27,146 +35,38 @@ const getInitialState = (): NewGameState => ({
   },
   gameSubmitted: false,
   error: false,
-});
+};
 
-export const useNewGame = () => {
-  const initialState = getInitialState();
+export interface UseNewGame {
+  steps: string[];
+  colorsList: TeamColor[];
+  gameSubmitted: boolean;
+  rules: GameListItem;
+  setup: {
+    gameName: string;
+  };
+  teamColors: TeamColor[];
+  teams: number;
+  error: boolean;
+  checkStep: (step: number) => boolean;
+  activeStep: number;
+  completedSteps: number[];
+  getValidationNotes: (step: number) => string;
+  onGameNameChange: (value: string) => void;
+  onTeamColorsChange: (teamColor: TeamColor) => void;
+  onTeamsChange: (newTeams: number) => void;
+  onGameRulesChange: (payload: Partial<GameListItem>) => void;
+  onPredefinedGameRuleChange: (payload: GameListItem) => void;
+  onSetStep: (step: number) => void;
+}
+
+export const useNewGame = (): UseNewGame => {
+  const badWordsFilter = new Filter();
   const stepsList = getSteps();
   const colorsList = getColors();
-  const filter = new Filter();
   const [state, dispatch] = useReducer(newGameReducer, initialState);
   const { gameSubmitted, rules, setup, teamColors, teams, steps, error } = state;
   const { active: activeStep, completed: completedSteps } = steps;
-
-  const handleGameNameChange = useCallback(
-    (value: string) => {
-      const filteredValue = filter.clean(value);
-
-      dispatch({ type: 'SETUP', payload: filteredValue });
-    },
-    [filter]
-  );
-
-  const handleTeamColorsChange = useCallback(
-    (teamColor: TeamColor) => {
-      if (teamColors.indexOf(teamColor) >= 0) {
-        const newTeamColors = teamColors.filter(color => color !== teamColor);
-        dispatch({ type: 'COLORS', payload: newTeamColors });
-        return;
-      }
-
-      if (teamColors.length >= teams) {
-        return;
-      }
-
-      const newTeamColors = [...teamColors, teamColor];
-      dispatch({ type: 'COLORS', payload: newTeamColors });
-    },
-    [teamColors, teams]
-  );
-
-  const handleTeamsChange = useCallback(
-    (newTeams: number) => {
-      let newTeamColors = [...teamColors];
-
-      if (newTeams === teams) {
-        return;
-      }
-
-      if (newTeams === teamColors.length) {
-        dispatch({
-          type: 'TEAMS',
-          payload: {
-            teams: newTeams,
-          },
-        });
-
-        return;
-      }
-
-      if (newTeams <= teamColors.length) {
-        newTeamColors = teamColors.slice(0, newTeams);
-      }
-
-      if (newTeams > teamColors.length) {
-        const availableColors = colorsList.filter(teamColor => teamColors.indexOf(teamColor) === -1).reverse();
-
-        newTeamColors = new Array(newTeams - teamColors.length)
-          .fill(true)
-          .reduce(totTeams => [...totTeams, availableColors.pop()], teamColors);
-      }
-
-      dispatch({
-        type: 'TEAMS',
-        payload: {
-          teams: newTeams,
-          teamColors: newTeamColors,
-        },
-      });
-    },
-    [colorsList, teamColors, teams]
-  );
-
-  const handleGameRulesChange = useCallback(
-    (payload: { [name: string]: string | boolean | number }) => {
-      const { scoringSystem, winningScore, winningScoreEnabled, startingScore } = rules;
-      const payloadUpdated = { ...payload };
-      const isWinningScoreEnabled =
-        'winningScoreEnabled' in payload ? payload.winningScoreEnabled : winningScoreEnabled;
-
-      if (
-        isWinningScoreEnabled &&
-        scoringSystem === 'increase' &&
-        Number(payload.winningScore || winningScore) < Number(payload.startingScore || startingScore)
-      ) {
-        payloadUpdated.scoringSystem = 'decrease';
-      } else if (
-        isWinningScoreEnabled &&
-        scoringSystem === 'decrease' &&
-        Number(payload.winningScore || winningScore) > Number(payload.startingScore || startingScore)
-      ) {
-        payloadUpdated.scoringSystem = 'increase';
-      }
-
-      if (payload.isMatchesBased) {
-        payloadUpdated.startingScore = '0';
-      }
-
-      payloadUpdated.teams = teams;
-
-      if (payload.minTeamSize && teams < Number(payload.minTeamSize)) {
-        payloadUpdated.teams = Number(payload.minTeamSize);
-      }
-      if (payload.maxTeamSize && teams > Number(payload.maxTeamSize)) {
-        payloadUpdated.teams = Number(payload.maxTeamSize);
-      }
-
-      dispatch({
-        type: 'RULES',
-        payload: payloadUpdated,
-      });
-    },
-    [rules, teams]
-  );
-
-  const handlePredefinedGameRuleChange = useCallback(
-    (payload: GameListItem) => {
-      const payloadUpdated = { ...payload, teams };
-
-      if (payload.minTeamSize && teams < Number(payload.minTeamSize)) {
-        payloadUpdated.teams = Number(payload.minTeamSize);
-      }
-      if (payload.maxTeamSize && teams > Number(payload.maxTeamSize)) {
-        payloadUpdated.teams = Number(payload.maxTeamSize);
-      }
-
-      dispatch({
-        type: 'PREDEFINED_RULES',
-        payload: payloadUpdated,
-      });
-    },
-    [teams]
-  );
 
   const checkStep = useCallback(
     (step: number): boolean => {
@@ -177,8 +77,10 @@ export const useNewGame = () => {
         case 0: {
           const { gameName } = setup;
           const wordCheck = /[*<>~]+/.test(gameName);
+          const badWords = badWordsFilter.isProfane(gameName);
 
           return (
+            !badWords &&
             !wordCheck &&
             Boolean(gameName && gameName.length >= minGameNameLength && gameName.length < maxGameNameLength)
           );
@@ -230,14 +132,14 @@ export const useNewGame = () => {
           return true;
         }
         case 3: {
-          return teamColors && teamColors.length === teams;
+          return checkStep(2) && teamColors && teamColors.length === teams;
         }
         default: {
           return false;
         }
       }
     },
-    [rules, setup, teamColors, teams]
+    [badWordsFilter, rules, setup, teamColors, teams]
   );
 
   const getValidationNotes = useCallback(
@@ -250,7 +152,6 @@ export const useNewGame = () => {
           const { gameName } = setup;
           const diff = minGameNameLength - gameName.length;
           const overFlow = gameName.length - maxGameNameLength;
-          const wordCheck = /[*<>~]+/.test(gameName);
 
           if (diff > 0) {
             return `Minimum name of ${minGameNameLength} characters. You must enter at lease ${diff} more characters`;
@@ -258,8 +159,14 @@ export const useNewGame = () => {
             return `Ops! That name is too long. A maximum of ${maxGameNameLength} characters is allowed`;
           }
 
+          const wordCheck = /[*<>~]+/.test(gameName);
           if (wordCheck) {
-            return 'Invalid game name. Bad words and the following characters are not allowed: *, <, >, ~';
+            return 'Invalid game name. The following characters are not allowed: *, <, >, ~';
+          }
+
+          const badWords = badWordsFilter.isProfane(gameName);
+          if (badWords) {
+            return 'Ops! Bad words are not allowed in here. Please check your game name';
           }
 
           return 'Your game name looks amazing!';
@@ -312,7 +219,9 @@ export const useNewGame = () => {
         case 3: {
           const teamColorsLength = (teamColors && teamColors.length) || 0;
           const diff = teams - teamColorsLength;
-
+          if (!checkStep(3)) {
+            return `You've selected an incorrect number of teams. Please go back and fix the problem first`;
+          }
           if (diff > 0) {
             return `You must chose ${diff} more color${diff > 1 ? 's' : ''}`;
           }
@@ -326,48 +235,62 @@ export const useNewGame = () => {
         }
       }
     },
-    [rules, setup, teamColors, teams]
+    [badWordsFilter, checkStep, rules, setup, teamColors, teams]
+  );
+
+  const handleGameNameChange = useCallback((value: string) => {
+    dispatch(setupAction(value));
+  }, []);
+
+  const handleTeamColorsChange = useCallback(
+    (teamColor: TeamColor) => {
+      dispatch(colorsAction(teamColor, teamColors, teams));
+    },
+    [teamColors, teams]
+  );
+
+  const handleTeamsChange = useCallback(
+    (newTeams: number) => {
+      if (newTeams === teams) {
+        return;
+      }
+
+      dispatch(teamsAction(colorsList, teamColors, newTeams));
+    },
+    [colorsList, teamColors, teams]
+  );
+
+  const handleGameRulesChange = useCallback(
+    (payload: Partial<GameListItem>) => {
+      dispatch(customRulesAction(payload, rules, teams));
+    },
+    [rules, teams]
+  );
+
+  const handlePredefinedGameRuleChange = useCallback(
+    (payload: GameListItem) => {
+      dispatch(predefinedRulesAction(payload, teams));
+    },
+    [teams]
   );
 
   const onHandleSetStep = useCallback(
-    (step?: number) => {
+    (step: number) => {
       const stepStatus = checkStep(activeStep);
-      const completedStepsUpdated = stepsList
-        .map((_stepName, index) => index)
-        .filter((_stepName, index) => (index === activeStep && stepStatus) || completedSteps.indexOf(index) !== -1);
 
       if (typeof step === 'number' && step === activeStep) {
         return;
       }
 
-      if (typeof step === 'number') {
-        dispatch({
-          type: 'COMPLETE_STEP',
-          payload: {
-            completedSteps: completedStepsUpdated,
-            activeStep: step,
-          },
-        });
+      if (
+        activeStep === stepsList.length - 1 &&
+        step === activeStep + 1 &&
+        completedSteps.length !== stepsList.length
+      ) {
         return;
       }
 
-      if (stepsList.length === activeStep && completedStepsUpdated.length === stepsList.length) {
-        dispatch({ type: 'SUBMIT' });
-        return;
-      }
-
-      const nextAvailableStep = stepsList
-        .map((val, index) => index)
-        .filter(val => completedStepsUpdated.indexOf(val) === -1)[0];
-      const nextStep = typeof nextAvailableStep === 'number' ? nextAvailableStep : stepsList.length;
-
-      dispatch({
-        type: 'COMPLETE_STEP',
-        payload: {
-          completedSteps: completedStepsUpdated,
-          activeStep: nextStep,
-        },
-      });
+      dispatch(completeStepAction(stepsList, activeStep, stepStatus, completedSteps, step));
     },
     [activeStep, checkStep, completedSteps, stepsList]
   );

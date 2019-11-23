@@ -14,7 +14,15 @@ interface TeamColorsProps {
 }
 
 export const TeamColors: React.FC<TeamColorsProps> = ({ teams, colors, teamColors, onChange }) => {
-  const { card, cardTitle, teamsSlider, teamsSliderLabel, cardCentredContent, ...classes } = useStyles();
+  const {
+    card,
+    cardTitle,
+    teamsSlider,
+    teamsSliderLabel,
+    cardCentredContent,
+    checkboxChecked,
+    ...classes
+  } = useStyles();
 
   const getCheckboxClass = useCallback(
     (color: string) => {
@@ -49,7 +57,7 @@ export const TeamColors: React.FC<TeamColorsProps> = ({ teams, colors, teamColor
             icon={<PersonOutlineIcon />}
             checkedIcon={<PersonIcon />}
             checked={teamColors.indexOf(color) >= 0}
-            classes={{ root: getCheckboxClass(color) }}
+            classes={{ root: getCheckboxClass(color), checked: checkboxChecked }}
             onChange={handleChange(color)}
           />
         ))}

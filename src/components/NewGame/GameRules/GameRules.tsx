@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import {
   CardHeader,
   CardContent,
@@ -70,6 +70,8 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
     isMatchesBased,
   } = rules;
 
+  const textInput = useRef(null);
+
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value, type, checked } = event.target;
@@ -113,13 +115,19 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
     [onGameRuleChange]
   );
 
-  const getWinningScoreHelpingText = useMemo(() => {
-    const copy = 'Teams win at ';
+  const handleFocus = useCallback((event: React.FocusEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    const { target } = event;
+    target.select();
+  }, []);
 
+  const getWinningScoreHelpingText = useMemo(() => {
     if (isMatchesBased) {
-      return `${copy} at the end of ${winningScore} ${String(winningScore) === '1' ? 'match' : 'matches'}`;
+      return `The winning team will be determined at the end of ${winningScore} ${
+        String(winningScore) === '1' ? 'match' : 'matches'
+      }`;
     }
-    return `${copy} ${winningScore} ${String(winningScore) === '1' ? 'point' : 'points'}`;
+    return `First teams to reach ${winningScore} ${String(winningScore) === '1' ? 'point' : 'points'} wins`;
   }, [isMatchesBased, winningScore]);
 
   return (
@@ -163,19 +171,22 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
                 Each point will be equal to a won match rather than a score within a single game
               </Typography>
 
-              <TextField
-                className={`${content} startingScore`}
-                name="startingScore"
-                label="Teams starting score"
-                placeholder="Teams starting score"
-                variant="outlined"
-                helperText={`Teams start at ${startingScore} points`}
-                type="number"
-                value={startingScore}
-                onChange={handleChange}
-                disabled={isMatchesBased}
-                fullWidth
-              />
+              {!isMatchesBased && (
+                <TextField
+                  className={`${content} startingScore`}
+                  name="startingScore"
+                  label="Teams starting score"
+                  placeholder="Teams starting score"
+                  variant="outlined"
+                  helperText={`Teams start at ${startingScore} points`}
+                  type="number"
+                  value={startingScore}
+                  inputRef={(el: any) => (textInput.current = el)}
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  fullWidth
+                />
+              )}
 
               <FormControlLabel
                 className={`${content} winningScoreEnabled`}
@@ -190,54 +201,54 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
                 label={`Enable winning ${isMatchesBased ? 'matches' : 'score'} condition`}
               />
 
-              <TextField
-                className={`${content} endingScore`}
-                name="winningScore"
-                label={`Teams winning ${isMatchesBased ? 'matches' : 'score'}`}
-                placeholder={`Teams winning ${isMatchesBased ? 'matches' : 'score'}`}
-                variant="outlined"
-                helperText={getWinningScoreHelpingText}
-                type="number"
-                value={winningScore}
-                onChange={handleChange}
-                disabled={!winningScoreEnabled}
-                fullWidth
-              />
-
-              <FormControl component="fieldset" className={`${content} scoringSystem`}>
-                <FormLabel component="legend">Team scores should</FormLabel>
-                <RadioGroup
-                  aria-label="scoring system"
-                  name="scoringSystem"
-                  value={scoringSystem}
+              {winningScoreEnabled && (
+                <TextField
+                  className={`${content} endingScore`}
+                  name="winningScore"
+                  label={`Teams winning ${isMatchesBased ? 'matches' : 'score'}`}
+                  placeholder={`Teams winning ${isMatchesBased ? 'matches' : 'score'}`}
+                  variant="outlined"
+                  helperText={getWinningScoreHelpingText}
+                  type="number"
+                  value={winningScore}
+                  inputRef={(el: any) => (textInput.current = el)}
+                  onFocus={handleFocus}
                   onChange={handleChange}
-                >
-                  <FormControlLabel value="increase" control={<Radio color="primary" />} label="Increase" />
-                  <FormControlLabel
-                    value="decrease"
-                    disabled={isMatchesBased}
-                    control={<Radio color="primary" />}
-                    label="Decrease"
-                  />
-                  <FormControlLabel
-                    value="both"
-                    disabled={isMatchesBased}
-                    control={<Radio color="primary" />}
-                    label="Increase and Decrease"
-                  />
-                </RadioGroup>
-              </FormControl>
+                  fullWidth
+                />
+              )}
+
+              {!isMatchesBased && (
+                <FormControl component="fieldset" className={`${content} scoringSystem`}>
+                  <FormLabel component="legend">Team scores should</FormLabel>
+                  <RadioGroup
+                    aria-label="scoring system"
+                    name="scoringSystem"
+                    value={scoringSystem}
+                    onChange={handleChange}
+                  >
+                    {((winningScoreEnabled && startingScore < winningScore) || !winningScoreEnabled) && (
+                      <FormControlLabel value="increase" control={<Radio color="primary" />} label="Increase" />
+                    )}
+                    {((winningScoreEnabled && startingScore > winningScore) || !winningScoreEnabled) && (
+                      <FormControlLabel value="decrease" control={<Radio color="primary" />} label="Decrease" />
+                    )}
+                    <FormControlLabel value="both" control={<Radio color="primary" />} label="Increase and Decrease" />
+                  </RadioGroup>
+                </FormControl>
+              )}
 
               <TextField
                 className={`${content} minTeamSize`}
                 name="minTeamSize"
-                label="Minimum team size"
-                placeholder="Minimum team size"
+                label="Minimum number of teams"
                 variant="outlined"
                 helperText={`Minimum team size required by the game rules`}
                 type="number"
                 inputProps={{ min: '1', max: '12', step: '1' }}
+                inputRef={(el: any) => (textInput.current = el)}
                 value={minTeamSize}
+                onFocus={handleFocus}
                 onChange={handleChange}
                 fullWidth
               />
@@ -245,13 +256,14 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
               <TextField
                 className={`${content} minTeamSize`}
                 name="maxTeamSize"
-                label="Maximum team size"
-                placeholder="Maximum team size"
+                label="Maximum number of teams"
                 variant="outlined"
                 helperText={`Maximum team size required by the game rules`}
                 type="number"
                 inputProps={{ min: '1', max: '12', step: '1' }}
+                inputRef={(el: any) => (textInput.current = el)}
                 value={maxTeamSize}
+                onFocus={handleFocus}
                 onChange={handleChange}
                 fullWidth
               />

@@ -41,10 +41,21 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
   } = useNewGame();
 
   const handleActiveStep = useCallback(
-    (step?: number) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      onSetStep(step);
+    (step: number) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      if (step < activeStep) {
+        onSetStep(step);
+      }
+      if (!checkStep(activeStep)) {
+        return;
+      }
+      if (step === activeStep + 1) {
+        onSetStep(step);
+      }
+      if (~completedSteps.indexOf(step)) {
+        onSetStep(step);
+      }
     },
-    [onSetStep]
+    [activeStep, checkStep, completedSteps, onSetStep]
   );
 
   const getStepContent = useCallback(
@@ -140,7 +151,7 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
                 variant="extended"
                 color="primary"
                 aria-label="next"
-                onClick={handleActiveStep()}
+                onClick={handleActiveStep(activeStep + 1)}
                 disabled={!isValid || gameSubmitted}
               >
                 Next
@@ -154,7 +165,7 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
                 variant="extended"
                 color="primary"
                 aria-label="complete"
-                onClick={handleActiveStep()}
+                onClick={handleActiveStep(activeStep + 1)}
                 disabled={gameSubmitted || completedSteps.length < steps.length}
               >
                 Let's Go!

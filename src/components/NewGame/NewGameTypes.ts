@@ -19,10 +19,10 @@ export type ScoringSystem = 'increase' | 'decrease' | 'both';
 
 export type GameListItem = {
   name: string;
-  minTeamSize: string;
-  maxTeamSize: string;
-  startingScore: string;
-  winningScore: string;
+  minTeamSize: number;
+  maxTeamSize: number;
+  startingScore: number;
+  winningScore: number;
   winningScoreEnabled: boolean;
   scoringSystem: ScoringSystem;
   isMatchesBased: boolean;
