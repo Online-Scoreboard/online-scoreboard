@@ -134,6 +134,9 @@ export const useNewGame = (): UseNewGame => {
         case 3: {
           return checkStep(2) && teamColors && teamColors.length === teams;
         }
+        case 4: {
+          return true;
+        }
         default: {
           return false;
         }
@@ -282,10 +285,12 @@ export const useNewGame = (): UseNewGame => {
         return;
       }
 
+      // Don't allow going to the game review until all the steps are completed and valid
       if (
-        activeStep === stepsList.length - 1 &&
+        !stepStatus &&
         step === activeStep + 1 &&
-        completedSteps.length !== stepsList.length
+        activeStep === stepsList.length - 1 &&
+        completedSteps.length !== stepsList.length - 1
       ) {
         return;
       }

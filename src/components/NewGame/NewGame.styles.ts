@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const teamCheckboxBase = {
-  // opacity: 0.7,
+  opacity: 0.6,
   '& svg': {
     fontSize: '2.75em',
   },
@@ -59,6 +59,18 @@ export const useStyles = makeStyles(theme => ({
   gameReviewTeamIcons: {
     fontSize: '3em',
     marginRight: theme.spacing(1),
+  },
+  expansionPanelRoot: {
+    border: '1px solid rgba(0, 0, 0, .125)',
+    boxShadow: 'none',
+  },
+  expansionPanelSummaryRoot: {
+    backgroundColor: 'rgba(0, 0, 0, .03)',
+    borderBottom: '1px solid rgba(0, 0, 0, .125)',
+    minHeight: 56,
+  },
+  expansionPanelDetailsRoot: {
+    padding: theme.spacing(2),
   },
   checkboxChecked: {
     opacity: '1!important' as any,

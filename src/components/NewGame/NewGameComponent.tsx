@@ -44,15 +44,19 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
     (step: number) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       if (step < activeStep) {
         onSetStep(step);
+        return;
       }
+
       if (!checkStep(activeStep)) {
         return;
       }
       if (step === activeStep + 1) {
         onSetStep(step);
+        return;
       }
       if (~completedSteps.indexOf(step)) {
         onSetStep(step);
+        return;
       }
     },
     [activeStep, checkStep, completedSteps, onSetStep]

@@ -10,47 +10,17 @@ import {
   RadioGroup,
   Radio,
   Typography,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
   Grid,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { withStyles } from '@material-ui/core/styles';
-import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
-import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { useStyles } from '../NewGame.styles';
 import { GameListItem } from '../NewGameTypes';
 import { gamesList } from './GameList';
-
-const ExpansionPanel = withStyles({
-  root: {
-    border: '1px solid rgba(0, 0, 0, .125)',
-    boxShadow: 'none',
-  },
-})(MuiExpansionPanel);
-
-const ExpansionPanelSummary = withStyles({
-  root: {
-    backgroundColor: 'rgba(0, 0, 0, .03)',
-    borderBottom: '1px solid rgba(0, 0, 0, .125)',
-    minHeight: 56,
-    '&$expanded': {
-      minHeight: 56,
-    },
-  },
-  content: {
-    '&$expanded': {
-      margin: '12px 0',
-    },
-  },
-})(MuiExpansionPanelSummary);
-
-const ExpansionPanelDetails = withStyles(theme => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiExpansionPanelDetails);
 
 interface GameRulesProps {
   rules: GameListItem;
@@ -59,7 +29,7 @@ interface GameRulesProps {
 }
 
 export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRuleChange }) => {
-  const { cardTitle, content } = useStyles();
+  const { cardTitle, expansionPanelRoot, expansionPanelSummaryRoot, expansionPanelDetailsRoot, content } = useStyles();
   const {
     startingScore,
     winningScore,
@@ -150,15 +120,16 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
         </Grid>
 
         <Typography gutterBottom>Otherwise define your custom rules in the advanced section</Typography>
-        <ExpansionPanel square>
+        <ExpansionPanel square classes={{ root: expansionPanelRoot }}>
           <ExpansionPanelSummary
+            classes={{ root: expansionPanelSummaryRoot }}
             expandIcon={<ExpandMoreIcon />}
             aria-controls="advanced-game-rules"
             id="advanced-game-rules"
           >
             <Typography>Advanced Rules</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+          <ExpansionPanelDetails classes={{ root: expansionPanelDetailsRoot }}>
             <Grid container direction="column">
               <FormControlLabel
                 className="isMatchesBased"

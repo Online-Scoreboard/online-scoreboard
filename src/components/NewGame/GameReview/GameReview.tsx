@@ -48,12 +48,17 @@ export const GameReview: React.FC<GameReviewProps> = ({ gameName, teams, teamCol
         <Typography gutterBottom>{teams} teams</Typography>
         <Typography gutterBottom>
           {teamColors.map(color => (
-            <PersonIcon key={color} className={`${gameReviewTeamIcons} ${getColorClass(color)}`} />
+            <PersonIcon
+              key={color}
+              className={`${gameReviewTeamIcons} ${getColorClass(color)}`}
+              style={{ opacity: 1, fontSize: '5rem' }}
+            />
           ))}
         </Typography>
         <Typography>This is a {isMatchesBased ? 'matches' : 'points'} based game</Typography>
         <Typography gutterBottom>
-          The teams score will {score} from {startingScore} {winningScore} points
+          The teams score will {score} from {startingScore} {winningScore} points{' '}
+          {!winningScore && 'until the end of the game'}
         </Typography>
       </CardContent>
     </>
