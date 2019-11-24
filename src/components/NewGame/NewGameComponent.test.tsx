@@ -12,6 +12,7 @@ import { getDefaultTeams, getDefaultTeamColors } from './hooks/NewGameConstants'
 import { useNewGame, UseNewGame } from './hooks/useNewGame';
 import { GameReview } from './GameReview';
 import { GameCreation } from './GameCreation';
+import { GameRules } from './GameRules';
 
 jest.mock('./hooks/useNewGame');
 
@@ -110,14 +111,18 @@ describe('NewGameComponent', () => {
   });
 
   describe('GameName', () => {
+    const activeStep = 0;
+
     it('should render a GameName content in the initial active step', () => {
       const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       const gameName = wrapper.find(GameName);
       const gameTeams = wrapper.find(GameTeams);
+      const gameRules = wrapper.find(GameRules);
 
       expect(gameName.exists()).toBe(true);
       expect(gameTeams.exists()).not.toBe(true);
+      expect(gameRules.exists()).not.toBe(true);
     });
 
     it('should update the reducer when updating the game name', () => {
@@ -125,7 +130,7 @@ describe('NewGameComponent', () => {
       mockedUseNewGame.mockImplementationOnce(() => ({
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         onGameNameChange: mockOnGameNameChange,
-        activeStep: 0,
+        activeStep,
       }));
 
       const testGameName = 'testGameName';
@@ -141,7 +146,6 @@ describe('NewGameComponent', () => {
 
     it('should disable the "next" step navigation button when the game name is too short', () => {
       const testGameName = 'test';
-
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       act(() => {
@@ -180,7 +184,7 @@ describe('NewGameComponent', () => {
       const testGameName = 'testGameName';
       mockedUseNewGame.mockImplementation(() => ({
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
-        activeStep: 0,
+        activeStep,
       }));
 
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
@@ -200,32 +204,38 @@ describe('NewGameComponent', () => {
     });
   });
 
+  describe('GameRules', () => {
+    const activeStep = 1;
+
+    it('should render the GameRules component as a second step', () => {
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+      }));
+
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      const gameRules = wrapper.find(GameRules);
+      expect(gameRules.exists()).toBe(true);
+    });
+  });
+
   describe('GameTeams', () => {
+    const activeStep = 2;
+
     it('should render the GameTeams component as a third step', () => {
-      const activeStep = 2;
       mockedUseNewGame.mockImplementationOnce(() => ({
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
 
       const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
-
-      act(() => {
-        const goToStep = wrapper.find(Stepper).props().onStepClick;
-        goToStep(activeStep)({} as any);
-      });
-
-      wrapper.update();
-
-      const gameName = wrapper.find(GameName);
       const gameTeams = wrapper.find(GameTeams);
 
       expect(gameTeams.exists()).toBe(true);
-      expect(gameName.exists()).not.toBe(true);
     });
 
     it('should update the reducer when updating the number of teams', () => {
-      const activeStep = 2;
       const testTeams = 11;
       mockedUseNewGame.mockImplementation(() => ({
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
@@ -246,7 +256,6 @@ describe('NewGameComponent', () => {
     });
 
     it('should not update the reducer when the updated number of teams is not changed', () => {
-      const activeStep = 2;
       const testTeams = getDefaultTeams();
       mockedUseNewGame.mockImplementation(() => ({
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
@@ -269,8 +278,9 @@ describe('NewGameComponent', () => {
   });
 
   describe('TeamColors', () => {
+    const activeStep = 3;
+
     it('should render the TeamColors component as a third step', () => {
-      const activeStep = 3;
       mockedUseNewGame.mockImplementation(() => ({
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
@@ -283,7 +293,6 @@ describe('NewGameComponent', () => {
     });
 
     it('should change a team color', () => {
-      const activeStep = 3;
       const testTeamSize = getDefaultTeams();
       mockedUseNewGame.mockImplementation(() => ({
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
@@ -330,7 +339,6 @@ describe('NewGameComponent', () => {
     });
 
     it('should not allow adding other colors when the maximum number of chosen teams is already reached', () => {
-      const activeStep = 3;
       const defaultTeamColors = getDefaultTeamColors();
       const testColor: TeamColor = 'red';
       mockedUseNewGame.mockImplementation(() => ({
@@ -356,8 +364,9 @@ describe('NewGameComponent', () => {
   });
 
   describe('GameReview', () => {
+    const activeStep = 4;
+
     it('should render the GameReview component as a final step', () => {
-      const activeStep = 4;
       mockedUseNewGame.mockImplementation(() => ({
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
@@ -365,12 +374,11 @@ describe('NewGameComponent', () => {
 
       const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
-      const teamColors = wrapper.find(GameReview);
-      expect(teamColors.exists()).toBe(true);
+      const gameReview = wrapper.find(GameReview);
+      expect(gameReview.exists()).toBe(true);
     });
 
     it(`should display a "Let's go" button`, () => {
-      const activeStep = 4;
       mockedUseNewGame.mockImplementation(() => ({
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
@@ -388,8 +396,9 @@ describe('NewGameComponent', () => {
   });
 
   describe('GameCreation', () => {
+    const activeStep = 5;
+
     it('should render a GameCreation view while creating the board game', () => {
-      const activeStep = 5;
       mockedUseNewGame.mockImplementation(() => ({
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
@@ -397,8 +406,174 @@ describe('NewGameComponent', () => {
 
       const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
-      const teamColors = wrapper.find(GameCreation);
-      expect(teamColors.exists()).toBe(true);
+      const gameCreation = wrapper.find(GameCreation);
+      expect(gameCreation.exists()).toBe(true);
+    });
+
+    it('should not display any navigation button', () => {
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+      }));
+
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      const prevButton = wrapper.find('.prevStep');
+      const nextButton = wrapper.find('.nextStep');
+      const readyButton = wrapper.find('.ready');
+
+      expect(prevButton.exists()).toBe(false);
+      expect(nextButton.exists()).toBe(false);
+      expect(readyButton.exists()).toBe(false);
+    });
+  });
+
+  describe('Invalid step', () => {
+    const activeStep = 6;
+
+    it('should render an "Unknown step" element', () => {
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+      }));
+
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      const unknowStep = wrapper.find('#unknown-step');
+      expect(unknowStep.exists()).toBe(true);
+    });
+
+    it('should render an "Unknown step" message to the view', () => {
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+      }));
+      const expectedCopy = 'Unknown step';
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      const unknowStep = wrapper.find('#unknown-step');
+      expect(unknowStep.text()).toBe(expectedCopy);
+    });
+  });
+
+  describe('handleActiveStep', () => {
+    const activeStep = 0;
+
+    it('should disable the next step button when the current one is invalid', () => {
+      const mockCheckStep = jest.fn();
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+        checkStep: mockCheckStep,
+      }));
+
+      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const nextButton = wrapper.find('button.nextStep');
+
+      expect(nextButton.prop('disabled')).toBe(true);
+    });
+
+    it('should not allow going to the next step when the current one is invalid', () => {
+      const mockCheckStep = jest.fn();
+      const mockOnSetStep = jest.fn();
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+        checkStep: mockCheckStep,
+        onSetStep: mockOnSetStep,
+      }));
+
+      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const stepper = wrapper.find(Stepper);
+
+      act(() => {
+        stepper.prop('onStepClick')(activeStep + 1)({} as any);
+      });
+      wrapper.update();
+
+      expect(mockOnSetStep).not.toBeCalled();
+    });
+
+    it('should allow going to the next step when the current one is valid', () => {
+      const mockCheckStep = jest.fn(() => true);
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+        checkStep: mockCheckStep,
+      }));
+
+      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const nextButton = wrapper.find('button.nextStep');
+
+      expect(nextButton.prop('disabled')).toBe(false);
+    });
+
+    it('should update the view when going to the next step', () => {
+      const mockOnSetStep = jest.fn();
+      const mockCheckStep = jest.fn(() => true);
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+        checkStep: mockCheckStep,
+        onSetStep: mockOnSetStep,
+      }));
+
+      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const nextButton = wrapper.find('button.nextStep');
+
+      act(() => {
+        nextButton.simulate('click');
+      });
+      wrapper.update();
+
+      expect(nextButton.prop('disabled')).toBe(false);
+      expect(mockOnSetStep).toBeCalledWith(activeStep + 1);
+    });
+
+    it('should not allow jumping to a not completed step', () => {
+      const mockOnSetStep = jest.fn();
+      const mockCheckStep = jest.fn(() => true);
+      const mockCompletedSteps = [0];
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+        checkStep: mockCheckStep,
+        onSetStep: mockOnSetStep,
+        completedSteps: mockCompletedSteps,
+      }));
+
+      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const stepper = wrapper.find(Stepper);
+
+      act(() => {
+        stepper.prop('onStepClick')(activeStep + 2)({} as any);
+      });
+      wrapper.update();
+
+      expect(mockOnSetStep).not.toBeCalled();
+    });
+
+    it('should allow jumping to a completed step', () => {
+      const mockOnSetStep = jest.fn();
+      const mockCheckStep = jest.fn(() => true);
+      const mockCompletedSteps = [0, 1, 2];
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+        checkStep: mockCheckStep,
+        onSetStep: mockOnSetStep,
+        completedSteps: mockCompletedSteps,
+      }));
+
+      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const stepper = wrapper.find(Stepper);
+
+      act(() => {
+        stepper.prop('onStepClick')(activeStep + 2)({} as any);
+      });
+      wrapper.update();
+
+      expect(mockOnSetStep).toBeCalledWith(activeStep + 2);
     });
   });
 });

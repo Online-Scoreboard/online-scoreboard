@@ -80,7 +80,7 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
         case 5:
           return <GameCreation error={error} />;
         default:
-          return 'Unknown step';
+          return <div id="unknown-step">Unknown step</div>;
       }
     },
     [
