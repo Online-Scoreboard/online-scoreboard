@@ -59,6 +59,15 @@ export const newGameReducer = (state: NewGameState, action: NewGameActionType): 
       if (!action.payload) {
         return state;
       }
+      if (action.payload.clear) {
+        return {
+          ...state,
+          rules: {
+            ...state.rules,
+            name: '',
+          },
+        };
+      }
 
       const { teams, ...rules } = action.payload;
 

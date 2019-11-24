@@ -210,14 +210,18 @@ export const useNewGame = (): UseNewGame => {
         }
         case 2: {
           const { minTeamSize, maxTeamSize } = rules;
-          if (Number(teams) < Number(minTeamSize)) {
+
+          if (minTeamSize === maxTeamSize && teams !== minTeamSize) {
+            return `You must chose ${minTeamSize} teams according to your game rules`;
+          }
+          if (teams < minTeamSize) {
             return `According to your Rules setup, this game will require at least ${minTeamSize} teams`;
           }
-          if (Number(teams) > Number(maxTeamSize)) {
+          if (teams > maxTeamSize) {
             return `According to your Rules setup, this game will require a maximum of ${maxTeamSize} teams`;
           }
 
-          return `You can chose between ${minTeamSize} and ${maxTeamSize} teams according to the previous step`;
+          return `You're all set to start a ${teams} teams game!`;
         }
         case 3: {
           const teamColorsLength = (teamColors && teamColors.length) || 0;

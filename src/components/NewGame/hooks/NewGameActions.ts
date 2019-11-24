@@ -97,7 +97,8 @@ export const customRulesAction = (
     'winningScoreEnabled' in newRules ? newRules.winningScoreEnabled : winningScoreEnabled;
   const matchBasedEnabled = 'isMatchesBased' in newRules ? newRules.isMatchesBased : isMatchesBased;
   const winningScoreValue = 'winningScore' in newRules ? Number(newRules.winningScore) : winningScore || 0;
-  const startingScoreValue = 'startingScore' in newRules ? Number(newRules.startingScore) : startingScore || 0;
+  const startingScoreValue: number | string =
+    'startingScore' in newRules ? Number(newRules.startingScore) : startingScore || 0;
   const scoringSystemValue = newRules.scoringSystem || scoringSystem;
   const minTeamSizeValue = 'minTeamSize' in newRules ? Number(newRules.minTeamSize) : minTeamSize || 1;
   const maxTeamSizeValue = 'maxTeamSize' in newRules ? Number(newRules.maxTeamSize) : maxTeamSize || 1;
@@ -116,18 +117,17 @@ export const customRulesAction = (
     payloadUpdated.winningScore = 1;
   }
 
-  if (newRules.minTeamSize && teams < Number(newRules.minTeamSize)) {
-    payloadUpdated.teams = Number(newRules.minTeamSize);
-  }
-  if (newRules.maxTeamSize && teams > Number(newRules.maxTeamSize)) {
-    payloadUpdated.teams = Number(newRules.maxTeamSize);
-  }
-
   if (minTeamSizeValue < 1) {
     payloadUpdated.minTeamSize = 1;
   }
+  if (minTeamSizeValue > 12) {
+    payloadUpdated.minTeamSize = 12;
+  }
   if (minTeamSizeValue > maxTeamSizeValue) {
     payloadUpdated.maxTeamSize = minTeamSizeValue;
+    if (minTeamSizeValue > 12) {
+      payloadUpdated.maxTeamSize = 12;
+    }
   }
   if (maxTeamSizeValue < 1) {
     payloadUpdated.maxTeamSize = 1;
@@ -135,6 +135,16 @@ export const customRulesAction = (
   if (maxTeamSizeValue > 12) {
     payloadUpdated.maxTeamSize = 12;
   }
+  if ('minTeamSize' in newRules && teams < minTeamSizeValue) {
+    payloadUpdated.teams = Number(payloadUpdated.minTeamSize);
+  }
+  if ('maxTeamSize' in newRules && teams > maxTeamSizeValue) {
+    payloadUpdated.teams = Number(payloadUpdated.maxTeamSize);
+  }
+
+  // startingScoreValue = String(startingScoreValue);
+  // console.warn(startingScoreValue);
+  // payloadUpdated.startingScore = Number(startingScoreValue);
 
   payloadUpdated.startingScore =
     'startingScore' in payloadUpdated ? Number(payloadUpdated.startingScore) : startingScoreValue;

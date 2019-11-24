@@ -80,9 +80,15 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
 
   const handleGameRuleChange = useCallback(
     (e, game: any) => {
+      if (!game) {
+        return onChange({
+          clear: true,
+        });
+      }
+
       onGameRuleChange(game);
     },
-    [onGameRuleChange]
+    [onChange, onGameRuleChange]
   );
 
   const handleFocus = useCallback((event: React.FocusEvent<HTMLInputElement>) => {

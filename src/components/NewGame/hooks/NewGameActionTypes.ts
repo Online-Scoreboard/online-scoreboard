@@ -10,6 +10,7 @@ export const SUBMIT = 'SUBMIT';
 
 export interface RulesPayload extends GameListItem {
   teams: number;
+  clear?: boolean;
 }
 
 interface SetupAction {
