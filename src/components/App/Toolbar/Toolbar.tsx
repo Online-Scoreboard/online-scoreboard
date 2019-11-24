@@ -87,8 +87,12 @@ const ToolbarComponent: React.FC<ToolbarProps> = ({ isLoggedIn, onLogOut, user }
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleProfile}>Profile</MenuItem>
-              <MenuItem onClick={handleAccount}>My account</MenuItem>
+              <MenuItem className="profile" onClick={handleProfile}>
+                Profile
+              </MenuItem>
+              <MenuItem className="account" onClick={handleAccount}>
+                My account
+              </MenuItem>
               <MenuItem className="logOut" onClick={handleLogOut}>
                 Log Out
               </MenuItem>

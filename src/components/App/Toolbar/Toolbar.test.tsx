@@ -1,6 +1,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { shallow, mount } from 'enzyme';
+import * as router from '@reach/router';
 
 import { Toolbar } from './Toolbar';
 
@@ -37,6 +38,48 @@ describe('Toolbar', () => {
     const loginButton = wrapper.find('.logIn');
 
     expect(loginButton.exists()).toBe(true);
+  });
+
+  it('should allow navigating to the "profile" page', () => {
+    const isLoggedIn = true;
+    const user = {};
+    const onLogOut = jest.fn();
+    const spyNavigate = jest.spyOn(router, 'navigate');
+    const expectedNavigation = 'profile';
+
+    const wrapper = mount(<Toolbar isLoggedIn={isLoggedIn} onLogOut={onLogOut} user={user} />);
+
+    const profileButton = wrapper.find('.profile');
+    expect(profileButton.exists()).toBe(true);
+
+    act(() => {
+      const profileButtonClick = profileButton.first().props().onClick;
+      const event: any = {};
+      profileButtonClick && profileButtonClick(event);
+    });
+
+    expect(spyNavigate).toBeCalledWith(expectedNavigation);
+  });
+
+  it('should allow navigating to the "account" page', () => {
+    const isLoggedIn = true;
+    const user = {};
+    const onLogOut = jest.fn();
+    const spyNavigate = jest.spyOn(router, 'navigate');
+    const expectedNavigation = 'account';
+
+    const wrapper = mount(<Toolbar isLoggedIn={isLoggedIn} onLogOut={onLogOut} user={user} />);
+
+    const accountButton = wrapper.find('.account');
+    expect(accountButton.exists()).toBe(true);
+
+    act(() => {
+      const accountButtonClick = accountButton.first().props().onClick;
+      const event: any = {};
+      accountButtonClick && accountButtonClick(event);
+    });
+
+    expect(spyNavigate).toBeCalledWith(expectedNavigation);
   });
 
   it('should hide the login button when the user is logged in', () => {
