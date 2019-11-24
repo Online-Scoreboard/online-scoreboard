@@ -98,9 +98,10 @@ describe('NewGameReducer', () => {
     });
 
     it('should override both "teams" and "teamColors"', () => {
+      const testPayload: any = {};
       const testAction: NewGameActionType = {
         type: TEAMS,
-        payload: {} as any,
+        payload: testPayload,
       };
 
       const reducer = newGameReducer(initialState, testAction);
@@ -129,11 +130,12 @@ describe('NewGameReducer', () => {
 
       expect(initialState.rules.name).not.toBe(expectedRuleName);
 
+      const testPayload: any = {
+        name: 'customRuleName',
+      };
       const testAction: NewGameActionType = {
         type: RULES,
-        payload: {
-          name: 'customRuleName',
-        } as any,
+        payload: testPayload,
       };
 
       const reducer = newGameReducer(initialState, testAction);
@@ -182,11 +184,12 @@ describe('NewGameReducer', () => {
 
       expect(initialState.teams).not.toBe(testTeams);
 
+      const testPayload: any = {
+        teams: testTeams,
+      };
       const testAction: NewGameActionType = {
         type: RULES,
-        payload: {
-          teams: testTeams,
-        } as RulesPayload,
+        payload: testPayload,
       };
 
       const reducer = newGameReducer(initialState, testAction);
@@ -197,9 +200,10 @@ describe('NewGameReducer', () => {
 
   describe('PREDEFINED_RULES', () => {
     it('should return the previous state when a payload is not provided', () => {
+      const testPayload: any = '';
       const testAction: NewGameActionType = {
         type: PREDEFINED_RULES,
-        payload: '' as any,
+        payload: testPayload,
       };
 
       const reducer = newGameReducer(initialState, testAction);
@@ -210,12 +214,12 @@ describe('NewGameReducer', () => {
 
     it('should update the team size', () => {
       const testTeams = 12;
-
-      const testAction: any = {
+      const testPayload: any = {
+        teams: testTeams,
+      };
+      const testAction: NewGameActionType = {
         type: 'PREDEFINED_RULES',
-        payload: {
-          teams: testTeams,
-        },
+        payload: testPayload,
       };
 
       const reducer = newGameReducer(initialState, testAction);
@@ -224,9 +228,10 @@ describe('NewGameReducer', () => {
     });
 
     it('should always update the team size and result to undefined when not provided', () => {
-      const testAction: any = {
+      const testPayload: any = {};
+      const testAction: NewGameActionType = {
         type: PREDEFINED_RULES,
-        payload: {},
+        payload: testPayload,
       };
 
       const reducer = newGameReducer(initialState, testAction);

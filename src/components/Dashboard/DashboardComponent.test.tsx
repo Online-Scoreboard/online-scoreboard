@@ -5,6 +5,7 @@ import { User } from '../../hooks/Auth';
 import { Classes } from './Dashboard.styles';
 import { DashboardComponent } from './DashboardComponent';
 
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
 describe('DashboardComponent', () => {
   beforeEach(() => {
     jest.spyOn(console, 'warn').mockImplementation(() => {});

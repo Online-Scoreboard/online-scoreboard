@@ -83,6 +83,7 @@ describe('Toolbar', () => {
 
     act(() => {
       if (userMenuOnClick) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         userMenuOnClick({ currentTarget: testEl } as React.MouseEvent<any>);
       }
     });
@@ -101,7 +102,8 @@ describe('Toolbar', () => {
 
     act(() => {
       if (logOutButtonClick) {
-        logOutButtonClick({} as React.MouseEvent<any>);
+        const event: any = {};
+        logOutButtonClick(event);
       }
     });
 

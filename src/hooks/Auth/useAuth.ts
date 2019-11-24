@@ -53,6 +53,7 @@ export const useAuth = () => {
   }, [user, userData, userLoading, userDataLoading, isLoggedIn, createUser]);
 
   return {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     user: {
       ...user,
       ...userData,
