@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from 'react';
-import { Container, Typography, Fab, Grid, Card, CardActions, CircularProgress } from '@material-ui/core';
+import { Container, Typography, Fab, Grid, Card, CardActions } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
@@ -11,6 +11,7 @@ import { GameTeams } from './GameTeams';
 import { TeamColors } from './TeamColors';
 import { GameRules } from './GameRules';
 import { GameReview } from './GameReview';
+import { GameCreation } from './GameCreation';
 
 interface NewGameProps {
   newGameLoading: boolean;
@@ -18,7 +19,7 @@ interface NewGameProps {
 }
 
 const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
-  const { root, pageTitle, content, card, cardAction, cardValidationRed, cardValidationGreen, loader } = useStyles();
+  const { root, pageTitle, card, cardAction, cardValidationRed, cardValidationGreen } = useStyles();
   const {
     steps,
     rules,
@@ -77,18 +78,7 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
         case 4:
           return <GameReview gameName={gameName} rules={rules} teams={teams} teamColors={teamColors} />;
         case 5:
-          return (
-            (!error && (
-              <div className={loader}>
-                <CircularProgress size={60} thickness={4} color="primary" className={content} />
-                <Typography>Please, wait for your scoreboard to be created...</Typography>
-              </div>
-            )) || (
-              <div className={loader}>
-                <Typography>{error}</Typography>
-              </div>
-            )
-          );
+          return <GameCreation error={error} />;
         default:
           return 'Unknown step';
       }
@@ -105,8 +95,6 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
       teamColors,
       onTeamColorsChange,
       error,
-      loader,
-      content,
     ]
   );
 
@@ -165,10 +153,10 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
 
             {activeStep === steps.length && (
               <Fab
-                className="completeStep"
+                className="ready"
                 variant="extended"
                 color="primary"
-                aria-label="complete"
+                aria-label="next"
                 onClick={handleActiveStep(activeStep + 1)}
                 disabled={gameSubmitted || completedSteps.length < steps.length}
               >

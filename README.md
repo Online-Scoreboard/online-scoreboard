@@ -1,7 +1,7 @@
 # Online Scoreboard
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d2700d18225345bd95c9ca74616db080)](https://www.codacy.com/manual/andreasonny83/online-scoreboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Online-Scoreboard/online-scoreboard&amp;utm_campaign=Badge_Grade)
-
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/d2700d18225345bd95c9ca74616db080)](https://www.codacy.com/manual/andreasonny83/online-scoreboard?utm_source=github.com&utm_medium=referral&utm_content=Online-Scoreboard/online-scoreboard&utm_campaign=Badge_Coverage)
 
 This project is running live at: [online-scoreboard.now.sh](https://online-scoreboard.now.sh)
 against the latest changes on the master branch of this repository

@@ -34,6 +34,9 @@ jobs:
           environment:
             JEST_JUNIT_OUTPUT_DIR: "reports/junit"
             JEST_JUNIT_OUTPUT_NAME: "jest-test-results.xml"
+      - run:
+          name: "Send test coverage to Codacy"
+          command: cat ./coverage/lcov.info | node_modules/.bin/codacy-coverage --language typescript
       - store_test_results:
           path: reports
       - store_artifacts:

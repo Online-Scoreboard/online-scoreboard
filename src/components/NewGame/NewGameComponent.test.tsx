@@ -10,6 +10,8 @@ import { TeamColors } from './TeamColors';
 import { TeamColor } from './NewGameTypes';
 import { getDefaultTeams, getDefaultTeamColors } from './hooks/NewGameConstants';
 import { useNewGame, UseNewGame } from './hooks/useNewGame';
+import { GameReview } from './GameReview';
+import { GameCreation } from './GameCreation';
 
 jest.mock('./hooks/useNewGame');
 
@@ -274,7 +276,7 @@ describe('NewGameComponent', () => {
         activeStep,
       }));
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
 
       const teamColors = wrapper.find(TeamColors);
       expect(teamColors.exists()).toBe(true);
@@ -350,6 +352,53 @@ describe('NewGameComponent', () => {
 
       const res = wrapper.find(TeamColors).prop('teamColors');
       expect(res).toEqual(defaultTeamColors);
+    });
+  });
+
+  describe('GameReview', () => {
+    it('should render the GameReview component as a final step', () => {
+      const activeStep = 4;
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+      }));
+
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      const teamColors = wrapper.find(GameReview);
+      expect(teamColors.exists()).toBe(true);
+    });
+
+    it(`should display a "Let's go" button`, () => {
+      const activeStep = 4;
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+      }));
+      const expectedButtonLabel = `Let's Go!`;
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      const nextButton = wrapper.find('.nextStep');
+      const readyButton = wrapper.find('.ready');
+
+      expect(nextButton.exists()).toBe(false);
+      expect(readyButton.exists()).toBe(true);
+      expect(readyButton.text()).toBe(expectedButtonLabel);
+    });
+  });
+
+  describe('GameCreation', () => {
+    it('should render a GameCreation view while creating the board game', () => {
+      const activeStep = 5;
+      mockedUseNewGame.mockImplementation(() => ({
+        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
+        activeStep,
+      }));
+
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+
+      const teamColors = wrapper.find(GameCreation);
+      expect(teamColors.exists()).toBe(true);
     });
   });
 });
