@@ -5,19 +5,19 @@ import { useMutation } from '@apollo/react-hooks';
 import { NEW_GAME } from './NewGame.graphql';
 import { Component as NewGameComponent } from './NewGameComponent';
 
-interface NewGameVariables {
-  newGameInput: {
+interface CreateGameVariables {
+  createGameInput: {
     id: string;
   };
 }
 
 const NewGame: React.FC<RouteComponentProps> = () => {
-  const [newGame, { loading: newGameLoading }] = useMutation<void, NewGameVariables>(NEW_GAME);
+  const [newGame, { loading: newGameLoading }] = useMutation<void, CreateGameVariables>(NEW_GAME);
 
   const handleNewGame = useCallback(() => {
     newGame({
       variables: {
-        newGameInput: { id: 's' },
+        createGameInput: { id: 's' },
       },
     });
   }, [newGame]);

@@ -142,10 +142,6 @@ export const customRulesAction = (
     payloadUpdated.teams = Number(payloadUpdated.maxTeamSize);
   }
 
-  // startingScoreValue = String(startingScoreValue);
-  // console.warn(startingScoreValue);
-  // payloadUpdated.startingScore = Number(startingScoreValue);
-
   payloadUpdated.startingScore =
     'startingScore' in payloadUpdated ? Number(payloadUpdated.startingScore) : startingScoreValue;
   payloadUpdated.minTeamSize = 'minTeamSize' in payloadUpdated ? Number(payloadUpdated.minTeamSize) : minTeamSizeValue;
@@ -164,7 +160,7 @@ export const completeStepAction = (
   activeStep: number,
   isValid: boolean,
   completedSteps: number[],
-  nextStep?: number
+  nextStep: number
 ): NewGameActionType => {
   const completedStepsUpdated = stepsList
     .map((_stepName, index) => index)
@@ -173,30 +169,15 @@ export const completeStepAction = (
         (index === activeStep && isValid) || (index !== activeStep && completedSteps.indexOf(index) !== -1)
     );
 
-  if (typeof nextStep === 'number') {
-    return {
-      type: COMPLETE_STEP,
-      payload: {
-        completedSteps: completedStepsUpdated,
-        activeStep: nextStep,
-      },
-    };
-  }
-
   if (stepsList.length === activeStep && completedStepsUpdated.length === stepsList.length) {
     return { type: SUBMIT };
   }
-
-  const nextAvailableStep = stepsList
-    .map((val, index) => index)
-    .filter(val => completedStepsUpdated.indexOf(val) === -1)[0];
-  const nextActiveStep = typeof nextAvailableStep === 'number' ? nextAvailableStep : stepsList.length;
 
   return {
     type: COMPLETE_STEP,
     payload: {
       completedSteps: completedStepsUpdated,
-      activeStep: nextActiveStep,
+      activeStep: nextStep,
     },
   };
 };

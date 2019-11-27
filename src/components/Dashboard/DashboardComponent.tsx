@@ -22,7 +22,13 @@ export const DashboardComponent: React.FC<DashboardComponentProps> = memo(({ cla
       </Grid>
 
       <Grid container direction="column" alignItems="center" className={grid}>
-        <Button variant="contained" size="large" color="primary" onClick={() => navigate('/new-game')}>
+        <Button
+          className="NewGame"
+          variant="contained"
+          size="large"
+          color="primary"
+          onClick={() => navigate('/new-game')}
+        >
           Create A New Game
         </Button>
       </Grid>

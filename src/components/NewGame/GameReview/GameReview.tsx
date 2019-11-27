@@ -33,32 +33,34 @@ export const GameReview: React.FC<GameReviewProps> = ({ gameName, teams, teamCol
   );
 
   const score = scoringSystem === 'both' ? 'increase and decrease' : scoringSystem;
-  const winningScore = winningScoreEnabled ? `to ${winningScoreVal}` : '';
+  const winningScore = winningScoreEnabled ? ` to ${winningScoreVal}` : '';
 
   return (
     <>
       <CardHeader title="Game Review" classes={{ title: cardTitle }} />
       <CardContent>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" className="gameName" gutterBottom>
           {gameName}
         </Typography>
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography variant="subtitle1" className="gameTemplate" gutterBottom>
           {name ? `"${name}"` : 'A custom configuration'} has been used for setting this game base rules
         </Typography>
-        <Typography gutterBottom>{teams} teams</Typography>
-        <Typography gutterBottom>
+        <Typography className="teams" gutterBottom>
+          {teams} teams
+        </Typography>
+        <Typography className="teamColors" gutterBottom>
           {teamColors.map(color => (
             <PersonIcon
               key={color}
-              className={`${gameReviewTeamIcons} ${getColorClass(color)}`}
+              className={`${gameReviewTeamIcons} teamColor teamColor-${color} ${getColorClass(color)}`}
               style={{ opacity: 1, fontSize: '5rem' }}
             />
           ))}
         </Typography>
-        <Typography>This is a {isMatchesBased ? 'matches' : 'points'} based game</Typography>
-        <Typography gutterBottom>
-          The teams score will {score} from {startingScore} {winningScore} points{' '}
-          {!winningScore && 'until the end of the game'}
+        <Typography className="gameMatch">This is a {isMatchesBased ? 'matches' : 'points'} based game</Typography>
+        <Typography className="scoringSystem" gutterBottom>
+          The teams score will {score} from {startingScore}
+          {winningScore} points{!winningScore && ' until the end of the game'}
         </Typography>
       </CardContent>
     </>

@@ -1,5 +1,21 @@
-import { setupAction, teamsAction, colorsAction, customRulesAction } from './NewGameActions';
-import { NewGameActionType, SETUP, TEAMS, COLORS, RULES } from './NewGameActionTypes';
+import {
+  setupAction,
+  teamsAction,
+  colorsAction,
+  customRulesAction,
+  predefinedRulesAction,
+  completeStepAction,
+} from './NewGameActions';
+import {
+  NewGameActionType,
+  SETUP,
+  TEAMS,
+  COLORS,
+  RULES,
+  PREDEFINED_RULES,
+  COMPLETE_STEP,
+  SUBMIT,
+} from './NewGameActionTypes';
 import { TeamColor, GameListItem } from '../NewGameTypes';
 
 describe('NewGameActions', () => {
@@ -175,6 +191,81 @@ describe('NewGameActions', () => {
     });
   });
 
+  describe('predefinedRulesAction', () => {
+    it('should return the correct type and payload', () => {
+      const testNewRules: GameListItem = {
+        name: 'test',
+        isMatchesBased: false,
+        maxTeamSize: 4,
+        minTeamSize: 2,
+        scoringSystem: 'increase',
+        startingScore: 0,
+        winningScore: 0,
+        winningScoreEnabled: false,
+      };
+      const testTeams = 2;
+
+      const res = predefinedRulesAction(testNewRules, testTeams);
+
+      expect(res.type).toEqual(PREDEFINED_RULES);
+      expect(res).toHaveProperty('payload');
+      expect((res as any).payload).toHaveProperty('teams');
+      expect((res as any).payload).toHaveProperty('name');
+    });
+
+    it('should update the number of teams when smaller than the minimum team size', () => {
+      const testNewRules: GameListItem = {
+        name: 'test',
+        isMatchesBased: false,
+        maxTeamSize: 4,
+        minTeamSize: 2,
+        scoringSystem: 'increase',
+        startingScore: 0,
+        winningScore: 0,
+        winningScoreEnabled: false,
+      };
+      const testTeams = 1;
+
+      const expectedResult: NewGameActionType = {
+        type: PREDEFINED_RULES,
+        payload: {
+          ...testNewRules,
+          teams: testNewRules.minTeamSize,
+        },
+      };
+
+      const res = predefinedRulesAction(testNewRules, testTeams);
+
+      expect(res).toEqual(expectedResult);
+    });
+
+    it('should update the number of teams when bigger than the maximum team size', () => {
+      const testNewRules: GameListItem = {
+        name: 'test',
+        isMatchesBased: false,
+        maxTeamSize: 4,
+        minTeamSize: 2,
+        scoringSystem: 'increase',
+        startingScore: 0,
+        winningScore: 0,
+        winningScoreEnabled: false,
+      };
+      const testTeams = 5;
+
+      const expectedResult: NewGameActionType = {
+        type: PREDEFINED_RULES,
+        payload: {
+          ...testNewRules,
+          teams: testNewRules.maxTeamSize,
+        },
+      };
+
+      const res = predefinedRulesAction(testNewRules, testTeams);
+
+      expect(res).toEqual(expectedResult);
+    });
+  });
+
   describe('customRulesAction', () => {
     it('should return the correct type and payload', () => {
       const testNewRules: Partial<GameListItem> = {
@@ -308,8 +399,262 @@ describe('NewGameActions', () => {
 
       expect(res).toEqual(expectedResult);
     });
+
+    it('should force the winning score to be 1 when set to 0 or less and in match mode and winning condition enabled', () => {
+      const testNewRules: GameListItem = {
+        winningScoreEnabled: true,
+        scoringSystem: 'increase',
+        winningScore: 0,
+        startingScore: 0,
+        isMatchesBased: true,
+        maxTeamSize: 2,
+        minTeamSize: 2,
+        name: '',
+      };
+      const testRules: any = {};
+      const testTeams = 2;
+
+      const expectedResult: NewGameActionType = {
+        type: RULES,
+        payload: {
+          ...testNewRules,
+          teams: testTeams,
+          winningScore: 1,
+        },
+      };
+
+      const res = customRulesAction(testNewRules, testRules, testTeams);
+
+      expect(res).toEqual(expectedResult);
+    });
+
+    it('should force the minimum team size to be 1 when set to 0 or less', () => {
+      const testNewRules: GameListItem = {
+        winningScoreEnabled: false,
+        scoringSystem: 'increase',
+        winningScore: 0,
+        startingScore: 0,
+        isMatchesBased: true,
+        maxTeamSize: 2,
+        minTeamSize: 0,
+        name: '',
+      };
+      const testRules: any = {};
+      const testTeams = 2;
+
+      const expectedResult: NewGameActionType = {
+        type: RULES,
+        payload: {
+          ...testNewRules,
+          teams: testTeams,
+          minTeamSize: 1,
+        },
+      };
+
+      const res = customRulesAction(testNewRules, testRules, testTeams);
+
+      expect(res).toEqual(expectedResult);
+    });
+
+    it('should force the minimum and maximum team size to be 12 when the minimum is set to 13 or more', () => {
+      const testNewRules: GameListItem = {
+        winningScoreEnabled: false,
+        scoringSystem: 'increase',
+        winningScore: 0,
+        startingScore: 0,
+        isMatchesBased: true,
+        maxTeamSize: 1,
+        minTeamSize: 13,
+        name: '',
+      };
+      const testRules: any = {};
+      const testTeams = 12;
+
+      const expectedResult: NewGameActionType = {
+        type: RULES,
+        payload: {
+          ...testNewRules,
+          teams: testTeams,
+          minTeamSize: 12,
+          maxTeamSize: 12,
+        },
+      };
+
+      const res = customRulesAction(testNewRules, testRules, testTeams);
+
+      expect(res).toEqual(expectedResult);
+    });
+
+    it('should force the maximum team size to match the minimum when the minimum is set to 13 or more', () => {
+      const testNewRules: GameListItem = {
+        winningScoreEnabled: false,
+        scoringSystem: 'increase',
+        winningScore: 0,
+        startingScore: 0,
+        isMatchesBased: true,
+        maxTeamSize: 1,
+        minTeamSize: 13,
+        name: '',
+      };
+      const testRules: any = {};
+      const testTeams = 12;
+
+      const expectedResult: NewGameActionType = {
+        type: RULES,
+        payload: {
+          ...testNewRules,
+          teams: testTeams,
+          minTeamSize: 12,
+          maxTeamSize: 12,
+        },
+      };
+
+      const res = customRulesAction(testNewRules, testRules, testTeams);
+
+      expect(res).toEqual(expectedResult);
+    });
+
+    it('should force the maximum team size to match the minimum when minor than that', () => {
+      const testNewRules: GameListItem = {
+        winningScoreEnabled: false,
+        scoringSystem: 'increase',
+        winningScore: 0,
+        startingScore: 0,
+        isMatchesBased: true,
+        maxTeamSize: 8,
+        minTeamSize: 12,
+        name: '',
+      };
+      const testRules: any = {};
+      const testTeams = 12;
+
+      const expectedResult: NewGameActionType = {
+        type: RULES,
+        payload: {
+          ...testNewRules,
+          teams: testTeams,
+          minTeamSize: 12,
+          maxTeamSize: 12,
+        },
+      };
+
+      const res = customRulesAction(testNewRules, testRules, testTeams);
+
+      expect(res).toEqual(expectedResult);
+    });
+
+    it.each`
+      maxTeamSize | expectedMaxTeamSize
+      ${0}        | ${1}
+      ${1}        | ${1}
+      ${2}        | ${2}
+      ${-1}       | ${1}
+      ${-100}     | ${1}
+    `('should force the maximum team size to be 1 when set to $maxTeamSize', ({ maxTeamSize, expectedMaxTeamSize }) => {
+      const testNewRules: GameListItem = {
+        winningScoreEnabled: false,
+        scoringSystem: 'increase',
+        winningScore: 0,
+        startingScore: 0,
+        isMatchesBased: true,
+        maxTeamSize,
+        minTeamSize: 1,
+        name: '',
+      };
+      const testRules: any = {};
+      const testTeams = 1;
+
+      const expectedResult: NewGameActionType = {
+        type: RULES,
+        payload: {
+          ...testNewRules,
+          teams: testTeams,
+          maxTeamSize: expectedMaxTeamSize,
+        },
+      };
+
+      const res = customRulesAction(testNewRules, testRules, testTeams);
+
+      expect(res).toEqual(expectedResult);
+    });
+
+    it.each`
+      maxTeamSize | expectedMaxTeamSize
+      ${12}       | ${12}
+      ${13}       | ${12}
+      ${15}       | ${12}
+      ${100}      | ${12}
+      ${999}      | ${12}
+    `(
+      'should force the maximum team size to be 12 when set to $maxTeamSize',
+      ({ maxTeamSize, expectedMaxTeamSize }) => {
+        const testNewRules: GameListItem = {
+          winningScoreEnabled: false,
+          scoringSystem: 'increase',
+          winningScore: 0,
+          startingScore: 0,
+          isMatchesBased: true,
+          maxTeamSize,
+          minTeamSize: 1,
+          name: '',
+        };
+        const testRules: any = {};
+        const testTeams = 1;
+
+        const expectedResult: NewGameActionType = {
+          type: RULES,
+          payload: {
+            ...testNewRules,
+            teams: testTeams,
+            maxTeamSize: expectedMaxTeamSize,
+          },
+        };
+
+        const res = customRulesAction(testNewRules, testRules, testTeams);
+
+        expect(res).toEqual(expectedResult);
+      }
+    );
   });
 
-  describe('predefinedRulesAction', () => {});
-  describe('completeStepAction', () => {});
+  describe('completeStepAction', () => {
+    it('should return the correct type and payload', () => {
+      const testStepList = ['first', 'second', 'third'];
+      const testActiveStep = 0;
+      const testIsValid = true;
+      const testCompletedSteps: number[] = [];
+      const testNextStep = 1;
+
+      const res = completeStepAction(testStepList, testActiveStep, testIsValid, testCompletedSteps, testNextStep);
+
+      expect(res.type).toEqual(COMPLETE_STEP);
+      expect(res).toHaveProperty('payload');
+      expect((res as any).payload).toHaveProperty('completedSteps');
+      expect((res as any).payload).toHaveProperty('activeStep');
+    });
+
+    it('should return a SUBMIT type when the activeStep is the last one available and all the steps are completed', () => {
+      const testStepList = ['first', 'second', 'third'];
+      const testActiveStep = 3;
+      const testIsValid = true;
+      const testCompletedSteps: number[] = [0, 1, 2];
+      const testNextStep: any = 3;
+
+      const res = completeStepAction(testStepList, testActiveStep, testIsValid, testCompletedSteps, testNextStep);
+
+      expect(res.type).toEqual(SUBMIT);
+    });
+
+    it('should return a COMPLETE_STEP type when the activeStep is the last one available but not all the steps are completed', () => {
+      const testStepList = ['first', 'second', 'third'];
+      const testActiveStep = 3;
+      const testIsValid = true;
+      const testCompletedSteps: number[] = [0, 2];
+      const testNextStep: any = 3;
+
+      const res = completeStepAction(testStepList, testActiveStep, testIsValid, testCompletedSteps, testNextStep);
+
+      expect(res.type).toEqual(COMPLETE_STEP);
+    });
+  });
 });

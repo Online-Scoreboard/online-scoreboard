@@ -285,17 +285,7 @@ export const useNewGame = (): UseNewGame => {
     (step: number) => {
       const stepStatus = checkStep(activeStep);
 
-      if (typeof step === 'number' && step === activeStep) {
-        return;
-      }
-
-      // Don't allow going to the game review until all the steps are completed and valid
-      if (
-        !stepStatus &&
-        step === activeStep + 1 &&
-        activeStep === stepsList.length - 1 &&
-        completedSteps.length !== stepsList.length - 1
-      ) {
+      if (step === activeStep) {
         return;
       }
 

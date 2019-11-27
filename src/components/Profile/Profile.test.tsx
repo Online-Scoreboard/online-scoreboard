@@ -5,7 +5,7 @@ import { MockedProvider } from '@apollo/react-testing';
 import uniqueNamesGenerator from 'unique-names-generator';
 
 import * as Auth from '../../hooks/Auth';
-import { SHUFFLE_AVATAR } from './Profile.graphql';
+import { SHUFFLE_AVATAR, UPDATE_USERNAME } from './Profile.graphql';
 import { ProfileComponent } from './ProfileComponent';
 import { Profile } from './Profile';
 
@@ -37,12 +37,10 @@ describe('Profile', () => {
 
   it('should display a loading spinner when shuffleAvatarLoading is set', async () => {
     const testAvatar = 'testAvatar';
-
     const testUser = {
       username: 'testUsername',
       avatar: testAvatar,
     };
-
     const mocks = [
       {
         request: {
@@ -53,7 +51,6 @@ describe('Profile', () => {
         },
         result: jest.fn(() => {
           mockUserData = testUser;
-
           return {
             data: {
               updateUser: mockUserData,
@@ -104,5 +101,46 @@ describe('Profile', () => {
     expect(profile.find(ProfileComponent).length).toBe(1);
     expect(profile.find(ProfileComponent).props().user).toBe(testUser);
     expect(profile.find(ProfileComponent).props().shuffleAvatarLoading).toBe(false);
+  });
+
+  it('should allow updating the profile information', async () => {
+    const testUserName = 'new-username';
+    const expectedVariables = {
+      updateUserInput: { username: testUserName },
+    };
+    let updateUserCalled = false;
+    const mocks = [
+      {
+        request: {
+          query: UPDATE_USERNAME,
+          variables: expectedVariables,
+        },
+        result: () => {
+          updateUserCalled = true;
+          return { data: {} };
+        },
+      },
+    ];
+
+    const profile = mount(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Profile />
+      </MockedProvider>
+    );
+
+    act(() => {
+      profile
+        .find(ProfileComponent)
+        .props()
+        .saveUsername(testUserName);
+    });
+
+    await act(async () => {
+      await wait();
+    });
+    profile.update();
+
+    expect(updateUserCalled).toBe(true);
+    expect(mocks[0].request.variables).toEqual(expectedVariables);
   });
 });
