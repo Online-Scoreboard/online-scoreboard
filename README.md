@@ -1,6 +1,7 @@
 # Online Scoreboard
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d2700d18225345bd95c9ca74616db080)](https://www.codacy.com/manual/andreasonny83/online-scoreboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Online-Scoreboard/online-scoreboard&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/d2700d18225345bd95c9ca74616db080)](https://www.codacy.com/manual/andreasonny83/online-scoreboard?utm_source=github.com&utm_medium=referral&utm_content=Online-Scoreboard/online-scoreboard&utm_campaign=Badge_Coverage)
 
 This project is running live at: [online-scoreboard.now.sh](https://online-scoreboard.now.sh)
 against the latest changes on the master branch of this repository
@@ -66,6 +67,12 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+### `npm run ncu`
+
+**Note: this requires `npm-check-updates` to be installed globally**
+
+Check for outdated npm dependencies.
 
 ## Learn More
 

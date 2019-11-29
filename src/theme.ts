@@ -19,9 +19,6 @@ const theme = createMuiTheme({
       primary: 'hsl(14, 90%, 94%)',
       secondary: grey[100],
     },
-    background: {
-      default: '#ff9d00',
-    },
   },
   typography: {
     fontFamily: '"Raleway", sans-serif',

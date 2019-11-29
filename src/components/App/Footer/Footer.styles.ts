@@ -5,7 +5,6 @@ export default makeStyles(theme => ({
     margin: theme.spacing(1, 1.5),
   },
   footer: {
-    borderTop: `1px solid ${theme.palette.divider}`,
     marginTop: 'auto',
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),

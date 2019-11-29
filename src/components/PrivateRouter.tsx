@@ -3,6 +3,7 @@ import { Router, Redirect, RouteComponentProps } from '@reach/router';
 import { Auth } from './Auth';
 import { Dashboard } from './Dashboard';
 import { Profile } from './Profile';
+import { NewGame } from './NewGame';
 
 export interface PrivateRouterProps {
   isLoggedIn: boolean;
@@ -18,6 +19,7 @@ const PrivateRouterComponent: React.FC<PrivateRouterProps> = React.memo(({ isLog
         <Dashboard path="/home" />
         <Profile path="/profile" />
         <Dashboard path="/account" />
+        <NewGame path="/new-game" />
         <NotFound default />
       </Router>
     );

@@ -1,6 +1,6 @@
-#bin/bash
-
+#!/bin/bash
 FILE=.env.build
+
 if test -f "$FILE"; then
     echo "$FILE already exist"
 else

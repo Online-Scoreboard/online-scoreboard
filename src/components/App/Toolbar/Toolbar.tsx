@@ -51,7 +51,7 @@ const ToolbarComponent: React.FC<ToolbarProps> = ({ isLoggedIn, onLogOut, user }
     <MaterialToolbar className={classes.toolbar}>
       <Typography variant="h6" noWrap className={classes.toolbarTitle}>
         <Link to="/">
-          <LinkButton variant="h6" component="span" color="textPrimary">
+          <LinkButton className="pageTitle" variant="h6" component="span" color="textPrimary">
             Online Scoreboard
           </LinkButton>
         </Link>
@@ -65,6 +65,7 @@ const ToolbarComponent: React.FC<ToolbarProps> = ({ isLoggedIn, onLogOut, user }
               aria-haspopup="true"
               color="inherit"
               size="small"
+              className="userMenu"
               onClick={handleMenu}
             >
               <div className={classes.avatarWrapper}>
@@ -86,13 +87,19 @@ const ToolbarComponent: React.FC<ToolbarProps> = ({ isLoggedIn, onLogOut, user }
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleProfile}>Profile</MenuItem>
-              <MenuItem onClick={handleAccount}>My account</MenuItem>
-              <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+              <MenuItem className="profile" onClick={handleProfile}>
+                Profile
+              </MenuItem>
+              <MenuItem className="account" onClick={handleAccount}>
+                My account
+              </MenuItem>
+              <MenuItem className="logOut" onClick={handleLogOut}>
+                Log Out
+              </MenuItem>
             </Menu>
           </>
         ) : (
-          <Button variant="outlined" href="/login" className={classes.link}>
+          <Button variant="outlined" href="/login" className={`${classes.link} logIn`}>
             Log in
           </Button>
         )}

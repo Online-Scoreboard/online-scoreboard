@@ -1,4 +1,6 @@
 import React, { memo } from 'react';
+import { navigate } from '@reach/router';
+
 import { Container, Typography, Grid, Button } from '@material-ui/core';
 import { User } from '../../hooks/Auth';
 import { Classes } from './Dashboard.styles';
@@ -20,7 +22,13 @@ export const DashboardComponent: React.FC<DashboardComponentProps> = memo(({ cla
       </Grid>
 
       <Grid container direction="column" alignItems="center" className={grid}>
-        <Button variant="contained" size="large" color="primary">
+        <Button
+          className="NewGame"
+          variant="contained"
+          size="large"
+          color="primary"
+          onClick={() => navigate('/new-game')}
+        >
           Create A New Game
         </Button>
       </Grid>

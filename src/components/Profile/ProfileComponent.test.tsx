@@ -7,6 +7,7 @@ import { User } from '../../hooks/Auth';
 import { Classes } from './Profile.styles';
 import { ProfileComponent } from './ProfileComponent';
 
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
 describe('ProfileComponent', () => {
   beforeEach(() => {
     jest.spyOn(console, 'warn').mockImplementation(() => {});

@@ -8,7 +8,6 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
-    // 'plugin:react/recommended',
     'react-app',
     'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
@@ -31,6 +30,11 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-angle-bracket-type-assertion': 'off',
+    // '@typescript-eslint/consistent-type-assertions': [
+    //   'error',
+    //   { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' },
+    // ], // waiting for ESLint v6 to be available on codacy
+    // '@typescript-eslint/consistent-type-definitions': 'error', // waiting for ESLint v6 to be available on codacy
     'prettier/prettier': ['error', { singleQuote: true }],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
