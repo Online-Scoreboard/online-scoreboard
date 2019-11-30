@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 
-import { Component as NewGameComponent } from './NewGameComponent';
+import { NewGameComponent } from './NewGameComponent';
 import { GameTeams } from './GameTeams';
 import { Stepper } from './Stepper';
 import { GameName } from './GameName';
@@ -27,16 +27,18 @@ describe('NewGameComponent', () => {
 
   it('should render without crashing', () => {
     const newGame = jest.fn();
+    const testError = null;
 
-    shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+    shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
     expect(true).toBeTruthy();
   });
 
   describe('Stepper', () => {
     it('should render a Stepper component', () => {
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const testError = null;
 
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
       const stepper = wrapper.find(Stepper);
 
       expect(stepper.exists()).toBe(true);
@@ -44,8 +46,9 @@ describe('NewGameComponent', () => {
 
     it('should render a Stepper initialized to the first step', () => {
       const expectedActiveStep = 0;
+      const testError = null;
 
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       const stepper = wrapper.find(Stepper);
       const activeStep = stepper.prop('activeStep');
@@ -56,7 +59,9 @@ describe('NewGameComponent', () => {
 
   describe('Navigation buttons', () => {
     it('should have a "previous" and a "next" step navigation buttons', () => {
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const testError = null;
+
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       const prevButton = wrapper.find('.prevStep');
       const nextButton = wrapper.find('.nextStep');
@@ -66,7 +71,9 @@ describe('NewGameComponent', () => {
     });
 
     it('should have both the "previous" and the "next" step navigation buttons disabled on the first step', () => {
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const testError = null;
+
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       const prevButton = wrapper.find('.prevStep');
       const nextButton = wrapper.find('.nextStep');
@@ -82,8 +89,9 @@ describe('NewGameComponent', () => {
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       const prevButton = wrapper.find('.prevStep');
       expect(prevButton.find('button').prop('disabled')).toBe(false);
@@ -99,8 +107,9 @@ describe('NewGameComponent', () => {
         activeStep,
         onSetStep: spyOnSetStep,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       act(() => {
         wrapper.find('button.prevStep').simulate('click');
@@ -114,7 +123,9 @@ describe('NewGameComponent', () => {
     const activeStep = 0;
 
     it('should render a GameName content in the initial active step', () => {
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const testError = null;
+
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       const gameName = wrapper.find(GameName);
       const gameTeams = wrapper.find(GameTeams);
@@ -134,7 +145,9 @@ describe('NewGameComponent', () => {
       }));
 
       const testGameName = 'testGameName';
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const testError = null;
+
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       act(() => {
         const gameName = wrapper.find(GameName);
@@ -146,7 +159,9 @@ describe('NewGameComponent', () => {
 
     it('should disable the "next" step navigation button when the game name is too short', () => {
       const testGameName = 'test';
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const testError = null;
+
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       act(() => {
         const gameName = wrapper.find(GameName);
@@ -164,7 +179,9 @@ describe('NewGameComponent', () => {
 
     it('should disabled the "next" step navigation button when the game name is too long', () => {
       const testGameName = 'names longer than 30 characters will be invalid';
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const testError = null;
+
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       act(() => {
         const gameName = wrapper.find(GameName);
@@ -186,8 +203,9 @@ describe('NewGameComponent', () => {
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       act(() => {
         const gameName = wrapper.find(GameName);
@@ -212,8 +230,9 @@ describe('NewGameComponent', () => {
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
+      const testError = null;
 
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       const gameRules = wrapper.find(GameRules);
       expect(gameRules.exists()).toBe(true);
@@ -228,8 +247,9 @@ describe('NewGameComponent', () => {
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
       const gameTeams = wrapper.find(GameTeams);
 
       expect(gameTeams.exists()).toBe(true);
@@ -241,8 +261,9 @@ describe('NewGameComponent', () => {
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       act(() => {
         const gameTeams = wrapper.find(GameTeams);
@@ -261,8 +282,9 @@ describe('NewGameComponent', () => {
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       act(() => {
         const gameTeams = wrapper.find(GameTeams);
@@ -285,8 +307,9 @@ describe('NewGameComponent', () => {
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
+      const testError = null;
 
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       const teamColors = wrapper.find(TeamColors);
       expect(teamColors.exists()).toBe(true);
@@ -298,8 +321,9 @@ describe('NewGameComponent', () => {
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       let teamColorsEl = wrapper.find(TeamColors);
       let currTeamColors = teamColorsEl.prop('teamColors');
@@ -348,8 +372,9 @@ describe('NewGameComponent', () => {
 
       // Make sure the test color is not already selected
       expect(Boolean(~defaultTeamColors.indexOf(testColor))).toBe(false);
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       act(() => {
         const teamColors = wrapper.find(TeamColors);
@@ -371,8 +396,9 @@ describe('NewGameComponent', () => {
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
+      const testError = null;
 
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       const gameReview = wrapper.find(GameReview);
       expect(gameReview.exists()).toBe(true);
@@ -384,7 +410,9 @@ describe('NewGameComponent', () => {
         activeStep,
       }));
       const expectedButtonLabel = `Let's Go!`;
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const testError = null;
+
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       const nextButton = wrapper.find('.nextStep');
       const readyButton = wrapper.find('.ready');
@@ -403,8 +431,9 @@ describe('NewGameComponent', () => {
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
+      const testError = null;
 
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = mount(<NewGameComponent newGameLoading={true} onSubmit={newGame} newGameError={testError} />);
 
       const gameCreation = wrapper.find(GameCreation);
       expect(gameCreation.exists()).toBe(true);
@@ -415,8 +444,9 @@ describe('NewGameComponent', () => {
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
+      const testError = null;
 
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       const prevButton = wrapper.find('.prevStep');
       const nextButton = wrapper.find('.nextStep');
@@ -425,34 +455,6 @@ describe('NewGameComponent', () => {
       expect(prevButton.exists()).toBe(false);
       expect(nextButton.exists()).toBe(false);
       expect(readyButton.exists()).toBe(false);
-    });
-  });
-
-  describe('Invalid step', () => {
-    const activeStep = 6;
-
-    it('should render an "Unknown step" element', () => {
-      mockedUseNewGame.mockImplementation(() => ({
-        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
-        activeStep,
-      }));
-
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
-
-      const unknowStep = wrapper.find('#unknown-step');
-      expect(unknowStep.exists()).toBe(true);
-    });
-
-    it('should render an "Unknown step" message to the view', () => {
-      mockedUseNewGame.mockImplementation(() => ({
-        ...jest.requireActual('./hooks/useNewGame').useNewGame(),
-        activeStep,
-      }));
-      const expectedCopy = 'Unknown step';
-      const wrapper = shallow(<NewGameComponent newGameLoading={false} newGame={newGame} />);
-
-      const unknowStep = wrapper.find('#unknown-step');
-      expect(unknowStep.text()).toBe(expectedCopy);
     });
   });
 
@@ -466,10 +468,11 @@ describe('NewGameComponent', () => {
         activeStep,
         checkStep: mockCheckStep,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
+
       const nextButton = wrapper.find('button.nextStep');
-
       expect(nextButton.prop('disabled')).toBe(true);
     });
 
@@ -482,11 +485,12 @@ describe('NewGameComponent', () => {
         checkStep: mockCheckStep,
         onSetStep: mockOnSetStep,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
-      const stepper = wrapper.find(Stepper);
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       act(() => {
+        const stepper = wrapper.find(Stepper);
         stepper.prop('onStepClick')(activeStep + 1)({} as any);
       });
       wrapper.update();
@@ -501,10 +505,11 @@ describe('NewGameComponent', () => {
         activeStep,
         checkStep: mockCheckStep,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
+
       const nextButton = wrapper.find('button.nextStep');
-
       expect(nextButton.prop('disabled')).toBe(false);
     });
 
@@ -517,10 +522,11 @@ describe('NewGameComponent', () => {
         checkStep: mockCheckStep,
         onSetStep: mockOnSetStep,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
+
       const nextButton = wrapper.find('button.nextStep');
-
       act(() => {
         nextButton.simulate('click');
       });
@@ -541,8 +547,9 @@ describe('NewGameComponent', () => {
         onSetStep: mockOnSetStep,
         completedSteps: mockCompletedSteps,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
       const stepper = wrapper.find(Stepper);
 
       act(() => {
@@ -564,8 +571,9 @@ describe('NewGameComponent', () => {
         onSetStep: mockOnSetStep,
         completedSteps: mockCompletedSteps,
       }));
+      const testError = null;
 
-      const wrapper = mount(<NewGameComponent newGameLoading={false} newGame={newGame} />);
+      const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
       const stepper = wrapper.find(Stepper);
 
       act(() => {

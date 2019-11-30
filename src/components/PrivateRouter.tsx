@@ -4,6 +4,7 @@ import { Auth } from './Auth';
 import { Dashboard } from './Dashboard';
 import { Profile } from './Profile';
 import { NewGame } from './NewGame';
+import { Game } from './Game';
 
 export interface PrivateRouterProps {
   isLoggedIn: boolean;
@@ -20,6 +21,7 @@ const PrivateRouterComponent: React.FC<PrivateRouterProps> = React.memo(({ isLog
         <Profile path="/profile" />
         <Dashboard path="/account" />
         <NewGame path="/new-game" />
+        <Game path="/game/:gameId" />
         <NotFound default />
       </Router>
     );

@@ -1,1 +1,1 @@
-export { NewGameWrapper as NewGame } from './NewGame';
+export * from './NewGame';

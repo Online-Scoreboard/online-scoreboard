@@ -3,9 +3,9 @@ import { mount } from 'enzyme';
 import { MockedProvider } from '@apollo/react-testing';
 import { act } from 'react-dom/test-utils';
 
-import { Component as NewGameComponent } from './NewGameComponent';
-import { NewGameWrapper as NewGame } from './NewGame';
-import { NEW_GAME } from './NewGame.graphql';
+import { NewGameComponent } from './NewGameComponent';
+import { NewGame } from './NewGame';
+import { CREATE_GAME } from './NewGame.graphql';
 
 describe('NewGame', () => {
   const wait = (amount = 0) => new Promise(resolve => setTimeout(resolve, amount));
@@ -21,14 +21,13 @@ describe('NewGame', () => {
   });
 
   it('should handle a newGame', async () => {
-    const mockGameId = 's';
-
+    const testNewGameInfo = {};
     const mockMutation = [
       {
         request: {
-          query: NEW_GAME,
+          query: CREATE_GAME,
           variables: {
-            createGameInput: { id: mockGameId },
+            createGameInput: testNewGameInfo,
           },
         },
         loading: jest.fn(),
@@ -51,7 +50,7 @@ describe('NewGame', () => {
 
     act(() => {
       const newGameComponent = newGame.find(NewGameComponent);
-      newGameComponent.prop('newGame')();
+      newGameComponent.prop('onSubmit')(testNewGameInfo);
     });
     newGame.update();
 

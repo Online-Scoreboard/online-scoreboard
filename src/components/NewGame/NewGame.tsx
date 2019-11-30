@@ -1,28 +1,35 @@
 import React, { memo, useCallback } from 'react';
-import { RouteComponentProps } from '@reach/router';
+import { RouteComponentProps, Redirect } from '@reach/router';
 import { useMutation } from '@apollo/react-hooks';
 
-import { NEW_GAME } from './NewGame.graphql';
-import { Component as NewGameComponent } from './NewGameComponent';
+import { CREATE_GAME } from './NewGame.graphql';
+import { NewGameComponent } from './NewGameComponent';
 
 interface CreateGameVariables {
-  createGameInput: {
-    id: string;
-  };
+  createGameInput: any;
 }
 
-const NewGame: React.FC<RouteComponentProps> = () => {
-  const [newGame, { loading: newGameLoading }] = useMutation<void, CreateGameVariables>(NEW_GAME);
+const Component: React.FC<RouteComponentProps> = () => {
+  const [createGame, { loading, error, data }] = useMutation<any, CreateGameVariables>(CREATE_GAME);
 
-  const handleNewGame = useCallback(() => {
-    newGame({
-      variables: {
-        createGameInput: { id: 's' },
-      },
-    });
-  }, [newGame]);
+  const handleNewGame = useCallback(
+    (gameInfo: any) => {
+      createGame({
+        variables: {
+          createGameInput: gameInfo,
+        },
+      });
+    },
+    [createGame]
+  );
 
-  return <NewGameComponent newGame={handleNewGame} newGameLoading={newGameLoading} />;
+  if (data && data.createGame) {
+    const { id } = data.createGame;
+
+    return <Redirect noThrow to={`/game/${id}`} />;
+  }
+
+  return <NewGameComponent onSubmit={handleNewGame} newGameLoading={loading} newGameError={error} />;
 };
 
-export const NewGameWrapper = memo(NewGame);
+export const NewGame = memo(Component);

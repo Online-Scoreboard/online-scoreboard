@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import { Container, Typography, Fab, Grid, Card, CardActions } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
@@ -15,17 +15,18 @@ import { GameCreation } from './GameCreation';
 
 interface NewGameProps {
   newGameLoading: boolean;
-  newGame: () => void;
+  newGameError: any;
+  onSubmit: (newGameInfo: any) => void;
 }
 
-const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
+const Component: React.FC<NewGameProps> = ({ newGameLoading, newGameError, onSubmit }) => {
   const { root, pageTitle, card, cardAction, cardValidationRed, cardValidationGreen } = useStyles();
   const {
     steps,
-    rules,
     setup,
-    teamColors,
+    rules,
     teams,
+    teamColors,
     colorsList,
     error,
     checkStep,
@@ -41,23 +42,28 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
     onPredefinedGameRuleChange,
   } = useNewGame();
 
+  useEffect(() => {
+    if (gameSubmitted) {
+      onSubmit({
+        setup,
+        rules,
+        teams,
+        teamColors,
+      });
+    }
+  }, [gameSubmitted, onSubmit, rules, setup, teamColors, teams]);
+
   const handleActiveStep = useCallback(
     (step: number) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       if (step < activeStep) {
         onSetStep(step);
         return;
       }
-
       if (!checkStep(activeStep)) {
         return;
       }
-      if (step === activeStep + 1) {
+      if (step === activeStep + 1 || ~completedSteps.indexOf(step)) {
         onSetStep(step);
-        return;
-      }
-      if (~completedSteps.indexOf(step)) {
-        onSetStep(step);
-        return;
       }
     },
     [activeStep, checkStep, completedSteps, onSetStep]
@@ -77,10 +83,8 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
           return <TeamColors teams={teams} colors={colorsList} teamColors={teamColors} onChange={onTeamColorsChange} />;
         case 4:
           return <GameReview gameName={gameName} rules={rules} teams={teams} teamColors={teamColors} />;
-        case 5:
-          return <GameCreation error={error} />;
         default:
-          return <div id="unknown-step">Unknown step</div>;
+          return null;
       }
     },
     [
@@ -94,9 +98,21 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
       colorsList,
       teamColors,
       onTeamColorsChange,
-      error,
     ]
   );
+
+  if (newGameError) {
+    return (
+      <Container maxWidth="md" component="main" className={`${root} NewGame`}>
+        <Typography component="h1" variant="h2" align="center" color="textPrimary" className={pageTitle}>
+          Ops!
+        </Typography>
+        <Typography color="textPrimary">
+          Something went wrong when creating the game. Please, try again later or contact us if the error persists.
+        </Typography>
+      </Container>
+    );
+  }
 
   const isValid = checkStep(activeStep);
 
@@ -116,7 +132,7 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
               completed={completedSteps}
               gameSubmitted={gameSubmitted}
             />
-            {getStepContent(activeStep)}
+            {gameSubmitted || newGameLoading ? <GameCreation error={error} /> : getStepContent(activeStep)}
             <CardActions className={isValid ? cardValidationGreen : cardValidationRed} disableSpacing>
               <Typography align="right" className={cardAction}>
                 {getValidationNotes(activeStep)}
@@ -177,4 +193,4 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
   );
 };
 
-export const Component = memo(NewGameComponent);
+export const NewGameComponent = memo(Component);
