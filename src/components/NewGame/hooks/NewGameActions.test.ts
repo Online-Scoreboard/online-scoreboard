@@ -638,11 +638,43 @@ describe('NewGameActions', () => {
       const testActiveStep = 3;
       const testIsValid = true;
       const testCompletedSteps: number[] = [0, 1, 2];
-      const testNextStep: any = 3;
+      const testNextStep: any = 4;
 
       const res = completeStepAction(testStepList, testActiveStep, testIsValid, testCompletedSteps, testNextStep);
 
       expect(res.type).toEqual(SUBMIT);
+    });
+
+    it('should allow going back to the previous step', () => {
+      const testStepList = ['first', 'second', 'third'];
+      const testActiveStep = 2;
+      const testIsValid = true;
+      const testCompletedSteps: number[] = [0];
+      const testNextStep: any = 1;
+
+      const res = completeStepAction(testStepList, testActiveStep, testIsValid, testCompletedSteps, testNextStep);
+
+      expect(res.type).toEqual(COMPLETE_STEP);
+      expect((res as any).payload).toEqual({
+        activeStep: testActiveStep - 1,
+        completedSteps: expect.any(Array),
+      });
+    });
+
+    it('should allow going back from the last step instead of submitting', () => {
+      const testStepList = ['first', 'second', 'third'];
+      const testActiveStep = 3;
+      const testIsValid = true;
+      const testCompletedSteps: number[] = [0, 1, 2];
+      const testNextStep: any = 2;
+
+      const res = completeStepAction(testStepList, testActiveStep, testIsValid, testCompletedSteps, testNextStep);
+
+      expect(res.type).toEqual(COMPLETE_STEP);
+      expect((res as any).payload).toEqual({
+        activeStep: testActiveStep - 1,
+        completedSteps: testCompletedSteps,
+      });
     });
 
     it('should return a COMPLETE_STEP type when the activeStep is the last one available but not all the steps are completed', () => {

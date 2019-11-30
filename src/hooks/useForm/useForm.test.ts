@@ -3,18 +3,13 @@ import { useForm } from '.';
 
 describe('useForm', () => {
   it('should set the initial form data', () => {
-    // Arrange
     const initialData = { username: '', password: '' };
-
-    // Act
     const { result } = renderHook(() => useForm(initialData));
 
-    // Assert
     expect(result.current.formData).toBe(initialData);
   });
 
   it('should set a form field', () => {
-    // Arrange
     const initialData = { username: '', password: '' };
     const expectedData = { username: 'test', password: '' };
     const changeEvent = {
@@ -26,15 +21,12 @@ describe('useForm', () => {
 
     const { result } = renderHook(() => useForm(initialData));
 
-    // Act
     act(() => result.current.setFormField(changeEvent as any));
 
-    // Assert
     expect(result.current.formData).toEqual(expectedData);
   });
 
   it('should reset the form fields to the initial values', () => {
-    // Arrange
     const initialData = { username: '', password: '' };
     const expectedData = { username: 'testUsername', password: 'testPassword' };
 
@@ -52,10 +44,8 @@ describe('useForm', () => {
 
     expect(result.current.formData).toEqual(expectedData);
 
-    // Act
     act(() => result.current.resetForm());
 
-    // Assert
     expect(result.current.formData).toEqual(initialData);
   });
 });

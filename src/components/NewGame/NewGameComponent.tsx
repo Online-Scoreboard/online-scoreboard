@@ -109,7 +109,13 @@ const NewGameComponent: React.FC<NewGameProps> = ({ newGameLoading }) => {
       <Grid container justify="center">
         <Grid item xs={12} md={10}>
           <Card className={card} elevation={10}>
-            <Stepper activeStep={activeStep} steps={steps} onStepClick={handleActiveStep} completed={completedSteps} />
+            <Stepper
+              activeStep={activeStep}
+              steps={steps}
+              onStepClick={handleActiveStep}
+              completed={completedSteps}
+              gameSubmitted={gameSubmitted}
+            />
             {getStepContent(activeStep)}
             <CardActions className={isValid ? cardValidationGreen : cardValidationRed} disableSpacing>
               <Typography align="right" className={cardAction}>

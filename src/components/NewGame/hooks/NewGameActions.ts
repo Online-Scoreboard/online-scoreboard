@@ -169,7 +169,7 @@ export const completeStepAction = (
         (index === activeStep && isValid) || (index !== activeStep && completedSteps.indexOf(index) !== -1)
     );
 
-  if (stepsList.length === activeStep && completedStepsUpdated.length === stepsList.length) {
+  if (nextStep > activeStep && stepsList.length === activeStep && completedStepsUpdated.length === stepsList.length) {
     return { type: SUBMIT };
   }
 
