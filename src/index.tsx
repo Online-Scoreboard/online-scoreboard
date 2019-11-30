@@ -57,7 +57,7 @@ const client = new ApolloClient({
   },
 });
 
-const AppContainer = (AppComponent: React.ComponentType): JSX.Element => (
+const AppWrapper = (AppComponent: React.ComponentType): JSX.Element => (
   <ThemeProvider theme={theme}>
     <ApolloProvider client={client}>
       <CssBaseline />
@@ -66,7 +66,7 @@ const AppContainer = (AppComponent: React.ComponentType): JSX.Element => (
   </ThemeProvider>
 );
 
-render(AppContainer(App), document.getElementById('root'));
+render(AppWrapper(App), document.getElementById('root'));
 
 serviceWorker.unregister();
 

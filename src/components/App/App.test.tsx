@@ -44,32 +44,28 @@ describe('App', () => {
   }));
 
   it('should render without crashing', () => {
-    // Act
     const app = shallow(<App />);
 
-    // Assert
-    expect(app.find('div').hasClass('App')).toBe(true);
+    expect(app.exists()).toBe(true);
+  });
+
+  it('should render an App component', () => {
+    const app = shallow(<App />);
+
+    expect(app.find('div.App').exists()).toBe(true);
   });
 
   it('should display a loading spinner while fetching the initial data', () => {
-    // Arrange
     mockLoading = true;
-
-    // Act
     const app = shallow(<App />);
 
-    // Assert
     expect(app.find(Loading).exists()).toBe(true);
   });
 
   it('should remove the loading spinner after the initial data has been fetched', () => {
-    // Arrange
     mockLoading = false;
-
-    // Act
     const app = shallow(<App />);
 
-    // Assert
     expect(app.find(Loading).exists()).toBe(false);
   });
 });
