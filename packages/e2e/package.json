@@ -1,0 +1,26 @@
+{
+  "name": "online-scoreboard-e2e",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Online-Scoreboard/online-scoreboard.git"
+  },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "cucumber-js --require-module ts-node/register './features/' --require './step_definitions/*.ts' --require './support/*.ts' -f json:reporting/json/json-report.json --format summary",
+    "local": "cucumber-js --require-module ts-node/register './features/' --require './step_definitions/*.ts' --require './support/*.ts'",
+    "report": "ts-node reporter.ts",
+    "lint": "eslint --ext=ts,tsx {pages,support,step_definitions}/**/*",
+    "lint:ci": "eslint --format junit -o reports/junit/js-lint-results.xml --ext=ts,tsx {pages,support,step_definitions}/**/*"
+  },
+  "devDependencies": {
+    "@types/cucumber": "^4.0.7",
+    "@types/dotenv": "^8.2.0",
+    "@types/selenium-webdriver": "^4.0.5",
+    "chromedriver": "^78.0.1",
+    "cucumber": "^5.1.0",
+    "cucumber-html-reporter": "^5.0.2",
+    "selenium-webdriver": "^4.0.0-alpha.5"
+  }
+}

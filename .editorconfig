@@ -13,6 +13,14 @@ insert_final_newline = true
 [*.json]
 insert_final_newline = ignore
 
+[*.txt]
+indent_style = space
+indent_size = 4
+
+[*.graphql]
+indent_style = tab
+indent_size = 2
+
 # Minified JavaScript files shouldn't be changed
 [**.min.js]
 indent_style = ignore

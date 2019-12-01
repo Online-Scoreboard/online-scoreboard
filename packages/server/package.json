@@ -1,0 +1,24 @@
+{
+  "name": "online-scoreboard-server",
+  "version": "0.0.1",
+  "description": "Online Scoreboard Server",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Online-Scoreboard/online-scoreboard.git"
+  },
+  "scripts": {
+    "deploy:prod": "serverless --stage=prod deploy",
+    "remove:prod": "serverless --stage=prod remove",
+    "deploy:stage": "serverless --stage=stage deploy",
+    "remove:stage": "serverless --stage=stage remove"
+  },
+  "devDependencies": {
+    "serverless-appsync-plugin": "^1.1.2",
+    "serverless-appsync-offline": "^1.4.0",
+    "serverless-dynamodb-client": "0.0.2",
+    "serverless-dynamodb-local": "^0.2.38",
+    "serverless-offline": "^5.12.1"
+  },
+  "license": "MIT"
+}
