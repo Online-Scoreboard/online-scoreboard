@@ -85,6 +85,7 @@ workflows:
     jobs:
       - eslint
       - unit_tests
-  e2e:
-    jobs:
-      - e2e
+      - e2e:
+          requires:
+            - eslint
+            - unit_tests

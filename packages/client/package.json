@@ -10,9 +10,9 @@
   "scripts": {
     "start": "react-scripts --max_old_space_size=4096 start",
     "build": "react-scripts --max_old_space_size=4096 build",
-    "preserve": "npm run build",
+    "preserve": "yarn build",
     "serve": "npx serve -s build -p 3000",
-    "now-build": "bash ./scripts/version.sh && npm run build",
+    "now-build": "bash ./scripts/version.sh && yarn build",
     "test": "react-scripts test --watchAll --coverage",
     "test:ci": "react-scripts test --ci --coverage --watchAll=false --reporters=default --reporters=jest-junit",
     "eject": "react-scripts eject",

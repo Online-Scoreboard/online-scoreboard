@@ -5,9 +5,7 @@
     {
       "src": "packages/client/package.json",
       "use": "@now/static-build",
-      "config": {
-        "distDir": "packages/client/build"
-      }
+      "config": { "distDir": "build" }
     }
   ],
   "build": {
@@ -23,17 +21,17 @@
     {
       "src": "/static/(.*)",
       "headers": { "cache-control": "s-maxage=31536000,immutable" },
-      "dest": "/static/$1"
+      "dest": "/packages/client/static/$1"
     },
     {
       "src": "/(.*).(json|png|ico|js)$",
       "headers": { "cache-control": "s-maxage=31536000,immutable" },
-      "dest": "/$1.$2"
+      "dest": "/packages/client/$1.$2"
     },
     {
       "src": "/(.*)",
       "headers": { "cache-control": "s-maxage=0" },
-      "dest": "/index.html"
+      "dest": "/packages/client/index.html"
     }
   ]
 }

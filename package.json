@@ -1,12 +1,7 @@
 {
   "name": "online-scoreboard",
   "version": "0.1.0",
-  "engines": {
-    "node": "10.17.0",
-    "npm": "6.11.3"
-  },
   "scripts": {
-    "now-build": "yarn workspace online-scoreboard-client now-build && mv packages/client/build build",
     "start": "yarn workspace online-scoreboard-client start",
     "serve": "yarn workspace online-scoreboard-client serve",
     "test": "yarn workspace online-scoreboard-client test",
