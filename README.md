@@ -6,76 +6,106 @@
 This project is running live at: [online-scoreboard.now.sh](https://online-scoreboard.now.sh)
 against the latest changes on the master branch of this repository
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- [Online Scoreboard](#online-scoreboard)
+  - [About the project](#about-the-project)
+  - [Setup](#setup)
+    - [Install dependencies](#install-dependencies)
+    - [Configure your environment](#configure-your-environment)
+  - [Run the project locally](#run-the-project-locally)
+  - [Serving the app](#serving-the-app)
+  - [ESLint](#eslint)
+  - [Unit Test](#unit-test)
+  - [E2E](#e2e)
+  - [Build the app](#build-the-app)
 
 ## About the project
 
 Read more about this project in the [Wiki](https://github.com/Online-Scoreboard/online-scoreboard/wiki)
 
-## Available Scripts
+## Setup
 
-In the project directory, you can run:
+### Install dependencies
 
-### `npm start`
+This project uses Yarn workspaces. Do not use Npm for installing dependencies or for running the scripts.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Once the project is cloned on your local machine, just install all the dependencies by running:
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+```sh
+yarn
+```
 
-### `npm run lint`
+### Configure your environment
 
-Lint the code using ESLint and the rules listed in the `.eslintrc` file.
+Rename the `.env.sample` under the `packages/client` folder and fill the variables
+according to your environment configuration
 
-### `npm test`
+## Run the project locally
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```sh
+yarn start
+```
 
-### `npm run e2e`
+This script will launch the client application and watch for file changes on the `packages/client` folder.
 
-Runs all the e2e test suites under `e2e/features`
+Use this for running E2E tests, develop new features or manual testing
 
-Mandatory:
-- export `TS_NODE_PROJECT=e2e/tsconfig.json`
+## Serving the app
 
-Optional:
- - `SELENIUM_BROWSER` - specify what browser to use. Defaults to chrome.
- - `HOMEPAGE_URL` - specify base URL which will be used to access the online-scoreboard. Defaults to http:localhost:3000.
+```sh
+yarn serve
+```
 
-### `npm run e2e-report`
+This script will build a distribution version of the app and serve that from your local environment.
 
-Generates an html report from the cucumber report json
+Use this script for running E2E tests or manual testing the production version of the app
 
-### `npm run build`
+## ESLint
 
-Builds the app for production to the `build` folder.<br>
+```sh
+yarn lint
+```
+
+This script will lint the TypeScript code using ESLint according to the configuration present
+under the `.eslintrc.js` file
+
+## Unit Test
+
+```sh
+yarn test
+```
+
+This script will run the unit tests and watch for file changes.
+
+Use this script for local development, write new tests or test your local app.
+
+## E2E
+
+```sh
+yarn e2e
+```
+
+Runs all the end-to-end test suites under `packages/e2e/features`
+
+This script requires a local version of the client application to run on the port `3000`.
+You can either use the [`yarn start`](#run-the-project-locally) or the [`yarn serve`](#serving-the-app) script.
+
+Optional Configuration:
+ - `SELENIUM_BROWSER` - specify what browser to use. Defaults to `chrome`
+ - `HOMEPAGE_URL` - specify base URL which will be used to access the online-scoreboard. Defaults to `http:localhost:3000`
+
+Export those as environment variables or change the default values from the `packages/e2e/env-keys.ts` file
+
+
+## Build the app
+
+```sh
+yarn build
+```
+
+This script will build a production version of the app under the `build` folder.
+
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br>
+The build is minified and the filenames include the hashes.
+
 Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-### `npm run ncu`
-
-**Note: this requires `npm-check-updates` to be installed globally**
-
-Check for outdated npm dependencies.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).

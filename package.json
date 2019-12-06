@@ -9,6 +9,7 @@
     "now-build": "yarn workspace online-scoreboard-client now-build && mv packages/client/build build",
     "start": "yarn workspace online-scoreboard-client start",
     "serve": "yarn workspace online-scoreboard-client serve",
+    "test": "yarn workspace online-scoreboard-client test",
     "test:ci": "yarn workspace online-scoreboard-client test:ci",
     "client:test:ci": "yarn workspace online-scoreboard-client test:ci",
     "e2e": "yarn workspace online-scoreboard-e2e start",

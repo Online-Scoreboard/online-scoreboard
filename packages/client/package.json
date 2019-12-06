@@ -17,8 +17,7 @@
     "test:ci": "react-scripts test --ci --coverage --watchAll=false --reporters=default --reporters=jest-junit",
     "eject": "react-scripts eject",
     "lint": "eslint --ext=ts,tsx src/**/*",
-    "lint:ci": "eslint --format junit -o reports/junit/js-lint-results.xml --ext=ts,tsx src/**/*",
-    "ncu": "ncu"
+    "lint:ci": "eslint --format junit -o reports/junit/js-lint-results.xml --ext=ts,tsx src/**/*"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.2",
