@@ -14,7 +14,7 @@
     "serve": "npx serve -s build -p 3000",
     "now-build": "bash ./scripts/version.sh && yarn build",
     "test": "react-scripts test --watchAll --coverage",
-    "test:ci": "react-scripts test --ci --coverage --watchAll=false --reporters=default --reporters=jest-junit",
+    "test:ci": "react-scripts test --ci --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "eslint --ext=ts,tsx src/**/*",
     "lint:ci": "eslint --format junit -o reports/junit/js-lint-results.xml --ext=ts,tsx src/**/*"
@@ -26,7 +26,7 @@
     "@material-ui/lab": "^4.0.0-alpha.32",
     "@reach/router": "^1.2.1",
     "apollo-boost": "^0.4.4",
-    "aws-amplify": "^1.1.40",
+    "aws-amplify": "^2.2.0",
     "bad-words": "^3.0.3",
     "dotenv": "^8.2.0",
     "graphql": "^14.5.8",
@@ -60,10 +60,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run lint && npm run test:ci"
-    }
   }
 }

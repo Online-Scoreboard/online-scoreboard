@@ -11,9 +11,9 @@ jobs:
           command: yarn
       - run:
           name: "Jest Test Suite"
-          command: yarn test:ci
+          command: yarn test:ci --reporters=default --reporters=jest-junit
           environment:
-            JEST_JUNIT_OUTPUT_DIR: "packages/client/reports/junit"
+            JEST_JUNIT_OUTPUT_DIR: "reports/junit"
             JEST_JUNIT_OUTPUT_NAME: "jest-test-results.xml"
       - run:
           name: "Send test coverage to Codacy"

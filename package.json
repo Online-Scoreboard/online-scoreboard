@@ -4,9 +4,9 @@
   "scripts": {
     "start": "yarn workspace online-scoreboard-client start",
     "serve": "yarn workspace online-scoreboard-client serve",
+    "build": "yarn workspace online-scoreboard-client build",
     "test": "yarn workspace online-scoreboard-client test",
     "test:ci": "yarn workspace online-scoreboard-client test:ci",
-    "client:test:ci": "yarn workspace online-scoreboard-client test:ci",
     "e2e": "yarn workspace online-scoreboard-e2e start",
     "e2e:local": "yarn workspace online-scoreboard-e2e local",
     "e2e:report": "yarn workspace online-scoreboard-e2e report",
@@ -50,9 +50,14 @@
     "eslint-plugin-react-hooks": "^2.3.0",
     "husky": "^3.0.9",
     "jest": "^24.9.0",
-    "jest-junit": "^9.0.0",
+    "jest-junit": "^10.0.0",
     "prettier": "^1.19.1",
     "ts-node": "^8.5.2",
     "typescript": "3.6.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn lint && yarn test:ci"
+    }
   }
 }

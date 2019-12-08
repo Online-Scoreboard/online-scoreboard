@@ -7,6 +7,7 @@ import { useAuth } from '../../hooks/Auth';
 import { useStyles } from './Profile.styles';
 import { ProfileComponent } from './ProfileComponent';
 import { SHUFFLE_AVATAR, UPDATE_USERNAME } from './Profile.graphql';
+import { GET_USER_DATA } from '../../hooks/Auth/useAuth.graph';
 
 interface ShuffleAvatarVariables {
   updateUserInput: {
@@ -24,12 +25,12 @@ export const Profile: React.FC<RouteComponentProps> = memo(() => {
   const classes = useStyles();
   const { user } = useAuth();
   const [shuffleAvatar, { loading: shuffleAvatarLoading }] = useMutation<void, ShuffleAvatarVariables>(SHUFFLE_AVATAR, {
-    refetchQueries: ['GetUserData'],
     awaitRefetchQueries: true,
+    refetchQueries: [{ query: GET_USER_DATA }],
   });
   const [saveUsername, { loading: saveUsernameLoading }] = useMutation<void, UpdateUsernameVariables>(UPDATE_USERNAME, {
-    refetchQueries: ['GetUserData'],
     awaitRefetchQueries: true,
+    refetchQueries: [{ query: GET_USER_DATA }],
   });
 
   const handleShuffleAvatar = useCallback(() => {

@@ -8,6 +8,7 @@ import * as Auth from '../../hooks/Auth';
 import { SHUFFLE_AVATAR, UPDATE_USERNAME } from './Profile.graphql';
 import { ProfileComponent } from './ProfileComponent';
 import { Profile } from './Profile';
+import { GET_USER_DATA } from '../../hooks/Auth/useAuth.graph';
 
 jest.mock('../../hooks/Auth');
 
@@ -17,9 +18,6 @@ describe('Profile', () => {
   let mockUserData = {};
 
   beforeEach(() => {
-    jest.spyOn(console, 'warn').mockImplementation(() => {
-      // void
-    });
     jest.spyOn(Auth, 'useAuth').mockImplementation(() => {
       return {
         user: mockUserData,
@@ -47,18 +45,18 @@ describe('Profile', () => {
       {
         request: {
           query: SHUFFLE_AVATAR,
-          variables: {
-            updateUserInput: { avatar: 'testAvatar' },
-          },
+          variables: { updateUserInput: { avatar: 'testAvatar' } },
         },
         result: jest.fn(() => {
           mockUserData = testUser;
           return {
-            data: {
-              updateUser: mockUserData,
-            },
+            data: { updateUser: mockUserData },
           };
         }),
+      },
+      {
+        request: { query: GET_USER_DATA },
+        result: () => ({ data: { whoAmI: {} } }),
       },
     ];
 
@@ -95,32 +93,38 @@ describe('Profile', () => {
     await act(async () => {
       await wait();
     });
+    profile.update();
 
+    expect(mocks[0].result).toBeCalled();
+
+    // Simulate waitRefetchQueries on GET_USER_DATA
+    await act(async () => {
+      await wait();
+    });
     profile.update();
 
     // The user should be updated and shuffleAvatarLoading should be back to false
-    expect(mocks[0].result).toBeCalled();
     expect(profile.find(ProfileComponent).length).toBe(1);
-    expect(profile.find(ProfileComponent).props().user).toBe(testUser);
     expect(profile.find(ProfileComponent).props().shuffleAvatarLoading).toBe(false);
   });
 
   it('should allow updating the profile information', async () => {
+    let updateUserCalled = false;
     const testUserName = 'new-username';
     const expectedVariables = {
       updateUserInput: { username: testUserName },
     };
-    let updateUserCalled = false;
     const mocks = [
       {
-        request: {
-          query: UPDATE_USERNAME,
-          variables: expectedVariables,
-        },
+        request: { query: UPDATE_USERNAME, variables: expectedVariables },
         result: () => {
           updateUserCalled = true;
           return { data: {} };
         },
+      },
+      {
+        request: { query: GET_USER_DATA },
+        result: () => ({ data: { whoAmI: {} } }),
       },
     ];
 
