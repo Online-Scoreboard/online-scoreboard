@@ -26,10 +26,10 @@ const NotificationContent: React.FC<SnackbarContentWrapperProps> = ({ message, v
 
   return (
     <SnackbarContent
-      className={classes[variant]}
+      className={`NotificationBar ${variant} ${classes[variant]}`}
       aria-describedby="client-snackbar"
       message={
-        <span id="client-snackbar" className={classes.message}>
+        <span id="client-snackbar" className={`NotificationBarMessage ${classes.message}`}>
           <Icon className={classes.iconVariant} />
           {message}
         </span>

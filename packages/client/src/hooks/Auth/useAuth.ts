@@ -30,7 +30,7 @@ export const useAuth = () => {
   const { loading: userDataLoading, data: whoAmIData } = useQuery<{ whoAmI: UserData }>(GET_USER_DATA);
   const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
   const [createUser, { loading: createUserLoading }] = useMutation<void>(CREATE_USER);
-  const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN, { refetchQueries: ['GetUserData'] });
+  const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN, { refetchQueries: [{ query: GET_USER }] });
   const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
   const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
   const [_resendCode, { loading: resendCodeLoading }] = useMutation<void>(RESEND_CODE);
@@ -78,43 +78,43 @@ export const useAuth = () => {
     logIn: useCallback(
       async (username: string, password: string) => {
         await resetErrors();
-        return _logIn({ variables: { loginData: { username, password } } });
+        _logIn({ variables: { loginData: { username, password } } });
       },
       [resetErrors, _logIn]
     ),
     register: useCallback(
       async (username: string, password: string) => {
         await resetErrors();
-        return _register({ variables: { registerData: { username, password } } });
+        _register({ variables: { registerData: { username, password } } });
       },
       [resetErrors, _register]
     ),
     verifyEmail: useCallback(
       async (code: string) => {
         await resetErrors();
-        return _verifyEmail({ variables: { verifyEmailData: { code } } });
+        _verifyEmail({ variables: { verifyEmailData: { code } } });
       },
       [resetErrors, _verifyEmail]
     ),
     resendCode: useCallback(async () => {
       await resetErrors();
-      return _resendCode();
+      _resendCode();
     }, [resetErrors, _resendCode]),
     logOut: useCallback(async () => {
       await resetErrors();
-      return _logOut();
+      _logOut();
     }, [resetErrors, _logOut]),
     forgottenPassword: useCallback(
       async (email: string) => {
         await resetErrors();
-        return _forgottenPassword({ variables: { forgottenPasswordData: { email } } });
+        _forgottenPassword({ variables: { forgottenPasswordData: { email } } });
       },
       [resetErrors, _forgottenPassword]
     ),
     resetPassword: useCallback(
       async (username: string, code: string, newPassword: string) => {
         await resetErrors();
-        return _resetPassword({ variables: { resetPasswordData: { username, code, newPassword } } });
+        _resetPassword({ variables: { resetPasswordData: { username, code, newPassword } } });
       },
       [resetErrors, _resetPassword]
     ),

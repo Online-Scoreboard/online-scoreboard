@@ -1,8 +1,8 @@
-import { Given, Then, When } from 'cucumber';
+import assert from 'assert';
 import { until } from 'selenium-webdriver';
+import { Given, Then, When } from 'cucumber';
 import NavBarPage from '../pages/navbar.page';
 import LoginPage from '../pages/login.page';
-import assert from 'assert';
 
 When(/^I navigate to 'Login' page$/, async function() {
   await this.browser.wait(until.elementLocated(NavBarPage.loginButton())).click();
@@ -29,4 +29,20 @@ Given(/^I am on the Online Scoreboard login form$/, async function() {
   const expected = 'Log In';
   const h1 = await this.browser.findElement(LoginPage.getMainHeading()).getText();
   assert.deepStrictEqual(h1, expected, `Expected login page heading to be: Log In, got: ${h1}`);
+});
+
+Then(/^I enter '(.*)' login credentials$/, async function(credentialsType: string) {
+  const username = this.browser.findElement(LoginPage.getUsernameInput());
+  const password = this.browser.findElement(LoginPage.getPasswordInput());
+  const loginButton = this.browser.findElement(LoginPage.getLoginButton());
+
+  if (credentialsType === 'wrong') {
+    username.sendKeys('fake@email.com');
+    password.sendKeys('fakePassword');
+  } else {
+    username.sendKeys('validUser@email.com');
+    password.sendKeys('Passw0rd123!');
+  }
+
+  loginButton.click();
 });

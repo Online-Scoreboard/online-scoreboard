@@ -5,5 +5,5 @@
     "strict": true,
     "esModuleInterop": true
   },
-  "include": ["typings.d.ts", "step_definitions", "support", "reporter.ts"]
+  "include": ["typings.d.ts", "step_definitions", "support", "utils", "reporter.ts"]
 }

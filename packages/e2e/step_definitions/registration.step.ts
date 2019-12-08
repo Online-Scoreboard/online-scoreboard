@@ -1,7 +1,7 @@
-import { When, Then } from 'cucumber';
-import { until } from 'selenium-webdriver';
-import RegistrationPage from '../pages/registration.page';
 import assert from 'assert';
+import { until } from 'selenium-webdriver';
+import { When, Then } from 'cucumber';
+import RegistrationPage from '../pages/registration.page';
 import LoginPage from '../pages/login.page';
 
 When(/^I navigate to 'Registration' page$/, async function() {
