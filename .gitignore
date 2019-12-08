@@ -1,15 +1,20 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
 # testing
-/coverage
+coverage
+reports
+reporting
+!reporting/.gitkeep
+!reporting/html/.gitkeep
+!reporting/json/.gitkeep
 
 # production
-/build
+build
 
 # misc
 .DS_Store
@@ -25,3 +30,9 @@ yarn-error.log*
 # DotEnv
 .env
 .env.build
+
+# Serverless directories
+.serverless
+
+# JUnit
+junit.xml

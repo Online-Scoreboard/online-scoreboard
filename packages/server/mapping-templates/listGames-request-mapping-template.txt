@@ -1,0 +1,19 @@
+#set( $dataType = $util.dynamodb.toDynamoDBJson("Game") )
+
+{
+    "version" : "2017-02-28",
+    "operation" : "Query",
+    "scanIndexForward" : false,
+    "index" : "TypenameGSI",
+    "query" : {
+        "expression" : "#type = :typeValue",
+        "expressionNames" : {
+            "#type" : "__typename"
+        },
+        "expressionValues" : {
+            ":typeValue" : $dataType
+        }
+    },
+    "limit": $util.defaultIfNull(${ctx.args.limit}, 10),
+    "nextToken": $util.toJson($util.defaultIfNullOrBlank($ctx.args.nextToken, null))
+}

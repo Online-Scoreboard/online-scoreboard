@@ -1,0 +1,17 @@
+#set( $dataType = $util.dynamodb.toDynamoDBJson("Game") )
+
+{
+    "version" : "2017-02-28",
+    "operation" : "Scan",
+    ## "select": "COUNT",
+    "index" : "TypenameGSI",
+    "filter": {
+        "expression" : "#type = :typeValue",
+        "expressionNames" : {
+            "#type" : "__typename"
+        },
+        "expressionValues" : {
+            ":typeValue" : $dataType
+        }
+    }
+}

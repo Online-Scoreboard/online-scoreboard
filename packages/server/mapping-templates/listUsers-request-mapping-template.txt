@@ -1,0 +1,19 @@
+#set( $dataType = $util.dynamodb.toDynamoDBJson("User") )
+
+{
+    "version" : "2017-02-28",
+    "operation" : "Query",
+    "scanIndexForward" : true,
+    "index" : "TypenameGSI",
+    "query" : {
+        "expression" : "#type = :user",
+        "expressionNames" : {
+            "#type" : "__typename"
+        },
+        "expressionValues" : {
+            ":user" : $dataType
+        }
+    },
+    "limit": $util.defaultIfNull(${ctx.args.limit}, 10),
+    "nextToken": $util.toJson($util.defaultIfNullOrBlank($ctx.args.nextToken, null))
+}

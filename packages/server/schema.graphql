@@ -1,0 +1,99 @@
+enum Color {
+	white
+	red
+	yellow
+	blue
+	green
+	gray
+	pink
+	brown
+	lime
+	teal
+	purple
+	gold
+	aquamarine
+	darkorange
+	black
+}
+
+input NewGameSetup {
+	gameName: String
+}
+
+input GameRules {
+	isMatchesBased: Boolean
+	winningScoreEnabled: Boolean
+	maxTeamSize: Int
+	minTeamSize: Int
+	startingScore: Int
+	winningScore: Int
+	name: String
+	scoringSystem: String
+}
+
+input CreateGameInput {
+	setup: NewGameSetup!
+	teams: Int!
+	teamColors: [Color]!
+	rules: GameRules!
+}
+
+input UpdateUserInput {
+	username: String
+	avatar: String
+}
+
+type Game {
+	id: ID!
+	createdAt: String!
+	title: String!
+	status: String!
+	users: [String]!
+	players: [Player]!
+	description: String
+}
+
+type ModelGameConnection {
+	items: [Game]!
+	count: Int!
+	nextToken: String
+}
+
+type ModelUserConnection {
+	items: [User]!
+	count: Int!
+	nextToken: String
+}
+
+type Player {
+	name: String!
+	color: Color!
+	score: Int!
+}
+
+type User {
+	id: ID!
+	username: String!
+	avatar: String!
+	createdAt: String!
+	completedGames: [Game]!
+	activeGames: [Game]!
+}
+
+type Query {
+	whoAmI: User!
+	getUser(userID: ID!): User!
+	listGames(limit: Int, nextToken: String): ModelGameConnection!
+	listUsers(limit: Int, nextToken: String): ModelUserConnection!
+}
+
+type Mutation {
+	createUser: User
+	updateUser(input: UpdateUserInput!): User
+	createGame(input: CreateGameInput!): Game
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+}

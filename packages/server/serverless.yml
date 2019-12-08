@@ -1,0 +1,168 @@
+service:
+  name: online-scoreboard-server
+
+frameworkVersion: ">=1.21.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+
+plugins:
+  - serverless-appsync-plugin
+  - serverless-dynamodb-local
+  - serverless-appsync-offline
+  - serverless-offline
+
+custom:
+  appSync:
+      name: ${self:provider.stage}OnlineScoreboard
+      authenticationType: AMAZON_COGNITO_USER_POOLS # API_KEY is also supported
+
+      userPoolConfig:
+        awsRegion: ${self:provider.region}
+        defaultAction: ALLOW
+        userPoolId: {Ref: CognitoUserPoolUsers}
+
+      # mappingTemplatesLocation: # defaults to mapping-templates
+      mappingTemplates:
+        - dataSource: ${self:provider.stage}OnlineScoreBoard
+          type: Query
+          field: listGames
+          request: "listGames-request-mapping-template.txt"
+          response: "listGames-response-mapping-template.txt"
+        - dataSource: ${self:provider.stage}OnlineScoreBoard
+          type: Query
+          field: listUsers
+          request: "listUsers-request-mapping-template.txt"
+          response: "listUsers-response-mapping-template.txt"
+        - dataSource: ${self:provider.stage}OnlineScoreBoard
+          type: ModelGameConnection
+          field: count
+          request: "countGames-request-mapping-template.txt"
+          response: "countGames-response-mapping-template.txt"
+        - dataSource: ${self:provider.stage}OnlineScoreBoard
+          type: ModelUserConnection
+          field: count
+          request: "countUsers-request-mapping-template.txt"
+          response: "countUsers-response-mapping-template.txt"
+        - dataSource: ${self:provider.stage}OnlineScoreBoard
+          type: Query
+          field: whoAmI
+          request: "whoAmI-request-mapping-template.txt"
+          response: "whoAmI-response-mapping-template.txt"
+        - dataSource: ${self:provider.stage}OnlineScoreBoard
+          type: Query
+          field: getUser
+          request: "getUser-request-mapping-template.txt"
+          response: "getUser-response-mapping-template.txt"
+        - dataSource: ${self:provider.stage}OnlineScoreBoard
+          type: User
+          field: completedGames
+          request: "completedGames-request-mapping-template.txt"
+          response: "completedGames-response-mapping-template.txt"
+        - dataSource: ${self:provider.stage}OnlineScoreBoard
+          type: User
+          field: activeGames
+          request: "activeGames-request-mapping-template.txt"
+          response: "activeGames-response-mapping-template.txt"
+        - dataSource: ${self:provider.stage}OnlineScoreBoard
+          type: Mutation
+          field: createUser
+          request: "createUser-request-mapping-template.txt"
+          response: "createUser-response-mapping-template.txt"
+        - dataSource: ${self:provider.stage}OnlineScoreBoard
+          type: Mutation
+          field: createGame
+          request: "createGame-request-mapping-template.txt"
+          response: "createGame-response-mapping-template.txt"
+        - dataSource: ${self:provider.stage}OnlineScoreBoard
+          type: Mutation
+          field: updateUser
+          request: "updateUser-request-mapping-template.txt"
+          response: "updateUser-response-mapping-template.txt"
+      dataSources:
+      - type: AMAZON_DYNAMODB
+        name: "${self:provider.stage}OnlineScoreBoard"
+        description: 'Online Scoreboard ${self:provider.stage}'
+        config:
+          tableName: "${self:provider.stage}OnlineScoreBoard"
+          iamRoleStatements: # custom IAM Role statements for this DataSource. Ignored if `serviceRoleArn` is present. Auto-generated if both `serviceRoleArn` and `iamRoleStatements` are omitted
+            - Effect: "Allow"
+              Action:
+                - "dynamodb:Query"
+                - "dynamodb:Scan"
+                - "dynamodb:GetItem"
+                - "dynamodb:UpdateItem"
+                - "dynamodb:PutItem"
+                - "dynamodb:DeleteItem"
+              Resource:
+                - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.stage}OnlineScoreBoard"
+                - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.stage}OnlineScoreBoard/*"
+resources:
+  Resources:
+    CognitoUserPoolUsers:
+      Type: AWS::Cognito::UserPool
+      DeletionPolicy: Retain
+      Properties:
+        UserPoolName: ${self:provider.stage}OnlineScoreboard
+        AutoVerifiedAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 6
+            RequireLowercase: false
+            RequireNumbers: false
+            RequireSymbols: false
+            RequireUppercase: false
+        UsernameAttributes:
+          - email
+
+    WebUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+          ClientName: "Web"
+          GenerateSecret: false
+          RefreshTokenValidity: 30
+          UserPoolId: {Ref: CognitoUserPoolUsers}
+
+    OnlineScoreboardTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+          -
+            AttributeName: __typename
+            AttributeType: S
+          -
+            AttributeName: createdAt
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+          -
+            AttributeName: __typename
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          -
+            IndexName: TypenameGSI
+            KeySchema:
+              -
+                AttributeName: __typename
+                KeyType: HASH
+              -
+                AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: "${self:provider.stage}OnlineScoreBoard"
