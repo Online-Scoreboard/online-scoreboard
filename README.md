@@ -17,6 +17,7 @@ against the latest changes on the master branch of this repository
   - [Unit Test](#unit-test)
   - [E2E](#e2e)
   - [Build the app](#build-the-app)
+  - [Backend service](#backend-service)
 
 ## About the project
 
@@ -109,3 +110,24 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.
 
 Your app is ready to be deployed!
+
+## Backend service
+
+The Backend layer is designed for living on an AWS account.
+
+Make sure [Serverless](https://serverless.com/framework/docs/providers/aws/guide/credentials#setup-with-the-aws-cli)
+is configured globally with your AWS credentials
+
+```sh
+yarn workspace online-scoreboard-server deploy:prod
+```
+
+This will create a production server side infrastructure under your AWS account
+
+For deploying a staging environment replace `prod` with `stage`
+
+```sh
+yarn workspace online-scoreboard-server deploy:stage
+```
+
+If the service already exists, use the same command to update the service with the latest changes.

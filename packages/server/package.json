@@ -8,10 +8,13 @@
     "url": "git@github.com:Online-Scoreboard/online-scoreboard.git"
   },
   "scripts": {
+    "serverless": "serverless",
     "deploy:prod": "serverless --stage=prod deploy",
     "remove:prod": "serverless --stage=prod remove",
     "deploy:stage": "serverless --stage=stage deploy",
-    "remove:stage": "serverless --stage=stage remove"
+    "remove:stage": "serverless --stage=stage remove",
+    "info:prod": "serverless --stage=prod info",
+    "info:stage": "serverless --stage=stage info"
   },
   "devDependencies": {
     "aws-appsync": "^1.0.0",
