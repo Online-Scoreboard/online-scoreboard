@@ -26,5 +26,8 @@
     "serverless-dynamodb-local": "^0.2.38",
     "serverless-offline": "^5.12.1"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "unique-names-generator": "^4.1.1"
+  }
 }

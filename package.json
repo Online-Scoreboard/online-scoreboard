@@ -28,7 +28,9 @@
     ],
     "nohoist": [
       "**/react-scripts",
-      "**/react-scripts/**"
+      "**/react-scripts/**",
+      "**/unique-names-generator",
+      "**/unique-names-generator/**"
     ]
   },
   "license": "MIT",

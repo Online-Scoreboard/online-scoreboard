@@ -89,6 +89,7 @@ type Query {
 
 type Mutation {
 	createUser: User
+	shuffleAvatar: User
 	updateUser(input: UpdateUserInput!): User
 	createGame(input: CreateGameInput!): Game
 }

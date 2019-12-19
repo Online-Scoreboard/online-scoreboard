@@ -9,6 +9,10 @@ provider:
   region: us-east-1
   stage: ${opt:stage, 'dev'}
 
+functions:
+  graphql:
+    handler: handler.graphqlHandler
+
 plugins:
   - serverless-appsync-plugin
   - serverless-dynamodb-local
@@ -19,6 +23,7 @@ custom:
   appSync:
       name: ${self:provider.stage}OnlineScoreboard
       authenticationType: AMAZON_COGNITO_USER_POOLS # API_KEY is also supported
+      # serviceRole: "AppSyncServiceRole"
 
       userPoolConfig:
         awsRegion: ${self:provider.region}
@@ -30,58 +35,73 @@ custom:
         - dataSource: ${self:provider.stage}OnlineScoreBoard
           type: Query
           field: listGames
-          request: "listGames-request-mapping-template.txt"
-          response: "listGames-response-mapping-template.txt"
+          request: "listGames-request-mapping-template.vtl"
+          response: "listGames-response-mapping-template.vtl"
         - dataSource: ${self:provider.stage}OnlineScoreBoard
           type: Query
           field: listUsers
-          request: "listUsers-request-mapping-template.txt"
-          response: "listUsers-response-mapping-template.txt"
+          request: "listUsers-request-mapping-template.vtl"
+          response: "listUsers-response-mapping-template.vtl"
         - dataSource: ${self:provider.stage}OnlineScoreBoard
           type: ModelGameConnection
           field: count
-          request: "countGames-request-mapping-template.txt"
-          response: "countGames-response-mapping-template.txt"
+          request: "countGames-request-mapping-template.vtl"
+          response: "countGames-response-mapping-template.vtl"
         - dataSource: ${self:provider.stage}OnlineScoreBoard
           type: ModelUserConnection
           field: count
-          request: "countUsers-request-mapping-template.txt"
-          response: "countUsers-response-mapping-template.txt"
+          request: "countUsers-request-mapping-template.vtl"
+          response: "countUsers-response-mapping-template.vtl"
         - dataSource: ${self:provider.stage}OnlineScoreBoard
           type: Query
           field: whoAmI
-          request: "whoAmI-request-mapping-template.txt"
-          response: "whoAmI-response-mapping-template.txt"
+          request: "whoAmI-request-mapping-template.vtl"
+          response: "whoAmI-response-mapping-template.vtl"
         - dataSource: ${self:provider.stage}OnlineScoreBoard
           type: Query
           field: getUser
-          request: "getUser-request-mapping-template.txt"
-          response: "getUser-response-mapping-template.txt"
+          request: "getUser-request-mapping-template.vtl"
+          response: "getUser-response-mapping-template.vtl"
         - dataSource: ${self:provider.stage}OnlineScoreBoard
           type: User
           field: completedGames
-          request: "completedGames-request-mapping-template.txt"
-          response: "completedGames-response-mapping-template.txt"
+          request: "completedGames-request-mapping-template.vtl"
+          response: "completedGames-response-mapping-template.vtl"
         - dataSource: ${self:provider.stage}OnlineScoreBoard
           type: User
           field: activeGames
-          request: "activeGames-request-mapping-template.txt"
-          response: "activeGames-response-mapping-template.txt"
+          request: "activeGames-request-mapping-template.vtl"
+          response: "activeGames-response-mapping-template.vtl"
         - dataSource: ${self:provider.stage}OnlineScoreBoard
           type: Mutation
           field: createUser
-          request: "createUser-request-mapping-template.txt"
-          response: "createUser-response-mapping-template.txt"
+          request: "createUser-request-mapping-template.vtl"
+          response: "createUser-response-mapping-template.vtl"
         - dataSource: ${self:provider.stage}OnlineScoreBoard
           type: Mutation
           field: createGame
-          request: "createGame-request-mapping-template.txt"
-          response: "createGame-response-mapping-template.txt"
+          request: "createGame-request-mapping-template.vtl"
+          response: "createGame-response-mapping-template.vtl"
         - dataSource: ${self:provider.stage}OnlineScoreBoard
           type: Mutation
           field: updateUser
-          request: "updateUser-request-mapping-template.txt"
-          response: "updateUser-response-mapping-template.txt"
+          request: "updateUser-request-mapping-template.vtl"
+          response: "updateUser-response-mapping-template.vtl"
+        - type: Mutation
+          field: shuffleAvatar
+          request: "shuffle-avatar-request-mapping-template-before.vtl"
+          response: "shuffle-avatar-response-mapping-template-after.vtl"
+          kind: PIPELINE
+          functions:
+            - shuffleAvatar
+          #   - updateUserDataFunction
+
+      functionConfigurations:
+        - dataSource: graphqlLambda
+          name: 'shuffleAvatar'
+          request: "shuffle-avatar-request-mapping-template.vtl"
+          response: "shuffle-avatar-response-mapping-template.vtl"
+
       dataSources:
       - type: AMAZON_DYNAMODB
         name: "${self:provider.stage}OnlineScoreBoard"
@@ -100,6 +120,14 @@ custom:
               Resource:
                 - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.stage}OnlineScoreBoard"
                 - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.stage}OnlineScoreBoard/*"
+      - type: AWS_LAMBDA
+        name: graphqlLambda
+        description: 'Lambda DataSource'
+        config:
+          functionName: graphql
+          lambdaFunctionArn: { Fn::GetAtt: [GraphqlLambdaFunction, Arn] } # Where GraphqlLambdaFunction is the lambda function cloudformation resource created by serverless for the serverless function named graphql
+          # serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] } # Where AppSyncLambdaServiceRole is an IAM role defined in Resources
+
 resources:
   Resources:
     CognitoUserPoolUsers:
@@ -166,3 +194,31 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: "${self:provider.stage}OnlineScoreBoard"
+
+    # AppSyncLambdaServiceRole:
+    #   Type: "AWS::IAM::Role"
+    #   Properties:
+    #     RoleName: "Lambda-${self:custom.appSync.serviceRole}"
+    #     AssumeRolePolicyDocument:
+    #       Version: "2012-10-17"
+    #       Statement:
+    #         -
+    #           Effect: "Allow"
+    #           Principal:
+    #             Service:
+    #               - "appsync.amazonaws.com"
+    #           Action:
+    #             - "sts:AssumeRole"
+    #     Policies:
+    #       -
+    #         PolicyName: "Lambda-${self:custom.appSync.serviceRole}-Policy"
+    #         PolicyDocument:
+    #           Version: "2012-10-17"
+    #           Statement:
+    #             -
+    #               Effect: "Allow"
+    #               Action:
+    #                 - "lambda:invokeFunction"
+    #               Resource:
+    #                 - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql"
+    #                 - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql:*"

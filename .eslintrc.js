@@ -46,4 +46,12 @@ module.exports = {
       version: 'detect',
     },
   },
+  overrides: [
+    {
+      files: ['handler.js'],
+      rules: {
+        '@typescript-eslint/no-var-requires': 0,
+      },
+    },
+  ],
 };
