@@ -11,6 +11,7 @@ provider:
 
 functions:
   graphql:
+    description: 'Online Scoreboard ${self:provider.stage} function'
     handler: handler.graphqlHandler
 
 plugins:
@@ -24,7 +25,7 @@ custom:
   appSync:
       name: OnlineScoreboard-${self:provider.stage}
       authenticationType: AMAZON_COGNITO_USER_POOLS # API_KEY is also supported
-      serviceRole: "AppSyncServiceRole"
+      serviceRole: "AppSyncServiceRole-${self:provider.stage}"
 
       userPoolConfig:
         awsRegion: ${self:provider.region}

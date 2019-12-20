@@ -81,8 +81,8 @@ type User {
 }
 
 type Query {
-	whoAmI: User!
-	getUser(userID: ID!): User!
+	whoAmI: User
+	getUser(userID: ID!): User
 	listGames(limit: Int, nextToken: String): ModelGameConnection!
 	listUsers(limit: Int, nextToken: String): ModelUserConnection!
 }
