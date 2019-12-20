@@ -1,6 +1,7 @@
 import assert from 'assert';
 import { until } from 'selenium-webdriver';
 import { Given, Then, When } from 'cucumber';
+import { envConfig } from '../env-keys';
 import NavBarPage from '../pages/navbar.page';
 import LoginPage from '../pages/login.page';
 
@@ -37,11 +38,11 @@ Then(/^I enter '(.*)' login credentials$/, async function(credentialsType: strin
   const loginButton = this.browser.findElement(LoginPage.getLoginButton());
 
   if (credentialsType === 'wrong') {
-    username.sendKeys('fake@email.com');
-    password.sendKeys('fakePassword');
+    username.sendKeys(envConfig.INVALID_USER);
+    password.sendKeys(envConfig.INVALID_PASSWORD);
   } else {
-    username.sendKeys('validUser@email.com');
-    password.sendKeys('Passw0rd123!');
+    username.sendKeys(envConfig.VALID_USER);
+    password.sendKeys(envConfig.VALID_PASSWORD);
   }
 
   loginButton.click();
