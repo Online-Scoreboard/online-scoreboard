@@ -15,7 +15,13 @@
     "client:lint": "yarn workspace online-scoreboard-client lint",
     "lint:ci": "yarn e2e:lint:ci && yarn client:lint:ci",
     "client:lint:ci": "yarn workspace online-scoreboard-client lint:ci",
-    "e2e:lint:ci": "yarn workspace online-scoreboard-e2e lint:ci"
+    "e2e:lint:ci": "yarn workspace online-scoreboard-e2e lint:ci",
+    "server:prod:deploy": "yarn workspace online-scoreboard-server prod:deploy",
+    "server:prod:remove": "yarn workspace online-scoreboard-server prod:remove",
+    "server:stage:deploy": "yarn workspace online-scoreboard-server stage:deploy",
+    "server:stage:remove": "yarn workspace online-scoreboard-server stage:remove",
+    "server:prod:info": "yarn workspace online-scoreboard-server prod:info",
+    "server:stage:info": "yarn workspace online-scoreboard-server stage:info"
   },
   "repository": {
     "type": "git",

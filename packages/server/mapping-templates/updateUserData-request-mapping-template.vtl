@@ -1,0 +1,29 @@
+#set( $identityValue = $util.defaultIfNull($ctx.identity.claims.get("username"), $util.defaultIfNull($ctx.identity.claims.get("cognito:username"), "___xamznone____")) )
+
+#if($util.isNullOrEmpty($identityValue))
+  $util.unauthorized()
+#end
+
+#if( $context.prev.result && $context.prev.result.avatar )
+  #set( $newAvatar = $util.dynamodb.toDynamoDBJson($context.prev.result.avatar) )
+#else
+  $utils.error("Error: Cannot update user information with new avatar", "ERROR")
+#end
+
+{
+    "version" : "2017-02-28",
+    "operation" : "UpdateItem",
+    "key" : {
+        "id" : $util.dynamodb.toDynamoDBJson($identityValue),
+        "__typename": $util.dynamodb.toDynamoDBJson("User")
+    },
+    "update" : {
+        "expression" : "SET #avatar = :newAvatar",
+        "expressionNames" : {
+           "#avatar" : "avatar"
+       },
+        "expressionValues" : {
+            ":newAvatar" : $newAvatar
+        }
+    }
+}

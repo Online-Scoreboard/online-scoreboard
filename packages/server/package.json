@@ -9,12 +9,12 @@
   },
   "scripts": {
     "serverless": "serverless",
-    "deploy:prod": "serverless --stage=prod deploy",
-    "remove:prod": "serverless --stage=prod remove",
-    "deploy:stage": "serverless --stage=stage deploy",
-    "remove:stage": "serverless --stage=stage remove",
-    "info:prod": "serverless --stage=prod info",
-    "info:stage": "serverless --stage=stage info"
+    "prod:deploy": "serverless --stage=prod --accountId=$ACCOUNT_ID deploy",
+    "prod:remove": "serverless --stage=prod remove",
+    "stage:deploy": "serverless --stage=stage --accountId=$ACCOUNT_ID deploy",
+    "stage:remove": "serverless --stage=stage remove",
+    "prod:info": "serverless --stage=prod info",
+    "stage:info": "serverless --stage=stage info"
   },
   "devDependencies": {
     "aws-appsync": "^1.0.0",

@@ -1,19 +1,12 @@
 import React, { memo, useCallback } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { RouteComponentProps } from '@reach/router';
-import { uniqueNamesGenerator, names, adjectives, animals } from 'unique-names-generator';
 
 import { useAuth } from '../../hooks/Auth';
 import { useStyles } from './Profile.styles';
 import { ProfileComponent } from './ProfileComponent';
 import { SHUFFLE_AVATAR, UPDATE_USERNAME } from './Profile.graphql';
 import { GET_USER_DATA } from '../../hooks/Auth/useAuth.graph';
-
-interface ShuffleAvatarVariables {
-  updateUserInput: {
-    avatar: string;
-  };
-}
 
 interface UpdateUsernameVariables {
   updateUserInput: {
@@ -24,7 +17,7 @@ interface UpdateUsernameVariables {
 export const Profile: React.FC<RouteComponentProps> = memo(() => {
   const classes = useStyles();
   const { user } = useAuth();
-  const [shuffleAvatar, { loading: shuffleAvatarLoading }] = useMutation<void, ShuffleAvatarVariables>(SHUFFLE_AVATAR, {
+  const [shuffleAvatar, { loading: shuffleAvatarLoading }] = useMutation<void, void>(SHUFFLE_AVATAR, {
     awaitRefetchQueries: true,
     refetchQueries: [{ query: GET_USER_DATA }],
   });
@@ -34,17 +27,7 @@ export const Profile: React.FC<RouteComponentProps> = memo(() => {
   });
 
   const handleShuffleAvatar = useCallback(() => {
-    const gameName = uniqueNamesGenerator({
-      dictionaries: [adjectives, animals, names],
-      separator: '_',
-      style: 'lowerCase',
-    });
-
-    shuffleAvatar({
-      variables: {
-        updateUserInput: { avatar: gameName },
-      },
-    });
+    shuffleAvatar();
   }, [shuffleAvatar]);
 
   const handleSaveUsername = useCallback(

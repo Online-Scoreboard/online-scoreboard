@@ -113,13 +113,22 @@ Your app is ready to be deployed!
 
 ## Backend service
 
+**NOTE:** The deploy scripts will require a ACCOUNT_ID environment variable to be available.
+Make sure to export that according to your AWS account information, with:
+
+```sh
+export ACCOUNT_ID=xxxx
+```
+
+You can read your accountId from [https://console.aws.amazon.com/billing/home?#/account](https://console.aws.amazon.com/billing/home?#/account)
+
 The Backend layer is designed for living on an AWS account.
 
 Make sure [Serverless](https://serverless.com/framework/docs/providers/aws/guide/credentials#setup-with-the-aws-cli)
 is configured globally with your AWS credentials
 
 ```sh
-yarn workspace online-scoreboard-server deploy:prod
+yarn prod:deploy # Make sure the ACCOUNT_ID env variable is available with export ACCOUNT_ID=xxxx
 ```
 
 This will create a production server side infrastructure under your AWS account

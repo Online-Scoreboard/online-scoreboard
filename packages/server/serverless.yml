@@ -20,10 +20,11 @@ plugins:
   - serverless-offline
 
 custom:
+  accountId: ${opt:accountId}
   appSync:
-      name: ${self:provider.stage}OnlineScoreboard
+      name: OnlineScoreboard-${self:provider.stage}
       authenticationType: AMAZON_COGNITO_USER_POOLS # API_KEY is also supported
-      # serviceRole: "AppSyncServiceRole"
+      serviceRole: "AppSyncServiceRole"
 
       userPoolConfig:
         awsRegion: ${self:provider.region}
@@ -32,57 +33,57 @@ custom:
 
       # mappingTemplatesLocation: # defaults to mapping-templates
       mappingTemplates:
-        - dataSource: ${self:provider.stage}OnlineScoreBoard
+        - dataSource: OnlineScoreBoard
           type: Query
           field: listGames
           request: "listGames-request-mapping-template.vtl"
           response: "listGames-response-mapping-template.vtl"
-        - dataSource: ${self:provider.stage}OnlineScoreBoard
+        - dataSource: OnlineScoreBoard
           type: Query
           field: listUsers
           request: "listUsers-request-mapping-template.vtl"
           response: "listUsers-response-mapping-template.vtl"
-        - dataSource: ${self:provider.stage}OnlineScoreBoard
+        - dataSource: OnlineScoreBoard
           type: ModelGameConnection
           field: count
           request: "countGames-request-mapping-template.vtl"
           response: "countGames-response-mapping-template.vtl"
-        - dataSource: ${self:provider.stage}OnlineScoreBoard
+        - dataSource: OnlineScoreBoard
           type: ModelUserConnection
           field: count
           request: "countUsers-request-mapping-template.vtl"
           response: "countUsers-response-mapping-template.vtl"
-        - dataSource: ${self:provider.stage}OnlineScoreBoard
+        - dataSource: OnlineScoreBoard
           type: Query
           field: whoAmI
           request: "whoAmI-request-mapping-template.vtl"
           response: "whoAmI-response-mapping-template.vtl"
-        - dataSource: ${self:provider.stage}OnlineScoreBoard
+        - dataSource: OnlineScoreBoard
           type: Query
           field: getUser
           request: "getUser-request-mapping-template.vtl"
           response: "getUser-response-mapping-template.vtl"
-        - dataSource: ${self:provider.stage}OnlineScoreBoard
+        - dataSource: OnlineScoreBoard
           type: User
           field: completedGames
           request: "completedGames-request-mapping-template.vtl"
           response: "completedGames-response-mapping-template.vtl"
-        - dataSource: ${self:provider.stage}OnlineScoreBoard
+        - dataSource: OnlineScoreBoard
           type: User
           field: activeGames
           request: "activeGames-request-mapping-template.vtl"
           response: "activeGames-response-mapping-template.vtl"
-        - dataSource: ${self:provider.stage}OnlineScoreBoard
+        - dataSource: OnlineScoreBoard
           type: Mutation
           field: createUser
           request: "createUser-request-mapping-template.vtl"
           response: "createUser-response-mapping-template.vtl"
-        - dataSource: ${self:provider.stage}OnlineScoreBoard
+        - dataSource: OnlineScoreBoard
           type: Mutation
           field: createGame
           request: "createGame-request-mapping-template.vtl"
           response: "createGame-response-mapping-template.vtl"
-        - dataSource: ${self:provider.stage}OnlineScoreBoard
+        - dataSource: OnlineScoreBoard
           type: Mutation
           field: updateUser
           request: "updateUser-request-mapping-template.vtl"
@@ -94,39 +95,32 @@ custom:
           kind: PIPELINE
           functions:
             - shuffleAvatar
-          #   - updateUserDataFunction
+            - updateUserData
 
       functionConfigurations:
         - dataSource: graphqlLambda
           name: 'shuffleAvatar'
           request: "shuffle-avatar-request-mapping-template.vtl"
           response: "shuffle-avatar-response-mapping-template.vtl"
+        - dataSource: OnlineScoreBoard
+          name: 'updateUserData'
+          request: "updateUserData-request-mapping-template.vtl"
+          response: "updateUserData-response-mapping-template.vtl"
 
       dataSources:
       - type: AMAZON_DYNAMODB
-        name: "${self:provider.stage}OnlineScoreBoard"
+        name: OnlineScoreBoard
         description: 'Online Scoreboard ${self:provider.stage}'
         config:
-          tableName: "${self:provider.stage}OnlineScoreBoard"
-          iamRoleStatements: # custom IAM Role statements for this DataSource. Ignored if `serviceRoleArn` is present. Auto-generated if both `serviceRoleArn` and `iamRoleStatements` are omitted
-            - Effect: "Allow"
-              Action:
-                - "dynamodb:Query"
-                - "dynamodb:Scan"
-                - "dynamodb:GetItem"
-                - "dynamodb:UpdateItem"
-                - "dynamodb:PutItem"
-                - "dynamodb:DeleteItem"
-              Resource:
-                - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.stage}OnlineScoreBoard"
-                - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.stage}OnlineScoreBoard/*"
+          tableName: { Ref: OnlineScoreboardTable }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncDynamoDBServiceRole, Arn] }
       - type: AWS_LAMBDA
         name: graphqlLambda
         description: 'Lambda DataSource'
         config:
           functionName: graphql
           lambdaFunctionArn: { Fn::GetAtt: [GraphqlLambdaFunction, Arn] } # Where GraphqlLambdaFunction is the lambda function cloudformation resource created by serverless for the serverless function named graphql
-          # serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] } # Where AppSyncLambdaServiceRole is an IAM role defined in Resources
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] } # Where AppSyncLambdaServiceRole is an IAM role defined in Resources
 
 resources:
   Resources:
@@ -134,7 +128,7 @@ resources:
       Type: AWS::Cognito::UserPool
       DeletionPolicy: Retain
       Properties:
-        UserPoolName: ${self:provider.stage}OnlineScoreboard
+        UserPoolName: OnlineScoreboard-${self:provider.stage}
         AutoVerifiedAttributes:
           - email
         Policies:
@@ -158,6 +152,7 @@ resources:
     OnlineScoreboardTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
+        TableName: "OnlineScoreBoard-${self:provider.stage}"
         AttributeDefinitions:
           -
             AttributeName: id
@@ -193,32 +188,64 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
-        TableName: "${self:provider.stage}OnlineScoreBoard"
 
-    # AppSyncLambdaServiceRole:
-    #   Type: "AWS::IAM::Role"
-    #   Properties:
-    #     RoleName: "Lambda-${self:custom.appSync.serviceRole}"
-    #     AssumeRolePolicyDocument:
-    #       Version: "2012-10-17"
-    #       Statement:
-    #         -
-    #           Effect: "Allow"
-    #           Principal:
-    #             Service:
-    #               - "appsync.amazonaws.com"
-    #           Action:
-    #             - "sts:AssumeRole"
-    #     Policies:
-    #       -
-    #         PolicyName: "Lambda-${self:custom.appSync.serviceRole}-Policy"
-    #         PolicyDocument:
-    #           Version: "2012-10-17"
-    #           Statement:
-    #             -
-    #               Effect: "Allow"
-    #               Action:
-    #                 - "lambda:invokeFunction"
-    #               Resource:
-    #                 - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql"
-    #                 - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql:*"
+    AppSyncDynamoDBServiceRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: "Dynamo-${self:custom.appSync.serviceRole}"
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: "Allow"
+              Principal:
+                Service:
+                  - "appsync.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        Policies:
+          -
+            PolicyName: "Dynamo-${self:custom.appSync.serviceRole}-Policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                -
+                  Effect: "Allow"
+                  Action:
+                    - "dynamodb:Query"
+                    - "dynamodb:Scan"
+                    - "dynamodb:GetItem"
+                    - "dynamodb:UpdateItem"
+                    - "dynamodb:PutItem"
+                    - "dynamodb:DeleteItem"
+                  Resource:
+                    - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}"
+                    - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}/*"
+
+    AppSyncLambdaServiceRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: "Lambda-${self:custom.appSync.serviceRole}"
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: "Allow"
+              Principal:
+                Service:
+                  - "appsync.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        Policies:
+          -
+            PolicyName: "Lambda-${self:custom.appSync.serviceRole}-Policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                -
+                  Effect: "Allow"
+                  Action:
+                    - "lambda:invokeFunction"
+                  Resource:
+                    - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql"
+                    - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql:*"

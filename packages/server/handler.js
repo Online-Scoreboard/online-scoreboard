@@ -4,7 +4,7 @@ exports.graphqlHandler = (event, context, callback) => {
   switch (event.field) {
     case 'shuffleAvatar': {
       const randomName = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals] });
-      callback(null, { id: randomName });
+      callback(null, { avatar: randomName });
       break;
     }
 

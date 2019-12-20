@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const SHUFFLE_AVATAR = gql`
-  mutation UpdateUser($updateUserInput: UpdateUserInput!) {
-    updateUser(input: $updateUserInput) {
+  mutation ShuffleAvatar {
+    shuffleAvatar {
       avatar
     }
   }

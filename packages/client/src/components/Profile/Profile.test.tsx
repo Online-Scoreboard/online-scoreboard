@@ -2,7 +2,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import { MockedProvider } from '@apollo/react-testing';
-import uniqueNamesGenerator from 'unique-names-generator';
 
 import * as Auth from '../../hooks/Auth';
 import { SHUFFLE_AVATAR, UPDATE_USERNAME } from './Profile.graphql';
@@ -37,7 +36,8 @@ describe('Profile', () => {
 
   it('should display a loading spinner when shuffleAvatarLoading is set', async () => {
     const testAvatar = 'testAvatar';
-    const testUser = {
+    const updatedUser = {
+      id: '123',
       username: 'testUsername',
       avatar: testAvatar,
     };
@@ -45,24 +45,21 @@ describe('Profile', () => {
       {
         request: {
           query: SHUFFLE_AVATAR,
-          variables: { updateUserInput: { avatar: 'testAvatar' } },
         },
         result: jest.fn(() => {
-          mockUserData = testUser;
+          mockUserData = updatedUser;
           return {
-            data: { updateUser: mockUserData },
+            data: {
+              shuffleAvatar: { avatar: updatedUser.avatar },
+            },
           };
         }),
       },
       {
         request: { query: GET_USER_DATA },
-        result: () => ({ data: { whoAmI: {} } }),
+        result: jest.fn(() => ({ data: { whoAmI: updatedUser } })),
       },
     ];
-
-    jest.spyOn(uniqueNamesGenerator, 'uniqueNamesGenerator').mockImplementationOnce(() => {
-      return testAvatar;
-    });
 
     // Render the component
     const profile = mount(
@@ -103,9 +100,12 @@ describe('Profile', () => {
     });
     profile.update();
 
+    expect(mocks[1].result).toBeCalled();
+
     // The user should be updated and shuffleAvatarLoading should be back to false
     expect(profile.find(ProfileComponent).length).toBe(1);
     expect(profile.find(ProfileComponent).props().shuffleAvatarLoading).toBe(false);
+    expect(profile.find(ProfileComponent).props().user).toEqual(updatedUser);
   });
 
   it('should allow updating the profile information', async () => {
@@ -119,12 +119,20 @@ describe('Profile', () => {
         request: { query: UPDATE_USERNAME, variables: expectedVariables },
         result: () => {
           updateUserCalled = true;
-          return { data: {} };
+          return { data: { updateUser: { username: testUserName } } };
         },
       },
       {
         request: { query: GET_USER_DATA },
-        result: () => ({ data: { whoAmI: {} } }),
+        result: () => ({
+          data: {
+            whoAmI: {
+              id: 'xx',
+              avatar: 'zzz',
+              username: testUserName,
+            },
+          },
+        }),
       },
     ];
 
