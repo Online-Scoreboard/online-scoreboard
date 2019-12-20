@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import { createHook } from 'hookleton';
 
 import { LOGIN_WELCOME_MESSAGE } from '../../helpers/strings';
 import { resolvers } from './useAuth.resolvers';
@@ -19,17 +20,18 @@ import {
 } from './useAuth.graph';
 
 interface UserData {
+  id: string;
+  username: string;
   avatar: string;
 }
 
-export const useAuth = () => {
+export const useAuth = createHook(() => {
   const client = useApolloClient();
   client.addResolvers(resolvers);
 
   const { loading: userLoading, data } = useQuery<{ user: User }>(GET_USER);
   const { loading: userDataLoading, data: whoAmIData } = useQuery<{ whoAmI: UserData }>(GET_USER_DATA);
   const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
-  const [createUser, { loading: createUserLoading }] = useMutation<void>(CREATE_USER);
   const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN, { refetchQueries: [{ query: GET_USER }] });
   const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
   const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
@@ -37,6 +39,10 @@ export const useAuth = () => {
   const [resetErrors] = useMutation<void>(RESET_ERRORS);
   const [_forgottenPassword, { loading: forgottenPasswordLoading }] = useMutation<void>(FORGOTTEN_PASSWORD);
   const [_resetPassword, { loading: resetPasswordLoading }] = useMutation<void>(RESET_PASSWORD);
+  const [createUser, { loading: createUserLoading, called: createUserCalled }] = useMutation<void>(CREATE_USER, {
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: GET_USER }, { query: GET_USER_DATA }],
+  });
 
   const user = data && data.user;
   const userData = whoAmIData && whoAmIData.whoAmI;
@@ -47,10 +53,19 @@ export const useAuth = () => {
   const success = isLoggedIn && LOGIN_WELCOME_MESSAGE;
 
   useEffect(() => {
-    if (user && isLoggedIn && !userLoading && !userDataLoading && !userData && typeof userData === 'object') {
+    if (
+      !createUserCalled &&
+      user &&
+      isLoggedIn &&
+      !userLoading &&
+      !userDataLoading &&
+      !userData &&
+      !createUserLoading &&
+      typeof userData === 'object'
+    ) {
       createUser();
     }
-  }, [user, userData, userLoading, userDataLoading, isLoggedIn, createUser]);
+  }, [user, userData, userLoading, userDataLoading, isLoggedIn, createUser, createUserLoading, createUserCalled]);
 
   return {
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -63,6 +78,7 @@ export const useAuth = () => {
     showResetPassword,
     loading: userLoading || userDataLoading,
     operationLoading:
+      userLoading ||
       logInLoading ||
       userDataLoading ||
       createUserLoading ||
@@ -119,4 +135,10 @@ export const useAuth = () => {
       [resetErrors, _resetPassword]
     ),
   };
+});
+
+// Auth Context provider
+export const AuthHost = () => {
+  useAuth.use();
+  return null;
 };

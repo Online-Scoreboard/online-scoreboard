@@ -4,14 +4,20 @@ import { navigate } from '@reach/router';
 import { Container, Typography, Grid, Button } from '@material-ui/core';
 import { User } from '../../hooks/Auth';
 import { Classes } from './Dashboard.styles';
+import { Loading } from '../Loading';
 
 interface DashboardComponentProps {
   user: User;
   classes: Classes;
+  loading: boolean;
 }
 
-export const DashboardComponent: React.FC<DashboardComponentProps> = memo(({ classes, user }) => {
+export const DashboardComponent: React.FC<DashboardComponentProps> = memo(({ classes, user, loading }) => {
   const { root, grid } = classes;
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <Container component="main" maxWidth="md" className={`${root} Dashboard`}>

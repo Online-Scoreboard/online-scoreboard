@@ -35,6 +35,7 @@
     "bad-words": "^3.0.3",
     "dotenv": "^8.2.0",
     "graphql": "^14.5.8",
+    "hookleton": "^0.4.8",
     "react": "^16.12.0",
     "react-avataaars": "^0.2.3",
     "react-dom": "^16.12.0",

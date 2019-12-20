@@ -12,6 +12,7 @@ import { AMPLIFY, API_URL, APP_NAME, APP_VERSION } from './config';
 import { notificationInitialState } from './components/Notification';
 import { App } from './components/App';
 import theme from './theme';
+import { AuthHost } from './hooks/Auth';
 
 dotenv.config();
 Amplify.configure(AMPLIFY);
@@ -60,6 +61,7 @@ const client = new ApolloClient({
 const AppWrapper = (AppComponent: React.ComponentType): JSX.Element => (
   <ThemeProvider theme={theme}>
     <ApolloProvider client={client}>
+      <AuthHost />
       <CssBaseline />
       <AppComponent />
     </ApolloProvider>

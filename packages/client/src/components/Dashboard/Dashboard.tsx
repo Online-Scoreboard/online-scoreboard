@@ -7,7 +7,7 @@ import { DashboardComponent } from './DashboardComponent';
 
 export const Dashboard: React.FC<RouteComponentProps> = memo(() => {
   const classes = useStyles();
-  const { user } = useAuth();
+  const { user, operationLoading } = useAuth();
 
-  return <DashboardComponent user={user} classes={classes} />;
+  return <DashboardComponent user={user} loading={operationLoading} classes={classes} />;
 });

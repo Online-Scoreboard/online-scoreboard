@@ -6,3 +6,5 @@ declare module 'bad-words' {
 
   export default Filter;
 }
+
+declare module 'hookleton';
