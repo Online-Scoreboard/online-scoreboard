@@ -1,10 +1,10 @@
 import {
   NewGameActionType,
+  RulesPayload,
   PREDEFINED_RULES,
   COLORS,
   TEAMS,
   RULES,
-  RulesPayload,
   SUBMIT,
   COMPLETE_STEP,
   SETUP,

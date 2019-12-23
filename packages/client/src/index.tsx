@@ -36,7 +36,7 @@ const client = new ApolloClient({
   },
   request: async (operation: Operation): Promise<void> => {
     const session = await Auth.currentSession();
-    const token = session.getAccessToken().getJwtToken();
+    const token = await session.getAccessToken().getJwtToken();
 
     operation.setContext({
       headers: {

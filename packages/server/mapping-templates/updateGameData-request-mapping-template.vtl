@@ -1,13 +1,19 @@
 #set( $identityValue = $util.defaultIfNull($ctx.identity.claims.get("username"), $util.defaultIfNull($ctx.identity.claims.get("cognito:username"), "___xamznone____")) )
 
 #if( $util.isNullOrEmpty($identityValue) )
-    $util.unauthorized()
+  $util.unauthorized()
+#end
+
+#if( $context.prev.result && $context.prev.result.id )
+  #set( $gameId = $context.prev.result.id )
+#else
+  $utils.error("Error: Cannot update game information with new game id", "ERROR")
 #end
 
 #set( $users = [] )
 $util.qr($users.add($identityValue))
-$util.qr($context.args.input.put("createdAt", $util.defaultIfNull($ctx.args.input.createdAt, $util.time.nowISO8601())))
-$util.qr($context.args.input.put("updatedAt", $util.defaultIfNull($ctx.args.input.updatedAt, $util.time.nowISO8601())))
+$util.qr($context.args.input.put("createdAt", $util.time.nowISO8601()))
+$util.qr($context.args.input.put("updatedAt", $util.time.nowISO8601()))
 $util.qr($context.args.input.put("__typename", "Game"))
 $util.qr($context.args.input.put("status", "New"))
 $util.qr($context.args.input.put("owner", $identityValue))
@@ -24,7 +30,8 @@ $util.qr($context.args.input.put("users", $users))
     "version" : "2017-02-28",
     "operation" : "PutItem",
     "key" : {
-        "id": $util.dynamodb.toDynamoDBJson($util.autoId()),
+        "id": $util.dynamodb.toDynamoDBJson($gameId),
+        "__typename": $util.dynamodb.toDynamoDBJson("Game")
     },
     "attributeValues": $util.dynamodb.toMapValuesJson($context.args.input),
     "condition": $util.toJson($condition)

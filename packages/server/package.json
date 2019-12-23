@@ -9,9 +9,9 @@
   },
   "scripts": {
     "serverless": "serverless",
-    "dev:deploy": "serverless --accountId=$ACCOUNT_ID deploy",
-    "stage:deploy": "serverless --stage=stage --accountId=$ACCOUNT_ID deploy",
-    "prod:deploy": "serverless --stage=prod --accountId=$ACCOUNT_ID deploy",
+    "dev:deploy": "echo \"Remember to export your ACCOUNT_ID!\" && serverless --accountId=$ACCOUNT_ID deploy",
+    "stage:deploy": "echo \"Remember to export your ACCOUNT_ID!\" && serverless --stage=stage --accountId=$ACCOUNT_ID deploy",
+    "prod:deploy": "echo \"Remember to export your ACCOUNT_ID!\" && serverless --stage=prod --accountId=$ACCOUNT_ID deploy",
     "dev:remove": "serverless --accountId=$ACCOUNT_ID remove",
     "stage:remove": "serverless --stage=stage --accountId=$ACCOUNT_ID remove",
     "prod:remove": "serverless --stage=prod --accountId=$ACCOUNT_ID remove",

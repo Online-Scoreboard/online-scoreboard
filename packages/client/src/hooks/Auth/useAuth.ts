@@ -32,7 +32,10 @@ export const useAuth = createHook(() => {
   const { loading: userLoading, data } = useQuery<{ user: User }>(GET_USER);
   const { loading: userDataLoading, data: whoAmIData } = useQuery<{ whoAmI: UserData }>(GET_USER_DATA);
   const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
-  const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN, { refetchQueries: [{ query: GET_USER }] });
+  const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN, {
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: GET_USER }, { query: GET_USER_DATA }],
+  });
   const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
   const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
   const [_resendCode, { loading: resendCodeLoading }] = useMutation<void>(RESEND_CODE);

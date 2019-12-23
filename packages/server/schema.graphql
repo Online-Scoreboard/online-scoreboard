@@ -16,11 +16,11 @@ enum Color {
 	black
 }
 
-input NewGameSetup {
+type GameSetup {
 	gameName: String
 }
 
-input GameRules {
+type GameRules {
 	isMatchesBased: Boolean
 	winningScoreEnabled: Boolean
 	maxTeamSize: Int
@@ -31,26 +31,17 @@ input GameRules {
 	scoringSystem: String
 }
 
-input CreateGameInput {
-	setup: NewGameSetup!
-	teams: Int!
-	teamColors: [Color]!
-	rules: GameRules!
-}
-
-input UpdateUserInput {
-	username: String
-	avatar: String
-}
-
 type Game {
 	id: ID!
 	createdAt: String!
-	title: String!
+	updatedAt: String!
 	status: String!
+	owner: String!
+	setup: GameSetup!
+	rules: GameRules!
+	teamColors: [Color]!
+	teams: Int!
 	users: [String]!
-	players: [Player]!
-	description: String
 }
 
 type ModelGameConnection {
@@ -78,6 +69,33 @@ type User {
 	createdAt: String!
 	completedGames: [Game]!
 	activeGames: [Game]!
+}
+
+input GameSetupInput {
+	gameName: String
+}
+
+input GameRulesInput {
+	isMatchesBased: Boolean
+	winningScoreEnabled: Boolean
+	maxTeamSize: Int
+	minTeamSize: Int
+	startingScore: Int
+	winningScore: Int
+	name: String
+	scoringSystem: String
+}
+
+input CreateGameInput {
+	setup: GameSetupInput!
+	rules: GameRulesInput!
+	teams: Int!
+	teamColors: [Color]!
+}
+
+input UpdateUserInput {
+	username: String
+	avatar: String
 }
 
 type Query {

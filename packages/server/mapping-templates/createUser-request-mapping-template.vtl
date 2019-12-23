@@ -1,12 +1,12 @@
 #set( $identityValue = $util.defaultIfNull($ctx.identity.claims.get("username"), $util.defaultIfNull($ctx.identity.claims.get("cognito:username"), "___xamznone____")) )
 
-#if($util.isNullOrEmpty($identityValue))
+#if( $util.isNullOrEmpty($identityValue) )
     $util.unauthorized()
 #end
 
 #set ($args = {})
-$util.qr($args.put("createdAt", $util.defaultIfNull($ctx.args.input.createdAt, $util.time.nowISO8601())))
-$util.qr($args.put("updatedAt", $util.defaultIfNull($ctx.args.input.updatedAt, $util.time.nowISO8601())))
+$util.qr($args.put("createdAt", $util.time.nowISO8601()))
+$util.qr($args.put("updatedAt", $util.time.nowISO8601()))
 $util.qr($args.put("avatar", $identityValue))
 $util.qr($args.put("username", "user"))
 $util.qr($args.put("__typename", "User"))

@@ -13,6 +13,9 @@ functions:
   graphql:
     description: 'Online Scoreboard ${self:provider.stage} function'
     handler: handler.graphqlHandler
+    role: GraphQLServiceRole
+    environment:
+      TABLE_NAME: ${self:custom.tableName}
 
 plugins:
   - serverless-appsync-plugin
@@ -22,6 +25,7 @@ plugins:
 
 custom:
   accountId: ${opt:accountId}
+  tableName: "OnlineScoreBoard-${self:provider.stage}"
   appSync:
       name: OnlineScoreboard-${self:provider.stage}
       authenticationType: AMAZON_COGNITO_USER_POOLS # API_KEY is also supported
@@ -81,28 +85,39 @@ custom:
           response: "createUser-response-mapping-template.vtl"
         - dataSource: OnlineScoreBoard
           type: Mutation
-          field: createGame
-          request: "createGame-request-mapping-template.vtl"
-          response: "createGame-response-mapping-template.vtl"
-        - dataSource: OnlineScoreBoard
-          type: Mutation
           field: updateUser
           request: "updateUser-request-mapping-template.vtl"
           response: "updateUser-response-mapping-template.vtl"
         - type: Mutation
           field: shuffleAvatar
-          request: "shuffle-avatar-request-mapping-template-before.vtl"
-          response: "shuffle-avatar-response-mapping-template-after.vtl"
+          request: "shuffleAvatar-request-mapping-template-before.vtl"
+          response: "shuffleAvatar-response-mapping-template-after.vtl"
           kind: PIPELINE
           functions:
             - shuffleAvatar
             - updateUserData
+        - type: Mutation
+          field: createGame
+          request: "generateGameName-request-mapping-template-before.vtl"
+          response: "generateGameName-response-mapping-template-after.vtl"
+          kind: PIPELINE
+          functions:
+            - generateGameName
+            - updateGameData
 
       functionConfigurations:
         - dataSource: graphqlLambda
           name: 'shuffleAvatar'
-          request: "shuffle-avatar-request-mapping-template.vtl"
-          response: "shuffle-avatar-response-mapping-template.vtl"
+          request: "shuffleAvatar-request-mapping-template.vtl"
+          response: "shuffleAvatar-response-mapping-template.vtl"
+        - dataSource: graphqlLambda
+          name: 'generateGameName'
+          request: "generateGameName-request-mapping-template.vtl"
+          response: "generateGameName-response-mapping-template.vtl"
+        - dataSource: OnlineScoreBoard
+          name: 'updateGameData'
+          request: "updateGameData-request-mapping-template.vtl"
+          response: "updateGameData-response-mapping-template.vtl"
         - dataSource: OnlineScoreBoard
           name: 'updateUserData'
           request: "updateUserData-request-mapping-template.vtl"
@@ -153,7 +168,7 @@ resources:
     OnlineScoreboardTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
-        TableName: "OnlineScoreBoard-${self:provider.stage}"
+        TableName: ${self:custom.tableName}
         AttributeDefinitions:
           -
             AttributeName: id
@@ -250,3 +265,31 @@ resources:
                   Resource:
                     - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql"
                     - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql:*"
+
+    GraphQLServiceRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: "GraphQL-${self:custom.appSync.serviceRole}"
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: "Allow"
+              Principal:
+                Service:
+                  - "lambda.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        Policies:
+          -
+            PolicyName: "GraphQL-${self:custom.appSync.serviceRole}-DynamoDB-Policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                -
+                  Effect: "Allow"
+                  Action:
+                    - "dynamodb:Query"
+                  Resource:
+                    - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}"
+                    - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}/*"
