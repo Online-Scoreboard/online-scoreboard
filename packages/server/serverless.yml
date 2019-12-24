@@ -69,6 +69,11 @@ custom:
           request: "getUser-request-mapping-template.vtl"
           response: "getUser-response-mapping-template.vtl"
         - dataSource: OnlineScoreBoard
+          type: Query
+          field: getGame
+          request: "getGame-request-mapping-template.vtl"
+          response: "getGame-response-mapping-template.vtl"
+        - dataSource: OnlineScoreBoard
           type: User
           field: completedGames
           request: "completedGames-request-mapping-template.vtl"

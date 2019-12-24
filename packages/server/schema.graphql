@@ -100,7 +100,8 @@ input UpdateUserInput {
 
 type Query {
 	whoAmI: User
-	getUser(userID: ID!): User
+	getUser(userId: String!): User
+	getGame(gameId: String!): Game
 	listGames(limit: Int, nextToken: String): ModelGameConnection!
 	listUsers(limit: Int, nextToken: String): ModelUserConnection!
 }
