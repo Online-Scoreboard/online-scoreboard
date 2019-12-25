@@ -93,6 +93,16 @@ custom:
           field: updateUser
           request: "updateUser-request-mapping-template.vtl"
           response: "updateUser-response-mapping-template.vtl"
+        - dataSource: OnlineScoreBoard
+          type: Mutation
+          field: updateGame
+          request: "updateGame-request-mapping-template.vtl"
+          response: "updateGame-response-mapping-template.vtl"
+        - dataSource: OnlineScoreBoard
+          type: Mutation
+          field: startGame
+          request: "startGame-request-mapping-template.vtl"
+          response: "startGame-response-mapping-template.vtl"
         - type: Mutation
           field: shuffleAvatar
           request: "shuffleAvatar-request-mapping-template-before.vtl"
@@ -152,6 +162,8 @@ resources:
         UserPoolName: OnlineScoreboard-${self:provider.stage}
         AutoVerifiedAttributes:
           - email
+        EmailVerificationMessage: "Online Scorebard.\nHello {username}\nHere's your verification code: {####}"
+        EmailVerificationSubject: "Online Scorebard"
         Policies:
           PasswordPolicy:
             MinimumLength: 6

@@ -31,8 +31,14 @@ type GameRules {
 	scoringSystem: String
 }
 
+type GameLog {
+	playerId: String
+	score: Int
+	createdAt: String
+}
+
 type Game {
-	id: ID!
+	id: String!
 	createdAt: String!
 	updatedAt: String!
 	status: String!
@@ -41,7 +47,8 @@ type Game {
 	rules: GameRules!
 	teamColors: [Color]!
 	teams: Int!
-	users: [String]!
+	players: [Player]!
+	log: [GameLog]
 }
 
 type ModelGameConnection {
@@ -59,11 +66,11 @@ type ModelUserConnection {
 type Player {
 	name: String!
 	color: Color!
-	score: Int!
+	userId: String
 }
 
 type User {
-	id: ID!
+	id: String!
 	username: String!
 	avatar: String!
 	createdAt: String!
@@ -98,6 +105,17 @@ input UpdateUserInput {
 	avatar: String
 }
 
+input GameLogInput {
+	playerId: String
+	score: Int
+}
+
+input UpdateGameInput {
+	id: String!
+	undo: Boolean
+	log: [GameLogInput]
+}
+
 type Query {
 	whoAmI: User
 	getUser(userId: String!): User
@@ -107,13 +125,21 @@ type Query {
 }
 
 type Mutation {
-	createUser: User
 	shuffleAvatar: User
+	createUser: User
 	updateUser(input: UpdateUserInput!): User
 	createGame(input: CreateGameInput!): Game
+	updateGame(input: UpdateGameInput!): Game
+	startGame(gameId: String!): Game
+}
+
+type Subscription {
+	gameUpdated: Game
+		@aws_subscribe(mutations: ["updateGame", "startGame"])
 }
 
 schema {
 	query: Query
 	mutation: Mutation
+	subscription: Subscription
 }
