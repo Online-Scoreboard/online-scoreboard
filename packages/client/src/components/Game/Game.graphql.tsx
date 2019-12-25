@@ -7,3 +7,19 @@ export const GET_GAME = gql`
     }
   }
 `;
+
+export const GAME_UPDATED = gql`
+  subscription GameUpdated {
+    gameUpdated {
+      id
+    }
+  }
+`;
+
+export const START_GAME = gql`
+  mutation StartGame($gameId: String!) {
+    startGame(gameId: $gameId) {
+      id
+    }
+  }
+`;

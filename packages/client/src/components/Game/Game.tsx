@@ -1,11 +1,11 @@
 import React, { memo } from 'react';
 import { RouteComponentProps } from '@reach/router';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useSubscription, useMutation } from '@apollo/react-hooks';
 
-import { GET_GAME } from './Game.graphql';
+import { GET_GAME, GAME_UPDATED, START_GAME } from './Game.graphql';
 import { GameComponent } from './GameComponent';
 import { Loading } from '../Loading';
-import { Typography } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 
 interface GameProps extends RouteComponentProps {
   gameId?: string;
@@ -19,6 +19,10 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
   const { data, loading, error } = useQuery<any, GameVariables>(GET_GAME, {
     variables: { gameId: gameId || '' },
   });
+  const [startGame, { data: startGameData, loading: startGameLoading, client }] = useMutation(START_GAME);
+  const { data: gameUpdatedData } = useSubscription(GAME_UPDATED);
+
+  console.warn('gameUpdatedData', gameUpdatedData);
 
   if (loading) {
     return <Loading />;
@@ -41,7 +45,12 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
     );
   }
 
-  return <GameComponent />;
+  return (
+    <div>
+      <GameComponent />
+      <Button onClick={() => startGame({ variables: { gameId } })}>Start Game</Button>
+    </div>
+  );
 };
 
 export const Game = memo(Component);

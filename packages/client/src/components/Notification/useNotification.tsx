@@ -1,8 +1,8 @@
 import { useRef, useCallback } from 'react';
 import { NotificationVariant } from './Notification';
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import { Resolvers } from 'apollo-client';
 import gql from 'graphql-tag';
-import { Resolvers } from 'apollo-boost';
 
 interface OpenNotificationInput {
   openNotificationInput: {

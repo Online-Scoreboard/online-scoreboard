@@ -4,8 +4,13 @@ export const APP_VERSION = process.env.REACT_APP_VERSION || 'dev';
 export const AMPLIFY = {
   Auth: {
     mandatorySignIn: true,
-    region: process.env.REACT_APP_REGION,
-    userPoolId: process.env.REACT_APP_USER_POOL_ID,
-    userPoolWebClientId: process.env.REACT_APP_APP_CLIENT_ID,
+    region: process.env.REACT_APP_REGION || '',
+    userPoolId: process.env.REACT_APP_USER_POOL_ID || '',
+    userPoolWebClientId: process.env.REACT_APP_APP_CLIENT_ID || '',
+  },
+  AppSync: {
+    url: API_URL,
+    region: process.env.REACT_APP_REGION || '',
+    apiKey: process.env.REACT_APP_APPSYNC_API_KEY || '',
   },
 };
