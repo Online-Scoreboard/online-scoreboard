@@ -1,6 +1,6 @@
 #set( $identityValue = $util.defaultIfNull($ctx.identity.claims.get("username"), $util.defaultIfNull($ctx.identity.claims.get("cognito:username"), "___xamznone____")) )
 
-#if($util.isNullOrEmpty($identityValue))
+#if( $util.isNullOrEmpty($identityValue) )
   $util.unauthorized()
 #end
 
@@ -16,35 +16,22 @@
   $utils.error("Error: Cannot update a game with missing game information", "ERROR")
 #end
 
-#set( $expNames  = {} )
-#set( $expSet  = {} )
-#set( $expValues  = {} )
-#set( $expression = "SET" )
-
 $util.qr($values.put("updatedAt", $util.time.nowISO8601()))
 
-#foreach( $entry in $values.entrySet() )
-    $!{expSet.put("#${entry.key}", ":${entry.key}")}
-    $!{expNames.put("#${entry.key}", "$entry.key")}
-    $!{expValues.put(":${entry.key}", { "S" : "${entry.value}" })}
-#end
-#foreach( $entry in $expSet.entrySet() )
-    #set( $expression = "${expression} ${entry.key} = ${entry.value}" )
-    #if ( $foreach.hasNext )
-      #set( $expression = "${expression}," )
-    #end
-#end
+#set( $condition = {
+    "expression": "attribute_not_exists(#id)",
+    "expressionNames": {
+    "#id": "id"
+    }
+} )
 
 {
     "version" : "2017-02-28",
-    "operation" : "UpdateItem",
+    "operation" : "PutItem",
     "key" : {
         "id": $util.dynamodb.toDynamoDBJson($gameId),
         "__typename": $util.dynamodb.toDynamoDBJson("Game")
     },
-    "update" : {
-        "expression" : "${expression}",
-        "expressionNames" : $utils.toJson($expNames),
-        "expressionValues" : $utils.toJson($expValues)
-    }
+    "attributeValues": $util.dynamodb.toMapValuesJson($values),
+    "condition": $util.toJson($condition)
 }

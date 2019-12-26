@@ -64,21 +64,40 @@ const generateUniqueName = async tableName => {
 };
 
 exports.graphqlHandler = async (event, context, callback) => {
-  switch (event.field) {
+  const { field, owner, gameId } = event;
+
+  switch (field) {
     case 'shuffleAvatar': {
       const randomName = uniqueNamesGenerator(randomNameConfig);
       callback(null, { avatar: randomName });
       break;
     }
 
-    case 'generateGameName': {
+    case 'createGame': {
       const randomName = await generateUniqueName(TABLE_NAME);
-
+      const createdAt = new Date().toISOString();
+      const values = {
+        owner,
+        createdAt,
+        __typename: 'Game',
+        status: 'new',
+        users: [owner],
+      };
       if (randomName) {
-        callback(null, { id: randomName });
+        callback(null, { id: randomName, values });
       } else {
         callback('Cannot find an available game name');
       }
+
+      break;
+    }
+
+    case 'startGame': {
+      const values = {
+        status: 'started',
+      };
+
+      callback(null, { id: gameId, values });
 
       break;
     }

@@ -29,7 +29,7 @@ custom:
   appSync:
       name: OnlineScoreboard-${self:provider.stage}
       authenticationType: AMAZON_COGNITO_USER_POOLS # API_KEY is also supported
-      serviceRole: "AppSyncServiceRole-${self:provider.stage}"
+      serviceRole: "OnlineScoreboard-${self:provider.stage}"
 
       userPoolConfig:
         awsRegion: ${self:provider.region}
@@ -93,48 +93,54 @@ custom:
           field: updateUser
           request: "updateUser-request-mapping-template.vtl"
           response: "updateUser-response-mapping-template.vtl"
-        - dataSource: OnlineScoreBoard
-          type: Mutation
-          field: updateGame
-          request: "updateGame-request-mapping-template.vtl"
-          response: "updateGame-response-mapping-template.vtl"
-        - dataSource: OnlineScoreBoard
-          type: Mutation
-          field: startGame
-          request: "startGame-request-mapping-template.vtl"
-          response: "startGame-response-mapping-template.vtl"
         - type: Mutation
           field: shuffleAvatar
           request: "shuffleAvatar-request-mapping-template-before.vtl"
           response: "shuffleAvatar-response-mapping-template-after.vtl"
           kind: PIPELINE
           functions:
-            - shuffleAvatar
-            - updateUserData
+            - ShuffleAvatar
+            - UpdateUserData
         - type: Mutation
           field: createGame
-          request: "generateGameName-request-mapping-template-before.vtl"
-          response: "generateGameName-response-mapping-template-after.vtl"
+          request: "createGame-request-mapping-template-before.vtl"
+          response: "createGame-response-mapping-template-after.vtl"
           kind: PIPELINE
           functions:
-            - generateGameName
-            - updateGameData
+            - CreateGame
+            - CreateGameData
+        - type: Mutation
+          field: startGame
+          request: "startGame-request-mapping-template-before.vtl"
+          response: "startGame-response-mapping-template-after.vtl"
+          kind: PIPELINE
+          functions:
+            - StartGame
+            - UpdateGameData
 
       functionConfigurations:
         - dataSource: graphqlLambda
-          name: 'shuffleAvatar'
+          name: 'ShuffleAvatar'
           request: "shuffleAvatar-request-mapping-template.vtl"
           response: "shuffleAvatar-response-mapping-template.vtl"
         - dataSource: graphqlLambda
-          name: 'generateGameName'
-          request: "generateGameName-request-mapping-template.vtl"
-          response: "generateGameName-response-mapping-template.vtl"
+          name: 'CreateGame'
+          request: "createGame-request-mapping-template.vtl"
+          response: "createGame-response-mapping-template.vtl"
+        - dataSource: graphqlLambda
+          name: 'StartGame'
+          request: "startGame-request-mapping-template.vtl"
+          response: "startGame-response-mapping-template.vtl"
         - dataSource: OnlineScoreBoard
-          name: 'updateGameData'
+          name: 'CreateGameData'
+          request: "createGameData-request-mapping-template.vtl"
+          response: "createGameData-response-mapping-template.vtl"
+        - dataSource: OnlineScoreBoard
+          name: 'UpdateGameData'
           request: "updateGameData-request-mapping-template.vtl"
           response: "updateGameData-response-mapping-template.vtl"
         - dataSource: OnlineScoreBoard
-          name: 'updateUserData'
+          name: 'UpdateUserData'
           request: "updateUserData-request-mapping-template.vtl"
           response: "updateUserData-response-mapping-template.vtl"
 
@@ -157,11 +163,12 @@ resources:
   Resources:
     CognitoUserPoolUsers:
       Type: AWS::Cognito::UserPool
-      DeletionPolicy: Retain
+      DeletionPolicy: Delete
       Properties:
         UserPoolName: OnlineScoreboard-${self:provider.stage}
         AutoVerifiedAttributes:
           - email
+        MfaConfiguration: "OFF"
         EmailVerificationMessage: "Online Scorebard.\nHello {username}\nHere's your verification code: {####}"
         EmailVerificationSubject: "Online Scorebard"
         Policies:
@@ -225,7 +232,7 @@ resources:
     AppSyncDynamoDBServiceRole:
       Type: "AWS::IAM::Role"
       Properties:
-        RoleName: "Dynamo-${self:custom.appSync.serviceRole}"
+        RoleName: "${self:custom.appSync.serviceRole}-Dynamo"
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:
@@ -238,7 +245,7 @@ resources:
                 - "sts:AssumeRole"
         Policies:
           -
-            PolicyName: "Dynamo-${self:custom.appSync.serviceRole}-Policy"
+            PolicyName: "${self:custom.appSync.serviceRole}-Dynamo-Policy"
             PolicyDocument:
               Version: "2012-10-17"
               Statement:
@@ -258,7 +265,7 @@ resources:
     AppSyncLambdaServiceRole:
       Type: "AWS::IAM::Role"
       Properties:
-        RoleName: "Lambda-${self:custom.appSync.serviceRole}"
+        RoleName: "${self:custom.appSync.serviceRole}-Lambda"
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:
@@ -271,7 +278,7 @@ resources:
                 - "sts:AssumeRole"
         Policies:
           -
-            PolicyName: "Lambda-${self:custom.appSync.serviceRole}-Policy"
+            PolicyName: "${self:custom.appSync.serviceRole}-Lambda-Policy"
             PolicyDocument:
               Version: "2012-10-17"
               Statement:
@@ -286,7 +293,7 @@ resources:
     GraphQLServiceRole:
       Type: "AWS::IAM::Role"
       Properties:
-        RoleName: "GraphQL-${self:custom.appSync.serviceRole}"
+        RoleName: "${self:custom.appSync.serviceRole}-GraphQL-Function"
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:
@@ -299,7 +306,7 @@ resources:
                 - "sts:AssumeRole"
         Policies:
           -
-            PolicyName: "GraphQL-${self:custom.appSync.serviceRole}-DynamoDB-Policy"
+            PolicyName: "${self:custom.appSync.serviceRole}-GraphQL-Dynamo-Policy"
             PolicyDocument:
               Version: "2012-10-17"
               Statement:
@@ -310,3 +317,18 @@ resources:
                   Resource:
                     - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}"
                     - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}/*"
+          # Uncomment to enable Cloudwatch on the GraphQL Lambda Function
+          # -
+          #   PolicyName: "${self:custom.appSync.serviceRole}-GraphQL-CloudWatch-Policy"
+          #   PolicyDocument:
+          #     Version: "2012-10-17"
+          #     Statement:
+          #       -
+          #         Effect: "Allow"
+          #         Action:
+          #           - "logs:CreateLogGroup"
+          #           - "logs:CreateLogStream"
+          #           - "logs:PutLogEvents"
+          #         Resource:
+          #           - "arn:aws:logs:${self:provider.region}:${self:custom.accountId}:log-group:/aws/lambda/online-scoreboard-server-${self:provider.stage}-graphql"
+          #           - "arn:aws:logs:${self:provider.region}:${self:custom.accountId}:log-group:/aws/lambda/online-scoreboard-server-${self:provider.stage}-graphql:*"

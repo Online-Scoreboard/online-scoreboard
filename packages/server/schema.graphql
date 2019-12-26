@@ -129,13 +129,12 @@ type Mutation {
 	createUser: User
 	updateUser(input: UpdateUserInput!): User
 	createGame(input: CreateGameInput!): Game
-	updateGame(input: UpdateGameInput!): Game
 	startGame(gameId: String!): Game
 }
 
 type Subscription {
 	gameUpdated: Game
-		@aws_subscribe(mutations: ["updateGame", "startGame"])
+		@aws_subscribe(mutations: [ "startGame"])
 }
 
 schema {
