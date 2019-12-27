@@ -1,8 +1,7 @@
 import React, { memo } from 'react';
-import { Router, RouteComponentProps } from '@reach/router';
+import { Router, RouteComponentProps, Redirect } from '@reach/router';
 import { LogIn } from './LogIn';
 import { Register } from './Register';
-import { NotFound } from '../NotFound';
 import { VerifyEmail } from './VerifyEmail';
 import { ForgottenPassword } from './ForgottenPassword';
 import { Home } from '../Home';
@@ -20,10 +19,10 @@ const AuthComponent: React.FC<AuthProps> = ({ confirmEmail }) => {
   return (
     <Router>
       <Home path="/" />
-      <LogIn path="login" />
-      <Register path="register" />
+      <LogIn path="/login" />
+      <Register path="/register" />
       <ForgottenPassword path="/forgot-password" />
-      <NotFound default />
+      <Redirect noThrow default from="*" to="/" />
     </Router>
   );
 };

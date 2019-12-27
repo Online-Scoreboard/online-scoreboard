@@ -60,7 +60,7 @@ export const resolvers: Resolvers = {
       cache.writeData({ data: { user: userData } });
     },
 
-    async logIn(_, { loginData }, { cache }): Promise<void> {
+    async logIn(_, { loginData }, { cache }): Promise<any> {
       const currState = cache.readQuery({ query: GET_USER });
       const userData: User = { ...currState.user };
 
@@ -94,6 +94,7 @@ export const resolvers: Resolvers = {
       }
 
       cache.writeData({ data: { user: userData } });
+      return { __typename: 'Login', id: userData.username };
     },
 
     async register(_, { registerData }, { cache }): Promise<void> {

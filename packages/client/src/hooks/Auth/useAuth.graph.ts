@@ -39,7 +39,9 @@ export const RESET_ERRORS = gql`
 
 export const LOG_IN = gql`
   mutation LogIn($loginData: LogInData!) {
-    logIn(loginData: $loginData) @client
+    logIn(loginData: $loginData) @client {
+      id
+    }
   }
 `;
 

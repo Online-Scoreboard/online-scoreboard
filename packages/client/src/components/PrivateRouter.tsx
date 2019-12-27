@@ -9,12 +9,13 @@ import { Game } from './Game';
 export interface PrivateRouterProps {
   isLoggedIn: boolean;
   confirmEmail: boolean;
+  user?: any;
 }
 
 const NotFound: React.FC<RouteComponentProps> = () => <Redirect noThrow to="/home" />;
 
-const PrivateRouterComponent: React.FC<PrivateRouterProps> = React.memo(({ isLoggedIn, confirmEmail }) => {
-  if (isLoggedIn) {
+const PrivateRouterComponent: React.FC<PrivateRouterProps> = React.memo(({ isLoggedIn, confirmEmail, user }) => {
+  if (isLoggedIn && user && user.username) {
     return (
       <Router>
         <Dashboard path="/home" />

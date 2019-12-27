@@ -51,7 +51,7 @@ const AppComponent: React.FC = () => {
       </AppBar>
 
       <div className={`${classes.root} AppContent`}>
-        <PrivateRouter isLoggedIn={isLoggedIn} confirmEmail={confirmEmail} />
+        <PrivateRouter user={user} isLoggedIn={isLoggedIn} confirmEmail={confirmEmail} />
       </div>
 
       <Footer />

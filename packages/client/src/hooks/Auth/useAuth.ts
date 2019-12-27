@@ -32,10 +32,7 @@ export const useAuth = createHook(() => {
   const { loading: userLoading, data } = useQuery<{ user: User }>(GET_USER);
   const { loading: userDataLoading, data: whoAmIData } = useQuery<{ whoAmI: UserData }>(GET_USER_DATA);
   const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
-  const [_logIn, { loading: logInLoading }] = useMutation<void>(LOG_IN, {
-    awaitRefetchQueries: true,
-    refetchQueries: [{ query: GET_USER }, { query: GET_USER_DATA }],
-  });
+  const [_logIn, { loading: logInLoading }] = useMutation<{ logIn?: { id: string } }>(LOG_IN);
   const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
   const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
   const [_resendCode, { loading: resendCodeLoading }] = useMutation<void>(RESEND_CODE);
@@ -97,7 +94,10 @@ export const useAuth = createHook(() => {
     logIn: useCallback(
       async (username: string, password: string) => {
         await resetErrors();
-        _logIn({ variables: { loginData: { username, password } } });
+        const res = await _logIn({ variables: { loginData: { username, password } } });
+        if (res && res.data && res.data.logIn && res.data.logIn.id) {
+          window.location.href = '';
+        }
       },
       [resetErrors, _logIn]
     ),

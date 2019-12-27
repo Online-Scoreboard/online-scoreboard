@@ -1,6 +1,7 @@
 import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createAuthLink, AuthOptions } from 'aws-appsync-auth-link';
+import { onError } from 'apollo-link-error';
 import { createSubscriptionHandshakeLink } from 'aws-appsync-subscription-link';
 import { ApolloLink } from 'apollo-link';
 import { createHttpLink } from 'apollo-link-http';
@@ -24,17 +25,38 @@ const httpLink = createHttpLink({
   uri: httpUri,
 });
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message, locations, path }) =>
+      console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
+    );
+  }
+
+  if (networkError) {
+    console.log(`[Network error]: ${networkError}`);
+  }
+});
+
 const auth: AuthOptions = {
   type: 'AMAZON_COGNITO_USER_POOLS',
   jwtToken: async () => {
-    const session = await Auth.currentSession();
-    const accessToken = await session.getAccessToken();
-    return accessToken.getJwtToken();
+    let jwt;
+
+    try {
+      const session = await Auth.currentSession();
+      const accessToken = await session.getAccessToken();
+      jwt = accessToken.getJwtToken();
+    } catch (err) {
+      jwt = '';
+    }
+
+    return jwt;
   },
 };
 
 const link = ApolloLink.from([
-  createAuthLink({ url: httpUri, region: AMPLIFY.AppSync.region, auth }),
+  errorLink,
+  createAuthLink({ url: httpUri, region: AMPLIFY.Auth.region, auth }),
   createSubscriptionHandshakeLink(httpUri, httpLink),
 ]);
 

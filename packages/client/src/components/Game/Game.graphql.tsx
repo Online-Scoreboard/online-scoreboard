@@ -4,6 +4,7 @@ export const GET_GAME = gql`
   query GetGame($gameId: String!) {
     getGame(gameId: $gameId) {
       id
+      users
     }
   }
 `;

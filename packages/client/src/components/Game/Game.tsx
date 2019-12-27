@@ -19,10 +19,14 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
   const { data, loading, error } = useQuery<any, GameVariables>(GET_GAME, {
     variables: { gameId: gameId || '' },
   });
-  const [startGame, { data: startGameData, loading: startGameLoading, client }] = useMutation(START_GAME);
+  const [startGame, { data: startGameData, loading: startGameLoading }] = useMutation(START_GAME, {
+    variables: { gameId },
+  });
   const { data: gameUpdatedData } = useSubscription(GAME_UPDATED);
 
   console.warn('gameUpdatedData', gameUpdatedData);
+  console.warn('startGameData', startGameData);
+  console.warn('startGameLoading', startGameLoading);
 
   if (loading) {
     return <Loading />;
@@ -47,7 +51,7 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
 
   return (
     <div>
-      <GameComponent />
+      <GameComponent game={data.getGame} />
       <Button onClick={() => startGame({ variables: { gameId } })}>Start Game</Button>
     </div>
   );

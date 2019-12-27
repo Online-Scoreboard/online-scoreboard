@@ -45,6 +45,7 @@ type Game {
 	owner: String!
 	setup: GameSetup!
 	rules: GameRules!
+	users: [String]!
 	teamColors: [Color]!
 	teams: Int!
 	players: [Player]!

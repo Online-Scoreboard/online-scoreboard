@@ -7,5 +7,5 @@ Then(/^I should see the user dashboard$/, async function() {
   await this.browser.wait(until.elementLocated(DashboardPage.getWelcomeMessage())).isDisplayed();
 
   const welcome = await this.browser.findElement(DashboardPage.getWelcomeMessage()).getText();
-  assert.equal(welcome, 'Welcome !');
+  assert.ok(welcome.match(/Welcome \w+!/g), 'Cannot find a welcome message on the page');
 });

@@ -47,7 +47,7 @@ describe('Toolbar', () => {
     const user = {};
     const onLogOut = jest.fn();
     const spyNavigate = jest.spyOn(router, 'navigate');
-    const expectedNavigation = 'profile';
+    const expectedNavigation = '/profile';
 
     const wrapper = mount(<Toolbar isLoggedIn={isLoggedIn} onLogOut={onLogOut} user={user} />);
 
@@ -68,7 +68,7 @@ describe('Toolbar', () => {
     const user = {};
     const onLogOut = jest.fn();
     const spyNavigate = jest.spyOn(router, 'navigate');
-    const expectedNavigation = 'account';
+    const expectedNavigation = '/account';
 
     const wrapper = mount(<Toolbar isLoggedIn={isLoggedIn} onLogOut={onLogOut} user={user} />);
 

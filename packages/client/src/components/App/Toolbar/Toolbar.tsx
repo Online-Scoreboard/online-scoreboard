@@ -39,12 +39,12 @@ const ToolbarComponent: React.FC<ToolbarProps> = ({ isLoggedIn, onLogOut, user }
 
   const handleProfile = useCallback(() => {
     handleClose();
-    navigate('profile');
+    navigate('/profile');
   }, [handleClose]);
 
   const handleAccount = useCallback(() => {
     handleClose();
-    navigate('account');
+    navigate('/account');
   }, [handleClose]);
 
   return (
