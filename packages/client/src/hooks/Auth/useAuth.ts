@@ -31,7 +31,10 @@ export const useAuth = createHook(() => {
 
   const { loading: userLoading, data } = useQuery<{ user: User }>(GET_USER);
   const { loading: userDataLoading, data: whoAmIData } = useQuery<{ whoAmI: UserData }>(GET_USER_DATA);
-  const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT);
+  const [_logOut, { loading: logOutLoading }] = useMutation<void>(LOG_OUT, {
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: GET_USER }],
+  });
   const [_logIn, { loading: logInLoading }] = useMutation<{ logIn?: { id: string } }>(LOG_IN);
   const [_register, { loading: registerLoading }] = useMutation<void>(REGISTER);
   const [_verifyEmail, { loading: verifyEmailLoading }] = useMutation<void>(VERIFY_EMAIL);
@@ -39,7 +42,10 @@ export const useAuth = createHook(() => {
   const [resetErrors] = useMutation<void>(RESET_ERRORS);
   const [_forgottenPassword, { loading: forgottenPasswordLoading }] = useMutation<void>(FORGOTTEN_PASSWORD);
   const [_resetPassword, { loading: resetPasswordLoading }] = useMutation<void>(RESET_PASSWORD);
-  const [createUser, { loading: createUserLoading, called: createUserCalled }] = useMutation<void>(CREATE_USER);
+  const [createUser, { loading: createUserLoading, called: createUserCalled }] = useMutation<void>(CREATE_USER, {
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: GET_USER }, { query: GET_USER_DATA }],
+  });
 
   const user = data && data.user;
   const userData = whoAmIData && whoAmIData.whoAmI;
@@ -73,7 +79,7 @@ export const useAuth = createHook(() => {
     isLoggedIn,
     confirmEmail,
     showResetPassword,
-    loading: userLoading || userDataLoading,
+    loading: userLoading || userDataLoading || createUserLoading,
     operationLoading:
       userLoading ||
       logInLoading ||
