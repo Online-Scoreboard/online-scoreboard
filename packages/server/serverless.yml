@@ -116,6 +116,14 @@ custom:
           functions:
             - StartGame
             - UpdateGameData
+        - type: Mutation
+          field: joinGame
+          request: "joinGame-request-mapping-template-before.vtl"
+          response: "joinGame-response-mapping-template-after.vtl"
+          kind: PIPELINE
+          functions:
+            - JoinGame
+            - UpdateGameData
 
       functionConfigurations:
         - dataSource: graphqlLambda
@@ -130,6 +138,10 @@ custom:
           name: 'StartGame'
           request: "startGame-request-mapping-template.vtl"
           response: "startGame-response-mapping-template.vtl"
+        - dataSource: graphqlLambda
+          name: 'JoinGame'
+          request: "joinGame-request-mapping-template.vtl"
+          response: "joinGame-response-mapping-template.vtl"
         - dataSource: OnlineScoreBoard
           name: 'CreateGameData'
           request: "createGameData-request-mapping-template.vtl"
@@ -167,8 +179,7 @@ resources:
         UserPoolName: OnlineScoreboard-${self:provider.stage}
         AutoVerifiedAttributes:
           - email
-        MfaConfiguration: "OFF"
-        EmailVerificationMessage: "Online Scorebard.\nHello {username}\nHere's your verification code: {####}"
+        EmailVerificationMessage: "Hello from Online Scoreboard.\nHere's your verification code: {####}"
         EmailVerificationSubject: "Online Scorebard"
         Policies:
           PasswordPolicy:

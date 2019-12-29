@@ -64,7 +64,7 @@ const generateUniqueName = async tableName => {
 };
 
 exports.graphqlHandler = async (event, context, callback) => {
-  const { field, owner, gameId } = event;
+  const { field, owner, gameId, userId } = event;
 
   switch (field) {
     case 'shuffleAvatar': {
@@ -95,6 +95,29 @@ exports.graphqlHandler = async (event, context, callback) => {
     case 'startGame': {
       const values = {
         status: 'started',
+      };
+
+      callback(null, { id: gameId, values });
+
+      break;
+    }
+
+    case 'joinGame': {
+      const gameData = await findItem(TABLE_NAME, gameId);
+      const gameExists = doesItemExist(gameData);
+      if (!gameExists) {
+        callback(`Game ${gameId} does not exist`);
+      }
+
+      const gameDataItem = gameData.Items[0];
+      const pendingPlayers = (gameDataItem && gameDataItem.pendingPlayers) || [];
+
+      if (!~pendingPlayers.indexOf(userId)) {
+        pendingPlayers.push(userId);
+      }
+
+      const values = {
+        pendingPlayers,
       };
 
       callback(null, { id: gameId, values });
