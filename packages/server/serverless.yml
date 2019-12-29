@@ -20,7 +20,6 @@ functions:
 plugins:
   - serverless-appsync-plugin
   - serverless-dynamodb-local
-  - serverless-appsync-offline
   - serverless-offline
 
 custom:

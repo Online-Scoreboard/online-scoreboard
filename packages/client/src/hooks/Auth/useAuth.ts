@@ -39,10 +39,7 @@ export const useAuth = createHook(() => {
   const [resetErrors] = useMutation<void>(RESET_ERRORS);
   const [_forgottenPassword, { loading: forgottenPasswordLoading }] = useMutation<void>(FORGOTTEN_PASSWORD);
   const [_resetPassword, { loading: resetPasswordLoading }] = useMutation<void>(RESET_PASSWORD);
-  const [createUser, { loading: createUserLoading, called: createUserCalled }] = useMutation<void>(CREATE_USER, {
-    awaitRefetchQueries: true,
-    refetchQueries: [{ query: GET_USER }, { query: GET_USER_DATA }],
-  });
+  const [createUser, { loading: createUserLoading, called: createUserCalled }] = useMutation<void>(CREATE_USER);
 
   const user = data && data.user;
   const userData = whoAmIData && whoAmIData.whoAmI;

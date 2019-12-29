@@ -9,10 +9,12 @@ import { notificationInitialState } from './components/Notification';
 import { Auth } from 'aws-amplify';
 
 import { AMPLIFY, API_URL, APP_NAME } from './config';
+import { userInitialState } from './hooks/Auth/useAuth.resolvers';
 
 const rootState = {
   data: {
     appName: APP_NAME,
+    user: userInitialState,
     ...notificationInitialState,
   },
 };

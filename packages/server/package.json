@@ -23,7 +23,6 @@
     "aws-appsync": "^1.0.0",
     "graphql": "^0.11.0",
     "serverless": "^1.48.1",
-    "serverless-appsync-offline": "^1.4.0",
     "serverless-appsync-plugin": "^1.1.2",
     "serverless-dynamodb-client": "0.0.2",
     "serverless-dynamodb-local": "^0.2.38",

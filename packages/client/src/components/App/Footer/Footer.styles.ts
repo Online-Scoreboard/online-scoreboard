@@ -13,4 +13,7 @@ export default makeStyles(theme => ({
       paddingBottom: theme.spacing(6),
     },
   },
+  copyright: {
+    marginTop: theme.spacing(3),
+  },
 }));

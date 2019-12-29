@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Typography, Link, Container, Box, Grid } from '@material-ui/core';
+import { Typography, Link, Container, Grid } from '@material-ui/core';
 import useStyles from './Footer.styles';
 
 export const footers = [
@@ -44,7 +44,7 @@ const FooterComponent: React.FC = () => {
           </Grid>
         ))}
       </Grid>
-      <Box mt={5} className="copyright">
+      <div className={`copyright ${classes.copyright}`}>
         <Typography variant="body2" color="textSecondary" align="center">
           {'Copyright © '}
           <Link color="inherit" href="https://github.com/andreasonny83/">
@@ -52,7 +52,7 @@ const FooterComponent: React.FC = () => {
           </Link>
           {' ' + new Date().getFullYear()}. Built with ❤️.
         </Typography>
-      </Box>
+      </div>
     </Container>
   );
 };

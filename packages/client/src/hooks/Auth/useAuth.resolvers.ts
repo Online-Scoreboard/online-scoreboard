@@ -15,20 +15,24 @@ import { GET_USER } from './useAuth.graph';
 import { DEFAULT_ERROR_MESSAGE } from '../../helpers/strings';
 import { User } from './types';
 
+export const userInitialState: User = {
+  __typename: 'UserSession',
+  isLoggedIn: false,
+  confirmEmail: false,
+  resetPassword: false,
+  username: '',
+  email: '',
+  error: '',
+  info: '',
+};
+
 export const resolvers: Resolvers = {
   Query: {
     async user(parent) {
       const currUser = parent.user;
 
       const data: User = {
-        __typename: 'UserSession',
-        isLoggedIn: false,
-        confirmEmail: false,
-        resetPassword: false,
-        username: '',
-        email: '',
-        error: '',
-        info: '',
+        ...userInitialState,
         ...currUser,
       };
 
