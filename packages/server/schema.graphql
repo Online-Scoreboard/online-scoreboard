@@ -112,6 +112,11 @@ input GameLogInput {
 	score: Int
 }
 
+input AcceptPlayerInput {
+	gameId: String
+	playerId: String
+}
+
 type Query {
 	whoAmI: User
 	getUser(userId: String!): User
@@ -127,11 +132,12 @@ type Mutation {
 	createGame(input: CreateGameInput!): Game
 	startGame(gameId: String!): Game
 	joinGame(gameId: String!): Game
+	acceptPlayer(input: AcceptPlayerInput!): Game
 }
 
 type Subscription {
 	gameUpdated(id: String!): Game
-		@aws_subscribe(mutations: [ "startGame", "joinGame"])
+		@aws_subscribe(mutations: [ "startGame", "joinGame", "acceptPlayer"])
 }
 
 schema {

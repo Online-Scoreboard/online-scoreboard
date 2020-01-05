@@ -4,8 +4,8 @@
     "version": "2018-05-29",
     "operation": "Invoke",
     "payload": {
-        "field": "startGame",
-        "gameId": $utils.toJson($ctx.args.gameId),
+        "field": "acceptPlayer",
+        "input": $utils.toJson($ctx.args.input),
         "userId": $utils.toJson($identityValue)
     }
 }

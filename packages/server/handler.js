@@ -64,7 +64,7 @@ const generateUniqueName = async tableName => {
 };
 
 exports.graphqlHandler = async (event, context, callback) => {
-  const { field, owner, gameId, userId } = event;
+  const { field, owner } = event;
 
   switch (field) {
     case 'shuffleAvatar': {
@@ -74,6 +74,7 @@ exports.graphqlHandler = async (event, context, callback) => {
     }
 
     case 'createGame': {
+      const isValid = true;
       const randomName = await generateUniqueName(TABLE_NAME);
       const createdAt = new Date().toISOString();
       const values = {
@@ -84,35 +85,51 @@ exports.graphqlHandler = async (event, context, callback) => {
         users: [owner],
       };
       if (randomName) {
-        callback(null, { id: randomName, values });
+        callback(null, { id: randomName, values, isValid });
       } else {
-        callback('Cannot find an available game name');
+        callback(null, { error: 'Cannot find an available game name' });
       }
 
       break;
     }
 
     case 'startGame': {
+      const { gameId, userId } = event;
+
       const values = {
         status: 'started',
       };
+      const gameData = await findItem(TABLE_NAME, gameId);
+      const gameExists = doesItemExist(gameData);
 
-      callback(null, { id: gameId, values });
+      if (!gameExists) {
+        callback(null, { error: `Game ${gameId} does not exist` });
+      }
+
+      const gameDataItem = gameData.Items[0];
+      const isValid = Boolean(~gameDataItem.users.indexOf(userId));
+
+      callback(null, { id: gameId, values, isValid });
 
       break;
     }
 
     case 'joinGame': {
+      const { gameId, userId } = event;
+
       const gameData = await findItem(TABLE_NAME, gameId);
       const gameExists = doesItemExist(gameData);
+
       if (!gameExists) {
-        callback(`Game ${gameId} does not exist`);
+        callback(null, { error: `Game ${gameId} does not exist` });
       }
 
+      const isValid = true;
       const gameDataItem = gameData.Items[0];
       const pendingPlayers = (gameDataItem && gameDataItem.pendingPlayers) || [];
+      const gameAuthor = gameDataItem && gameDataItem.owner;
 
-      if (!~pendingPlayers.indexOf(userId)) {
+      if (!~pendingPlayers.indexOf(userId) && gameAuthor !== userId) {
         pendingPlayers.push(userId);
       }
 
@@ -120,13 +137,45 @@ exports.graphqlHandler = async (event, context, callback) => {
         pendingPlayers,
       };
 
-      callback(null, { id: gameId, values });
+      callback(null, { id: gameId, values, isValid });
+
+      break;
+    }
+
+    case 'acceptPlayer': {
+      const { input, userId } = event;
+      const { gameId, playerId } = input;
+      const gameData = await findItem(TABLE_NAME, gameId);
+      const gameExists = doesItemExist(gameData);
+
+      if (!gameExists) {
+        callback(null, { error: `Game ${gameId} does not exist` });
+      }
+
+      const gameDataItem = gameData.Items[0];
+      const pendingPlayers = (gameDataItem && gameDataItem.pendingPlayers) || [];
+      const users = (gameDataItem && gameDataItem.users) || [];
+      const isValid = Boolean(~gameDataItem.users.indexOf(userId));
+
+      if (!~pendingPlayers.indexOf(playerId)) {
+        callback(null, { error: `Cannot add ${playerId} to ${gameId}. The player needs to request to join first` });
+      }
+
+      const pendingPlayersUpdate = pendingPlayers.filter(item => item !== playerId);
+      const usersUpdated = [...users, playerId];
+
+      const values = {
+        pendingPlayers: pendingPlayersUpdate,
+        users: usersUpdated,
+      };
+
+      callback(null, { id: gameId, values, isValid });
 
       break;
     }
 
     default: {
-      callback(`Unknown field, unable to resolve ${event.field}`, null);
+      callback(null, { error: `Unknown field, unable to resolve ${event.field}` });
       break;
     }
   }
