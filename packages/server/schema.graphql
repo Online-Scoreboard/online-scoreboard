@@ -45,12 +45,22 @@ type Game {
 	owner: String!
 	setup: GameSetup!
 	rules: GameRules!
-	users: [String]!
+	users: [GameUser]!
 	teamColors: [Color]!
 	teams: Int!
 	players: [Player]!
 	log: [GameLog]
-	pendingPlayers: [String!]
+	pendingPlayers: [PendingPlayer]!
+}
+
+type PendingPlayer {
+	id: String
+	item: User
+}
+
+type GameUser {
+	id: String
+	item: User
 }
 
 type ModelGameConnection {

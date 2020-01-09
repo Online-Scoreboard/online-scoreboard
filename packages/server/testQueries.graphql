@@ -1,0 +1,100 @@
+query WhoAmI {
+  whoAmI {
+    id
+    avatar
+  }
+}
+
+query GetGame {
+  getGame(gameId: "excited_fuchsia_squirrel") {
+    id
+    createdAt
+    owner
+    users {
+      id
+      item {
+        id
+        username
+      }
+    }
+    pendingPlayers {
+      id
+      item {
+        username
+      }
+    }
+  }
+}
+
+mutation CreateUser {
+  createUser {
+    id
+  }
+}
+
+mutation CreateGame {
+  createGame(input: {
+    setup:{
+      gameName: "test"
+    },
+    teams: 3,
+    teamColors: [white, red],
+    rules: {
+      isMatchesBased: false,
+      winningScoreEnabled: false,
+      maxTeamSize: 4,
+      minTeamSize: 1,
+      startingScore: 0,
+      winningScore: 3,
+      name: "test",
+      scoringSystem: "custom"
+    }
+  }) {
+    id
+  }
+}
+
+mutation JoinGame {
+  joinGame(gameId: "excited_fuchsia_squirrel") {
+    id
+    pendingPlayers {
+      id
+    }
+    users {
+      id
+    }
+  }
+}
+
+mutation AcceptPlayer($acceptPlayerInput: AcceptPlayerInput!) {
+  acceptPlayer(input: $acceptPlayerInput) {
+    id
+      owner
+      users {
+        id
+        item {
+          username
+        }
+      }
+      pendingPlayers {
+        id
+      }
+      status
+  }
+}
+
+subscription OnGameUpdated {
+  gameUpdated(id: "excited_fuchsia_squirrel") {
+    id
+    status
+  }
+}
+
+## Variables
+
+{
+  "acceptPlayerInput": {
+    "gameId": "excited_fuchsia_squirrel",
+    "playerId": "0a201c8d-47d2-4b40-a1ef-70de367b52e6"
+  }
+}

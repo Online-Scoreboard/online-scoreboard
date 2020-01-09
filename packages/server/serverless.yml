@@ -57,6 +57,42 @@ custom:
           response: "countGames-response-mapping-template.vtl"
         -
           dataSource: OnlineScoreBoard
+          type: Game
+          field: pendingPlayers
+          request: "gamePendingPlayers-request-mapping-template.vtl"
+          response: "gamePendingPlayers-response-mapping-template.vtl"
+        -
+          dataSource: OnlineScoreBoard
+          type: PendingPlayer
+          field: id
+          request: "gamePendingPlayerId-request-mapping-template.vtl"
+          response: "gamePendingPlayerId-response-mapping-template.vtl"
+        -
+          dataSource: OnlineScoreBoard
+          type: PendingPlayer
+          field: item
+          request: "gamePendingPlayerData-request-mapping-template.vtl"
+          response: "gamePendingPlayerData-response-mapping-template.vtl"
+        -
+          dataSource: OnlineScoreBoard
+          type: Game
+          field: users
+          request: "gameUsers-request-mapping-template.vtl"
+          response: "gameUsers-response-mapping-template.vtl"
+        -
+          dataSource: OnlineScoreBoard
+          type: GameUser
+          field: id
+          request: "gameUserId-request-mapping-template.vtl"
+          response: "gameUserId-response-mapping-template.vtl"
+        -
+          dataSource: OnlineScoreBoard
+          type: GameUser
+          field: item
+          request: "gameUserData-request-mapping-template.vtl"
+          response: "gameUserData-response-mapping-template.vtl"
+        -
+          dataSource: OnlineScoreBoard
           type: ModelUserConnection
           field: count
           request: "countUsers-request-mapping-template.vtl"
@@ -366,17 +402,17 @@ resources:
                     - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}"
                     - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}/*"
           # Uncomment to enable Cloudwatch on the GraphQL Lambda Function
-          -
-            PolicyName: "${self:custom.appSync.serviceRole}-GraphQL-CloudWatch-Policy"
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                -
-                  Effect: "Allow"
-                  Action:
-                    - "logs:CreateLogGroup"
-                    - "logs:CreateLogStream"
-                    - "logs:PutLogEvents"
-                  Resource:
-                    - "arn:aws:logs:${self:provider.region}:${self:custom.accountId}:log-group:/aws/lambda/online-scoreboard-server-${self:provider.stage}-graphql"
-                    - "arn:aws:logs:${self:provider.region}:${self:custom.accountId}:log-group:/aws/lambda/online-scoreboard-server-${self:provider.stage}-graphql:*"
+          # -
+          #   PolicyName: "${self:custom.appSync.serviceRole}-GraphQL-CloudWatch-Policy"
+          #   PolicyDocument:
+          #     Version: "2012-10-17"
+          #     Statement:
+          #       -
+          #         Effect: "Allow"
+          #         Action:
+          #           - "logs:CreateLogGroup"
+          #           - "logs:CreateLogStream"
+          #           - "logs:PutLogEvents"
+          #         Resource:
+          #           - "arn:aws:logs:${self:provider.region}:${self:custom.accountId}:log-group:/aws/lambda/online-scoreboard-server-${self:provider.stage}-graphql"
+          #           - "arn:aws:logs:${self:provider.region}:${self:custom.accountId}:log-group:/aws/lambda/online-scoreboard-server-${self:provider.stage}-graphql:*"
