@@ -3,11 +3,13 @@ import { shallow } from 'enzyme';
 import * as Auth from '../../hooks/Auth';
 import * as Notification from '../Notification';
 import { Loading } from '../Loading';
+import * as Messages from '../../hooks/useMessage';
 
 import { App } from './App';
 
 jest.mock('../../hooks/Auth');
 jest.mock('../Notification');
+jest.mock('../../hooks/useMessage');
 
 describe('App', () => {
   let mockLoading = false;
@@ -34,6 +36,13 @@ describe('App', () => {
         logOut: jest.fn(),
       } as any)
   );
+
+  jest.spyOn(Messages, 'useMessage').mockImplementation(() => ({
+    body: '',
+    variant: '' as any,
+    clearMessage: jest.fn(),
+    createMessage: jest.fn(),
+  }));
 
   jest.spyOn(Notification, 'useNotification').mockImplementation(() => ({
     openNotification: jest.fn(),

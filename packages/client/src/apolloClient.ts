@@ -6,6 +6,7 @@ import { createSubscriptionHandshakeLink } from 'aws-appsync-subscription-link';
 import { ApolloLink } from 'apollo-link';
 import { createHttpLink } from 'apollo-link-http';
 import { notificationInitialState } from './components/Notification';
+import { messageInitialState } from './hooks/useMessage';
 import { Auth } from 'aws-amplify';
 
 import { AMPLIFY, API_URL, APP_NAME } from './config';
@@ -13,6 +14,7 @@ import { AMPLIFY, API_URL, APP_NAME } from './config';
 const rootState = {
   data: {
     appName: APP_NAME,
+    ...messageInitialState,
     ...notificationInitialState,
   },
 };

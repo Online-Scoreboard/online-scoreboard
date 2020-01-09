@@ -10,6 +10,7 @@ import theme from './theme';
 import { AMPLIFY, APP_VERSION } from './config';
 import { App } from './components/App';
 import { AuthHost } from './hooks/Auth';
+import { MessageHost } from './hooks/useMessage';
 import { client } from './apolloClient';
 import * as serviceWorker from './serviceWorker';
 
@@ -20,6 +21,7 @@ const AppWrapper = (AppComponent: React.ComponentType): JSX.Element => (
   <ThemeProvider theme={theme}>
     <ApolloProvider client={client}>
       <AuthHost />
+      <MessageHost />
       <CssBaseline />
       <AppComponent />
     </ApolloProvider>
