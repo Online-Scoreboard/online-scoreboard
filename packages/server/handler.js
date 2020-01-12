@@ -64,7 +64,7 @@ const generateUniqueName = async tableName => {
 };
 
 exports.graphqlHandler = async (event, context, callback) => {
-  const { field, owner } = event;
+  const { field, owner, input } = event;
 
   switch (field) {
     case 'shuffleAvatar': {
@@ -74,15 +74,27 @@ exports.graphqlHandler = async (event, context, callback) => {
     }
 
     case 'createGame': {
-      const isValid = true;
+      const { rules, teams, teamColors, setup } = input;
+      const pendingPlayers = [];
+      const isValid = Boolean(setup && setup.gameName, rules && teams && teamColors && teamColors.length);
+
+      if (!isValid) {
+        callback(null, { error: 'invalid game data' });
+      }
+
       const randomName = await generateUniqueName(TABLE_NAME);
       const createdAt = new Date().toISOString();
       const values = {
-        owner,
-        createdAt,
         __typename: 'Game',
         status: 'new',
+        name: setup.gameName,
         users: [owner],
+        createdAt,
+        owner,
+        pendingPlayers,
+        teamColors,
+        teams,
+        rules,
       };
       if (randomName) {
         callback(null, { id: randomName, values, isValid });
@@ -143,7 +155,7 @@ exports.graphqlHandler = async (event, context, callback) => {
     }
 
     case 'acceptPlayer': {
-      const { input, userId } = event;
+      const { userId } = event;
       const { gameId, playerId } = input;
       const gameData = await findItem(TABLE_NAME, gameId);
       const gameExists = doesItemExist(gameData);

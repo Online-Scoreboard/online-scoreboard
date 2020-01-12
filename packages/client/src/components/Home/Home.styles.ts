@@ -20,9 +20,11 @@ export default makeStyles(({ spacing, palette }) => ({
     padding: spacing(6, 0),
     backgroundColor: palette.background.paper,
     position: 'relative',
+    zIndex: 0,
 
     '&:before': {
-      height: '100px',
+      zIndex: -1,
+      height: '180px',
       width: '110%',
       content: '"c"',
       display: 'block',

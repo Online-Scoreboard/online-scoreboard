@@ -43,7 +43,7 @@ type Game {
 	updatedAt: String!
 	status: String!
 	owner: String!
-	setup: GameSetup!
+	name: String!
 	rules: GameRules!
 	users: [GameUser]!
 	teamColors: [Color]!

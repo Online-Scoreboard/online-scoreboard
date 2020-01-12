@@ -5,6 +5,7 @@
     "operation": "Invoke",
     "payload": {
         "field": "createGame",
-        "owner": $utils.toJson($identityValue)
+        "owner": $utils.toJson($identityValue),
+        "input": $utils.toJson($context.args.input)
     }
 }

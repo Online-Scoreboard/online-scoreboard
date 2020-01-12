@@ -27,5 +27,8 @@
   },
   "dependencies": {
     "dotenv": "^8.2.0"
+  },
+  "engines": {
+    "node": "10.17.0"
   }
 }
