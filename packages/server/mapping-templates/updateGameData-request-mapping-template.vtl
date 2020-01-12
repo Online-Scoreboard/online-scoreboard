@@ -1,19 +1,26 @@
 #set( $identityValue = $util.defaultIfNull($ctx.identity.claims.get("username"), $util.defaultIfNull($ctx.identity.claims.get("cognito:username"), "___xamznone____")) )
 
 #if($util.isNullOrEmpty($identityValue))
-  $util.unauthorized()
+    $util.unauthorized()
 #end
 
 #set( $gameId = $context.prev.result.id )
-
-#if( $util.isNullOrEmpty( $gameId ) )
-  $utils.error("Error: Cannot update game information with missing game id", "ERROR")
-#end
-
+#set( $isValid = $context.prev.result.isValid )
+#set( $error = $context.prev.result.error )
 #set( $values = $context.prev.result.values )
 
+#if ($error)
+    $utils.error($error, "ERROR")
+#end
+
+$util.validate($isValid, "Error: Operation not allowed")
+
+#if( $util.isNullOrEmpty( $gameId ) )
+    $utils.error("Error: Cannot update game information with missing game id", "ERROR")
+#end
+
 #if( $util.isNullOrEmpty( $values ) )
-  $utils.error("Error: Cannot update a game with missing game information", "ERROR")
+    $utils.error("Error: Cannot update a game with missing game information", "ERROR")
 #end
 
 #set( $expNames  = {} )
@@ -26,8 +33,9 @@ $util.qr($values.put("updatedAt", $util.time.nowISO8601()))
 #foreach( $entry in $values.entrySet() )
     $!{expSet.put("#${entry.key}", ":${entry.key}")}
     $!{expNames.put("#${entry.key}", "$entry.key")}
-    $!{expValues.put(":${entry.key}", { "S" : "${entry.value}" })}
+    $!{expValues.put(":${entry.key}", $util.dynamodb.toDynamoDB(${entry.value}))}
 #end
+
 #foreach( $entry in $expSet.entrySet() )
     #set( $expression = "${expression} ${entry.key} = ${entry.value}" )
     #if ( $foreach.hasNext )

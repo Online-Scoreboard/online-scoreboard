@@ -43,13 +43,24 @@ type Game {
 	updatedAt: String!
 	status: String!
 	owner: String!
-	setup: GameSetup!
+	name: String!
 	rules: GameRules!
-	users: [String]!
+	users: [GameUser]!
 	teamColors: [Color]!
 	teams: Int!
 	players: [Player]!
 	log: [GameLog]
+	pendingPlayers: [PendingPlayer]!
+}
+
+type PendingPlayer {
+	id: String
+	item: User
+}
+
+type GameUser {
+	id: String
+	item: User
 }
 
 type ModelGameConnection {
@@ -111,10 +122,9 @@ input GameLogInput {
 	score: Int
 }
 
-input UpdateGameInput {
-	id: String!
-	undo: Boolean
-	log: [GameLogInput]
+input AcceptPlayerInput {
+	gameId: String
+	playerId: String
 }
 
 type Query {
@@ -131,11 +141,13 @@ type Mutation {
 	updateUser(input: UpdateUserInput!): User
 	createGame(input: CreateGameInput!): Game
 	startGame(gameId: String!): Game
+	joinGame(gameId: String!): Game
+	acceptPlayer(input: AcceptPlayerInput!): Game
 }
 
 type Subscription {
-	gameUpdated: Game
-		@aws_subscribe(mutations: [ "startGame"])
+	gameUpdated(id: String!): Game
+		@aws_subscribe(mutations: [ "startGame", "joinGame", "acceptPlayer"])
 }
 
 schema {

@@ -5,12 +5,19 @@
 #end
 
 #set( $gameId = $context.prev.result.id )
+#set( $error = $context.prev.result.error )
+#set( $isValid = $context.prev.result.isValid )
+#set( $values = $context.prev.result.values )
+
+#if ($error)
+    $utils.error($error, "ERROR")
+#end
+
+$util.validate($isValid, "Error: Operation not allowed")
 
 #if( $util.isNullOrEmpty( $gameId ) )
   $utils.error("Error: Cannot update game information with missing game id", "ERROR")
 #end
-
-#set( $values = $context.prev.result.values )
 
 #if( $util.isNullOrEmpty( $values ) )
   $utils.error("Error: Cannot update a game with missing game information", "ERROR")

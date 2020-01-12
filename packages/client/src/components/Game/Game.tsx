@@ -1,11 +1,13 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { useQuery, useSubscription, useMutation } from '@apollo/react-hooks';
+import { Typography } from '@material-ui/core';
 
-import { GET_GAME, GAME_UPDATED, START_GAME } from './Game.graphql';
-import { GameComponent } from './GameComponent';
+import { GET_GAME, GAME_UPDATED, START_GAME, JOIN_GAME, ACCEPT_PLAYER } from './Game.graphql';
 import { Loading } from '../Loading';
-import { Typography, Button } from '@material-ui/core';
+import { useMessage } from '../../hooks/useMessage';
+import { useAuth } from '../../hooks/Auth';
+import { GameComponent } from './GameComponent';
 
 interface GameProps extends RouteComponentProps {
   gameId?: string;
@@ -15,18 +17,50 @@ interface GameVariables {
   gameId: string;
 }
 
+interface GetUserVariables {
+  userId: string;
+}
+
 const Component: React.FC<GameProps> = ({ gameId }) => {
+  const { user } = useAuth();
+  const { createMessage } = useMessage();
   const { data, loading, error } = useQuery<any, GameVariables>(GET_GAME, {
     variables: { gameId: gameId || '' },
   });
-  const [startGame, { data: startGameData, loading: startGameLoading }] = useMutation(START_GAME, {
-    variables: { gameId },
+  const [_startGame, { loading: startGameLoading }] = useMutation(START_GAME, {
+    onError: err => {
+      createMessage(err.message, 'error');
+    },
   });
-  const { data: gameUpdatedData } = useSubscription(GAME_UPDATED);
+  const [_joinGame, { loading: joinGameLoading }] = useMutation(JOIN_GAME, {
+    onError: err => {
+      createMessage(err.message, 'error');
+    },
+  });
+  const [_acceptPlayer, { loading: acceptPlayerLoading }] = useMutation(ACCEPT_PLAYER, {
+    onError: err => {
+      createMessage(err.message, 'error');
+    },
+  });
 
-  console.warn('gameUpdatedData', gameUpdatedData);
-  console.warn('startGameData', startGameData);
-  console.warn('startGameLoading', startGameLoading);
+  useSubscription(GAME_UPDATED, { variables: { id: gameId } });
+
+  const startGame = useCallback(() => {
+    return _startGame({ variables: { gameId } });
+  }, [_startGame, gameId]);
+
+  const joinGame = useCallback(() => {
+    return _joinGame({ variables: { gameId } });
+  }, [_joinGame, gameId]);
+
+  const acceptPlayer = useCallback(
+    (playerId: string) => {
+      return _acceptPlayer({ variables: { acceptPlayerInput: { gameId, playerId } } });
+    },
+    [_acceptPlayer, gameId]
+  );
+
+  const gameData = data && data.getGame;
 
   if (loading) {
     return <Loading />;
@@ -41,7 +75,9 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
     );
   }
 
-  if (!data || !data.getGame) {
+  const operationLoading = acceptPlayerLoading || joinGameLoading || startGameLoading;
+
+  if (!gameData) {
     return (
       <div>
         <Typography>Game not found</Typography>
@@ -50,10 +86,14 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
   }
 
   return (
-    <div>
-      <GameComponent game={data.getGame} />
-      <Button onClick={() => startGame({ variables: { gameId } })}>Start Game</Button>
-    </div>
+    <GameComponent
+      gameData={gameData}
+      user={user}
+      operationLoading={operationLoading}
+      startGame={startGame}
+      joinGame={joinGame}
+      acceptPlayer={acceptPlayer}
+    />
   );
 };
 

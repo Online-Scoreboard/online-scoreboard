@@ -4,8 +4,8 @@
     "version": "2018-05-29",
     "operation": "Invoke",
     "payload": {
-        "field": "createGame",
-        "owner": $utils.toJson($identityValue),
-        "input": $utils.toJson($context.args.input)
+        "field": "joinGame",
+        "gameId": $utils.toJson($ctx.args.gameId),
+        "userId": $utils.toJson($identityValue)
     }
 }

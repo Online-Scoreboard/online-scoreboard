@@ -4,6 +4,7 @@ import { AppBar } from '@material-ui/core';
 
 import { PrivateRouter } from '../PrivateRouter';
 import { useNotification, Notification } from '../Notification';
+import { useMessage } from '../../hooks/useMessage';
 import { useAuth } from '../../hooks/Auth';
 import { Loading } from '../Loading';
 import { Toolbar } from './Toolbar';
@@ -12,6 +13,7 @@ import useAppStyles from './App.styles';
 
 const AppComponent: React.FC = () => {
   const classes = useAppStyles();
+  const { body, variant: messageVariant } = useMessage();
   const { isLoggedIn, confirmEmail, logOut, loading, error, info, success, user } = useAuth();
   const { open, variant, message, openNotification } = useNotification();
 
@@ -28,6 +30,12 @@ const AppComponent: React.FC = () => {
       openNotification(success, 'success');
     }
   }, [error, info, success, openNotification]);
+
+  useEffect(() => {
+    if (body) {
+      openNotification(body, messageVariant);
+    }
+  }, [body, messageVariant, openNotification]);
 
   const onLogOut = useCallback(async () => {
     try {

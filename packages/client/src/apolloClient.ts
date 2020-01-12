@@ -6,6 +6,7 @@ import { createSubscriptionHandshakeLink } from 'aws-appsync-subscription-link';
 import { ApolloLink } from 'apollo-link';
 import { createHttpLink } from 'apollo-link-http';
 import { notificationInitialState } from './components/Notification';
+import { messageInitialState } from './hooks/useMessage';
 import { Auth } from 'aws-amplify';
 
 import { AMPLIFY, API_URL, APP_NAME } from './config';
@@ -13,6 +14,7 @@ import { AMPLIFY, API_URL, APP_NAME } from './config';
 const rootState = {
   data: {
     appName: APP_NAME,
+    ...messageInitialState,
     ...notificationInitialState,
   },
 };
@@ -28,12 +30,12 @@ const httpLink = createHttpLink({
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.map(({ message, locations, path }) =>
-      console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
+      console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
     );
   }
 
   if (networkError) {
-    console.log(`[Network error]: ${networkError}`);
+    console.error(`[Network error]: ${networkError}`);
   }
 });
 

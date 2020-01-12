@@ -71,5 +71,8 @@
     "hooks": {
       "pre-push": "yarn lint && yarn test:ci"
     }
+  },
+  "engines": {
+    "node": "10.17.0"
   }
 }
