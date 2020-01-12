@@ -1,0 +1,16 @@
+version: 0.1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - yarn install
+    build:
+      commands:
+        - yarn workspace online-scoreboard-client now-build
+  artifacts:
+    baseDirectory: /packages/client/build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
