@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, memo } from 'react';
 import { navigate } from '@reach/router';
 import { AppBar } from '@material-ui/core';
 
-import { PrivateRouter } from '../PrivateRouter';
+import { PrivateRouter } from '../../PrivateRouter';
 import { useNotification, Notification } from '../Notification';
 import { useMessage } from '../../hooks/useMessage';
 import { useAuth } from '../../hooks/Auth';

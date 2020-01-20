@@ -2,18 +2,17 @@ import React, { memo } from 'react';
 import { navigate } from '@reach/router';
 
 import { Container, Typography, Grid, Button } from '@material-ui/core';
+import { useStyles } from './Dashboard.styles';
 import { User } from '../../hooks/Auth';
-import { Classes } from './Dashboard.styles';
 import { Loading } from '../Loading';
 
 interface DashboardComponentProps {
   user: User;
-  classes: Classes;
   loading: boolean;
 }
 
-export const DashboardComponent: React.FC<DashboardComponentProps> = memo(({ classes, user, loading }) => {
-  const { root, grid } = classes;
+export const DashboardComponent: React.FC<DashboardComponentProps> = memo(({ user, loading }) => {
+  const { root, grid } = useStyles();
 
   if (loading) {
     return <Loading />;

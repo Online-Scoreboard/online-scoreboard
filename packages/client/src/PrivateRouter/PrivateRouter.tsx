@@ -1,12 +1,12 @@
 import React, { memo } from 'react';
 import { Router, Redirect, RouteComponentProps } from '@reach/router';
-import { Auth } from './Auth';
-import { Dashboard } from './Dashboard';
-import { Profile } from './Profile';
-import { NewGame } from './NewGame';
-import { Game } from './Game';
+import { Auth } from '../components/Auth';
+import { Dashboard } from '../components/Dashboard';
+import { Profile } from '../components/Profile';
+import { NewGame } from '../components/NewGame';
+import { Game } from '../components/Game';
 
-export interface PrivateRouterProps {
+interface PrivateRouterProps {
   isLoggedIn: boolean;
   confirmEmail: boolean;
   user?: any;
