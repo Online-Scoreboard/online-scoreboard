@@ -38,7 +38,7 @@ export const Home: React.FC<RouteComponentProps> = () => {
           </Grid>
 
           <Grid item className={heroLogin}>
-            <Button size="large" variant="contained" color="primary" href="/login">
+            <Button size="large" variant="contained" color="primary" className="logIn" href="/login">
               Log In
             </Button>
           </Grid>

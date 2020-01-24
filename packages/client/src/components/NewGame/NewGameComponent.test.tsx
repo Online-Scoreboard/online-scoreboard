@@ -34,6 +34,16 @@ describe('NewGameComponent', () => {
     expect(true).toBeTruthy();
   });
 
+  it('should render an error message', () => {
+    const newGame = jest.fn();
+    const testError = true;
+
+    const wrapper = shallow(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
+
+    expect(wrapper.hasClass('NewGame')).toBe(true);
+    expect(wrapper.hasClass('error')).toBe(true);
+  });
+
   describe('Stepper', () => {
     it('should render a Stepper component', () => {
       const testError = null;

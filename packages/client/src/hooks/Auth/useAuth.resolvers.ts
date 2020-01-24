@@ -183,7 +183,7 @@ export const resolvers: Resolvers = {
       } catch (err) {
         userData.error = (err.message && err.message.trim()) || DEFAULT_ERROR_MESSAGE;
         cache.writeData({ data: { user: userData } });
-        throw new Error(err);
+        return;
       }
 
       userData.info = `Reset password code correctly sent to ${email}`;
@@ -202,7 +202,7 @@ export const resolvers: Resolvers = {
         userData.error = (err.message && err.message.trim()) || DEFAULT_ERROR_MESSAGE;
         userData.resetPassword = true;
         cache.writeData({ data: { user: userData } });
-        throw new Error(err);
+        return;
       }
 
       userData.info = `Password correctly reset. Please log in`;
