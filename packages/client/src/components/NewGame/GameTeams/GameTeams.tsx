@@ -36,7 +36,7 @@ export const GameTeams: React.FC<GameTeamsProps> = ({ teams, onChange }) => {
           classes={{ thumb: teamsSliderLabel }}
           valueLabelDisplay="on"
           onChange={handleSlider}
-          defaultValue={teams}
+          value={teams}
           min={1}
           max={12}
           step={1}

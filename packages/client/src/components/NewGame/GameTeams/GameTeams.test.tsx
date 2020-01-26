@@ -39,7 +39,7 @@ describe('GameTeams', () => {
     const wrapper = shallow(<GameTeams teams={teams} onChange={onTeamsChange} />);
     const slider = wrapper.find(Slider);
 
-    expect(slider.prop('defaultValue')).toBe(teams);
+    expect(slider.prop('value')).toBe(teams);
   });
 
   it('should emit a "onTeamsChange" event when interacting with the slider', () => {

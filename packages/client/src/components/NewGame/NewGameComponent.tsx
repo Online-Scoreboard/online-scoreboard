@@ -46,7 +46,10 @@ const Component: React.FC<NewGameProps> = ({ newGameLoading, newGameError, onSub
     if (gameSubmitted) {
       onSubmit({
         setup,
-        rules,
+        rules: {
+          ...rules,
+          teams: undefined,
+        },
         teams,
         teamColors,
       });

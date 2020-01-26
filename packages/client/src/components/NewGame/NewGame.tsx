@@ -10,7 +10,11 @@ interface CreateGameVariables {
 }
 
 const Component: React.FC<RouteComponentProps> = () => {
-  const [createGame, { loading, error, data }] = useMutation<any, CreateGameVariables>(CREATE_GAME);
+  const [createGame, { loading, error, data }] = useMutation<any, CreateGameVariables>(CREATE_GAME, {
+    onError: err => {
+      console.warn(err);
+    },
+  });
 
   const handleNewGame = useCallback(
     (gameInfo: any) => {
