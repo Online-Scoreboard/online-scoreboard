@@ -82,6 +82,10 @@ exports.graphqlHandler = async (event, context, callback) => {
         callback(null, { error: 'invalid game data' });
       }
 
+      if (!rules.name) {
+        rules.name = 'custom';
+      }
+
       const randomName = await generateUniqueName(TABLE_NAME);
       const createdAt = new Date().toISOString();
       const values = {
