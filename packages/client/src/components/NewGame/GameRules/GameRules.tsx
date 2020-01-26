@@ -108,7 +108,7 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
 
   return (
     <>
-      <CardHeader title="Game Rules" classes={{ title: cardTitle }} />
+      <CardHeader title="Game Rules" className="GameRulesHeader" classes={{ title: cardTitle }} />
       <CardContent>
         <Grid item className={content}>
           <Typography gutterBottom>Chose a game from the available ones</Typography>

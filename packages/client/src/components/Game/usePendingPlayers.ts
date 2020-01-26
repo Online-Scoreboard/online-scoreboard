@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { GameUserData } from './Game.types';
 
-export const usePendingPlayers = (pendingPlayers: GameUserData[], users: GameUserData[], userId: string) => {
+export const usePendingPlayers = (pendingPlayers: GameUserData[] = [], users: GameUserData[], userId: string) => {
   const [pendingPlayer, setPendingPlayer] = useState({ id: '', name: '' });
   const [dismissedPendingPlayers, setDismissedPendingPlayers] = useState<string[]>([]);
 
@@ -16,7 +16,7 @@ export const usePendingPlayers = (pendingPlayers: GameUserData[], users: GameUse
   const isPendingUser = useCallback(() => {
     const isPending = pendingPlayers.find(currPendingPlayer => currPendingPlayer.id === userId);
 
-    return isPending;
+    return Boolean(isPending);
   }, [pendingPlayers, userId]);
 
   useEffect(() => {
@@ -27,21 +27,11 @@ export const usePendingPlayers = (pendingPlayers: GameUserData[], users: GameUse
         !pendingPlayers.find(currPendingPlayer => currPendingPlayer.id === pendingPlayer.id)
       ) {
         setPendingPlayer({ id: '', name: '' });
-        // setStaticMessage('');
       }
     } else {
       setPendingPlayer({ id: '', name: '' });
-      // setStaticMessage('');
     }
   }, [pendingPlayer.id, pendingPlayers]);
-
-  // useEffect(() => {
-  //   if (pendingPlayer.id) {
-  //     setStaticMessage(`Player "${pendingPlayer.name}" wants to join the game`);
-  //   } else if (staticMessage) {
-  //     setStaticMessage('');
-  //   }
-  // }, [pendingPlayer]);
 
   useEffect(() => {
     const nextPendingPlayer = getNextPendingPlayer();
@@ -63,9 +53,9 @@ export const usePendingPlayers = (pendingPlayers: GameUserData[], users: GameUse
   }, [dismissedPendingPlayers, getNextPendingPlayer, isAcceptedUser, pendingPlayer.id, pendingPlayers.length]);
 
   return {
+    dismissPendingPlayer: setDismissedPendingPlayers,
     pendingPlayer,
     dismissedPendingPlayers,
-    dismissPendingPlayer: setDismissedPendingPlayers,
     isAcceptedUser,
     isPendingUser,
   };

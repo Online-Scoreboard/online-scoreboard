@@ -70,6 +70,43 @@ describe('useAuth.resolvers', () => {
         expect(res).toEqual(expectedUser);
         expect(AWS.getCurrentUser).toHaveBeenCalled();
       });
+
+      it('should return an error message when the response is not valid', async () => {
+        const testErrorMessage = 'Invalid verification code';
+        jest.spyOn(AWS, 'getCurrentUser').mockImplementationOnce(() => {
+          return Promise.reject({ message: testErrorMessage });
+        });
+
+        await getUser(mockRoot, null, mockCache);
+
+        expect(mockCache.cache.writeData).toBeCalledWith({
+          data: {
+            user: {
+              ...userInitialState,
+              info: '',
+              error: testErrorMessage,
+            },
+          },
+        });
+      });
+
+      it('should return a generic error message when the response is not valid', async () => {
+        jest.spyOn(AWS, 'getCurrentUser').mockImplementationOnce(() => {
+          return Promise.reject({});
+        });
+
+        await getUser(mockRoot, null, mockCache);
+
+        expect(mockCache.cache.writeData).toBeCalledWith({
+          data: {
+            user: {
+              ...userInitialState,
+              info: '',
+              error: DEFAULT_ERROR_MESSAGE,
+            },
+          },
+        });
+      });
     });
   });
 
@@ -115,7 +152,7 @@ describe('useAuth.resolvers', () => {
       it('should reset the errors from the cache', async () => {
         const expectedData = { user: { error: '', info: '' } };
         rootData.user = {
-          error: 'ERRROR',
+          error: 'ERROR',
           info: 'INFO',
         };
         const logIn = resolvers.Mutation.logIn;
@@ -565,6 +602,167 @@ describe('useAuth.resolvers', () => {
               error: DEFAULT_ERROR_MESSAGE,
               email: rootData.user.email,
               resetPassword: false,
+            },
+          },
+        });
+      });
+    });
+
+    describe('resetPassword', () => {
+      const rootData = {
+        user: {
+          email: '',
+          error: '',
+          info: '',
+        },
+      };
+      const mockCache = {
+        cache: {
+          writeData: jest.fn(),
+          readQuery: () => rootData,
+        },
+      };
+      const mockArgs = {
+        resetPasswordData: {
+          username: 'test@user.com',
+          code: '123456',
+          newPassword: 'newPassword',
+        },
+      };
+
+      it('should successfully reset a password', async () => {
+        jest.spyOn(AWS, 'awsResetPasswordConfirm').mockImplementationOnce(() => {
+          return Promise.resolve();
+        });
+
+        const resetPassword = resolvers.Mutation.resetPassword;
+        await resetPassword(null, mockArgs, mockCache);
+
+        expect(mockCache.cache.writeData).toBeCalledWith({
+          data: {
+            user: {
+              error: '',
+              info: `Password correctly reset. Please log in`,
+              email: rootData.user.email,
+              resetPassword: false,
+            },
+          },
+        });
+      });
+
+      it('should return an error message when the response is not valid', async () => {
+        const testErrorMessage = 'Invalid verification code';
+        jest.spyOn(AWS, 'awsResetPasswordConfirm').mockImplementationOnce(() => {
+          return Promise.reject({ message: testErrorMessage });
+        });
+
+        const resetPassword = resolvers.Mutation.resetPassword;
+        await resetPassword(null, mockArgs, mockCache);
+
+        expect(mockCache.cache.writeData).toBeCalledWith({
+          data: {
+            user: {
+              info: '',
+              error: testErrorMessage,
+              email: rootData.user.email,
+              resetPassword: true,
+            },
+          },
+        });
+      });
+
+      it('should return a generic error message when the response is not valid', async () => {
+        jest.spyOn(AWS, 'awsResetPasswordConfirm').mockImplementationOnce(() => {
+          return Promise.reject({});
+        });
+
+        const resetPassword = resolvers.Mutation.resetPassword;
+        await resetPassword(null, mockArgs, mockCache);
+
+        expect(mockCache.cache.writeData).toBeCalledWith({
+          data: {
+            user: {
+              info: '',
+              error: DEFAULT_ERROR_MESSAGE,
+              email: rootData.user.email,
+              resetPassword: true,
+            },
+          },
+        });
+      });
+    });
+
+    describe('logOut', () => {
+      const rootData = {
+        user: {
+          email: '',
+          error: '',
+          info: '',
+        },
+      };
+      const mockCache = {
+        cache: {
+          writeData: jest.fn(),
+          readQuery: () => rootData,
+        },
+      };
+
+      it('should successfully log the user out', async () => {
+        jest.spyOn(AWS, 'awsSignOut').mockImplementationOnce(() => {
+          return Promise.resolve();
+        });
+
+        const logOut = resolvers.Mutation.logOut;
+        await logOut(null, null, mockCache);
+
+        expect(mockCache.cache.writeData).toBeCalledWith({
+          data: {
+            user: {
+              error: '',
+              info: 'You are now logged out',
+              username: '',
+              email: rootData.user.email,
+              isLoggedIn: false,
+              confirmEmail: false,
+            },
+          },
+        });
+      });
+
+      it('should return an error message when the response is not valid', async () => {
+        const testErrorMessage = 'Invalid verification code';
+        jest.spyOn(AWS, 'awsSignOut').mockImplementationOnce(() => {
+          return Promise.reject({ message: testErrorMessage });
+        });
+
+        const logOut = resolvers.Mutation.logOut;
+        await logOut(null, null, mockCache);
+
+        expect(mockCache.cache.writeData).toBeCalledWith({
+          data: {
+            user: {
+              info: '',
+              error: testErrorMessage,
+              email: rootData.user.email,
+            },
+          },
+        });
+      });
+
+      it('should return a generic error message when the response is not valid', async () => {
+        jest.spyOn(AWS, 'awsSignOut').mockImplementationOnce(() => {
+          return Promise.reject({});
+        });
+
+        const logOut = resolvers.Mutation.logOut;
+        await logOut(null, null, mockCache);
+
+        expect(mockCache.cache.writeData).toBeCalledWith({
+          data: {
+            user: {
+              info: '',
+              error: DEFAULT_ERROR_MESSAGE,
+              email: rootData.user.email,
             },
           },
         });

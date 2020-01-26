@@ -3,7 +3,7 @@ version: 2
 jobs:
   unit_tests:
     docker:
-      - image: circleci/node:10.17.0
+      - image: circleci/node:12.4.0
     steps:
       - checkout
       - run:
@@ -28,7 +28,7 @@ jobs:
           path: packages/client/coverage
   eslint:
     docker:
-      - image: circleci/node:10.17.0
+      - image: circleci/node:12.4.0
     steps:
       - checkout
       - run:
@@ -47,7 +47,7 @@ jobs:
           path: packages/client/reports/junit
   e2e:
     docker:
-      - image: circleci/node:10.17.0-browsers
+      - image: circleci/node:12-browsers
         environment:
           TS_NODE_PROJECT: tsconfig.json
           SELENIUM_BROWSER: "chrome"
@@ -85,7 +85,4 @@ workflows:
     jobs:
       - eslint
       - unit_tests
-      - e2e:
-          requires:
-            - eslint
-            - unit_tests
+      - e2e

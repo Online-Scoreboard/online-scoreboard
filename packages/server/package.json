@@ -33,6 +33,6 @@
     "unique-names-generator": "^4.1.1"
   },
   "engines": {
-    "node": "10.17.0"
+    "node": "12.x"
   }
 }

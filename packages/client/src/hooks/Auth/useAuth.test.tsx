@@ -1,5 +1,7 @@
+import React from 'react';
+import { mount } from 'enzyme';
+import { act } from 'react-dom/test-utils';
 import apollo from '@apollo/react-hooks';
-import { renderHook, act } from '@testing-library/react-hooks';
 
 import { useAuth } from './useAuth';
 
@@ -21,13 +23,24 @@ jest.mock(
     } as any)
 );
 
+interface DivProps {
+  hook: any;
+}
+
+const Div: React.FC<DivProps> = () => <div />;
+
+const TestComponent: React.FC<typeof useAuth> = () => {
+  const useAuthHook = useAuth();
+  return <Div hook={useAuthHook} />;
+};
+
 describe('useData', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('should render without crashing', () => {
-    renderHook(() => useAuth());
+    mount(<TestComponent />);
   });
 
   it('should inject custom apollo resolvers', () => {
@@ -39,7 +52,7 @@ describe('useData', () => {
         } as any)
     );
 
-    renderHook(() => useAuth());
+    mount(<TestComponent />);
 
     expect(spyAddResolvers).toBeCalledWith(expect.any(Object));
   });
@@ -64,9 +77,13 @@ describe('useData', () => {
       } as any;
     });
 
-    const { result } = renderHook(() => useAuth());
+    const wrapper = mount(<TestComponent />);
 
-    expect(result.current.user).toEqual(expectedUser);
+    const {
+      hook: { user },
+    } = wrapper.find(Div).props();
+
+    expect(user).toEqual(expectedUser);
   });
 
   it('should fetch a user avatar', () => {
@@ -89,9 +106,13 @@ describe('useData', () => {
       } as any;
     });
 
-    const { result } = renderHook(() => useAuth());
+    const wrapper = mount(<TestComponent />);
 
-    expect(result.current.user).toEqual(expectedUser);
+    const {
+      hook: { user },
+    } = wrapper.find(Div).props();
+
+    expect(user).toEqual(expectedUser);
   });
 
   it('isLoggedIn', async () => {
@@ -115,8 +136,11 @@ describe('useData', () => {
       return [jest.fn(), {}] as any;
     });
 
-    const { result } = renderHook(() => useAuth());
-    const { logIn } = result.current;
+    const wrapper = mount(<TestComponent />);
+
+    const {
+      hook: { logIn },
+    } = wrapper.find(Div).props();
 
     await act(async () => {
       await logIn(testUsername, testPassword);
@@ -154,8 +178,11 @@ describe('useData', () => {
       return [jest.fn(), {}] as any;
     });
 
-    const { result } = renderHook(() => useAuth());
-    const { register } = result.current;
+    const wrapper = mount(<TestComponent />);
+
+    const {
+      hook: { register },
+    } = wrapper.find(Div).props();
 
     await act(async () => {
       await register(testUsername, testPassword);
@@ -192,8 +219,10 @@ describe('useData', () => {
       return [jest.fn(), {}] as any;
     });
 
-    const { result } = renderHook(() => useAuth());
-    const { verifyEmail } = result.current;
+    const wrapper = mount(<TestComponent />);
+    const {
+      hook: { verifyEmail },
+    } = wrapper.find(Div).props();
 
     await act(async () => {
       await verifyEmail(testCode);
@@ -227,8 +256,10 @@ describe('useData', () => {
       return [jest.fn(), {}] as any;
     });
 
-    const { result } = renderHook(() => useAuth());
-    const { resendCode } = result.current;
+    const wrapper = mount(<TestComponent />);
+    const {
+      hook: { resendCode },
+    } = wrapper.find(Div).props();
 
     await act(async () => {
       await resendCode();
@@ -256,8 +287,10 @@ describe('useData', () => {
       return [jest.fn(), {}] as any;
     });
 
-    const { result } = renderHook(() => useAuth());
-    const { logOut } = result.current;
+    const wrapper = mount(<TestComponent />);
+    const {
+      hook: { logOut },
+    } = wrapper.find(Div).props();
 
     await act(async () => {
       await logOut();
@@ -287,8 +320,10 @@ describe('useData', () => {
       return [jest.fn(), {}] as any;
     });
 
-    const { result } = renderHook(() => useAuth());
-    const { forgottenPassword } = result.current;
+    const wrapper = mount(<TestComponent />);
+    const {
+      hook: { forgottenPassword },
+    } = wrapper.find(Div).props();
 
     await act(async () => {
       await forgottenPassword(testEmail);
@@ -326,8 +361,10 @@ describe('useData', () => {
       return [jest.fn(), {}] as any;
     });
 
-    const { result } = renderHook(() => useAuth());
-    const { resetPassword } = result.current;
+    const wrapper = mount(<TestComponent />);
+    const {
+      hook: { resetPassword },
+    } = wrapper.find(Div).props();
 
     await act(async () => {
       await resetPassword(testUsername, testCode, testNewPassword);
