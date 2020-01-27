@@ -4,11 +4,11 @@ import { When, Then } from 'cucumber';
 import RegistrationPage from '../pages/registration.page';
 import LoginPage from '../pages/login.page';
 
-When(/^I navigate to 'Registration' page$/, async function() {
+When(/^I navigate to the Registration page$/, async function() {
   await this.browser.wait(until.elementLocated(LoginPage.doNotHaveAccountButton())).click();
 });
 
-Then(/^I should see 'Registration' page$/, async function() {
+Then(/^I should see the Registration page$/, async function() {
   await new Promise(r => setTimeout(r, 300)); // wait for page navigation
   const urlRegister = '/register';
   await this.browser.wait(until.urlContains(urlRegister), 5000, `Expected url path to be /register`);

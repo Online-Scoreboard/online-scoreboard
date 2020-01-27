@@ -9,12 +9,12 @@ Scenario: Navigate to homepage
 
 Scenario: Login form
   Given I am on the Online Scoreboard homepage
-  When I navigate to 'Login' page
-  Then I should see 'Login' page
+  When I navigate to the Login page
+  Then I should see the Login page
    And I should see login form
 
 Scenario: Registration form
   Given I am on the Online Scoreboard login form
-  When I navigate to 'Registration' page
-  Then I should see 'Registration' page
+  When I navigate to the Registration page
+  Then I should see the Registration page
    And I should see registration form
