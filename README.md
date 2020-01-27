@@ -1,6 +1,6 @@
 # Online Scoreboard
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d2700d18225345bd95c9ca74616db080)](https://www.codacy.com/manual/andreasonny83/online-scoreboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Online-Scoreboard/online-scoreboard&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d2700d18225345bd95c9ca74616db080)](https://www.codacy.com/manual/andreasonny83/online-scoreboard?utm_source=github.com&utm_medium=referral&utm_content=Online-Scoreboard/online-scoreboard&utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/d2700d18225345bd95c9ca74616db080)](https://www.codacy.com/manual/andreasonny83/online-scoreboard?utm_source=github.com&utm_medium=referral&utm_content=Online-Scoreboard/online-scoreboard&utm_campaign=Badge_Coverage)
 
 This project is running live at: [online-scoreboard.now.sh](https://online-scoreboard.now.sh)
@@ -16,6 +16,11 @@ against the latest changes on the master branch of this repository
   - [ESLint](#eslint)
   - [Unit Test](#unit-test)
   - [E2E](#e2e)
+    - [Commands](#commands)
+    - [Optional Configuration](#optional-configuration)
+    - [Cucumber CLI args](#cucumber-cli-args)
+    - [Notes](#notes)
+        - [World](#world)
   - [Build the app](#build-the-app)
   - [Backend service](#backend-service)
 
@@ -81,21 +86,62 @@ Use this script for local development, write new tests or test your local app.
 
 ## E2E
 
-```sh
-yarn e2e
-```
+### Commands
 
-Runs all the end-to-end test suites under `packages/e2e/features`
+`yarn e2e:local`
 
-This script requires a local version of the client application to run on the port `3000`.
+`yarn e2e`
+
+Both commands will run all the end-to-end test suites under `packages/e2e/features` e2e tests, but the second will generate a `report.json` from which an HTML report can be generated
+
+These scripts requires a local version of the client application to run on the port `3000`.
 You can either use the [`yarn start`](#run-the-project-locally) or the [`yarn serve`](#serving-the-app) script.
 
-Optional Configuration:
- - `SELENIUM_BROWSER` - specify what browser to use. Defaults to `chrome`
- - `HOMEPAGE_URL` - specify base URL which will be used to access the online-scoreboard. Defaults to `http:localhost:3000`
+`yarn e2e:report` will generate a HTML report from the report.json
+
+`yarn e2e:lint` will run linter for step definition files
+
+### Optional Configuration
+
+- `SELENIUM_BROWSER` - specify what browser to use. Defaults to `chrome`
+- `HOMEPAGE_URL` - specify base URL which will be used to access the online-scoreboard. Defaults to `http:localhost:3000`
 
 Export those as environment variables or change the default values from the `packages/e2e/env-keys.ts` file
 
+### Cucumber CLI args
+
+`--parallel {x}` (`-p`) will run tests in parallel. X determines how many slaves to use.
+
+`--tags {x}`
+
+`x` can be the following (keep note of quotes)
+
+- `@smoke` runs tests tagged with @smoke
+- `"@smoke or @login"` will run tests tagged with either
+- `"@smoke and @profile"` will run only those tests which are tagged with both
+- `"not @login"` will run everything except tests tagged with @login
+
+### Notes
+
+#### World
+
+World is declared in `packages/e2e/typings.d.ts` and you are not required to initialize it.
+
+When tests are run, each step has access to `world` via `this` keyword. You can treat `this.anything` as `world.anything`
+
+Anything stored in `world` is unique to that particular `test` and everything stored in `world` is shared until the end of the test.
+
+Example:
+
+```
+When(/^I set variable in world$, () => {
+  this.message = 'potato';
+})
+
+Then(/^I can access it$, () => {
+  console.log(this.message);
+})
+```
 
 ## Build the app
 

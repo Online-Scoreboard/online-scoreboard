@@ -9,4 +9,10 @@ export const options = {
   launchReport: false,
 };
 
-generate(options);
+try {
+  generate(options);
+} catch (e) {
+  if (e.code === 'ENOENT') {
+    console.log(`Report.json does not exist in packages/e2e/reporting/json`);
+  }
+}
