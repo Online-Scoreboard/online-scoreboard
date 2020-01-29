@@ -26,7 +26,8 @@
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "dependencies": {
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "unique-names-generator": "^4.1.1"
   },
   "engines": {
     "node": "12.x"

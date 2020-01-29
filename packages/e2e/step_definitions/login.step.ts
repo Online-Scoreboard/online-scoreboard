@@ -4,12 +4,13 @@ import { Given, Then, When } from 'cucumber';
 import { envConfig } from '../env-keys';
 import NavBarPage from '../pages/navbar.page';
 import LoginPage from '../pages/login.page';
+import DashboardPage from '../pages/dashboard.page';
 
-When(/^I navigate to 'Login' page$/, async function() {
+When(/^I navigate to the Login page$/, async function() {
   await this.browser.wait(until.elementLocated(NavBarPage.loginButton())).click();
 });
 
-Then(/^I should see 'Login' page$/, async function() {
+Then(/^I should see the Login page$/, async function() {
   await new Promise(r => setTimeout(r, 300)); // wait for page navigation
   const urlLogin = '/login';
   await this.browser.wait(until.urlContains(urlLogin), 5000, `Expected url path to be /login`);
@@ -46,4 +47,20 @@ Then(/^I enter '(.*)' login credentials$/, async function(credentialsType: strin
   }
 
   await loginButton.click();
+});
+
+When(/^I am a logged in Online Scoreboard user$/, async function() {
+  await LoginPage.navigateToLoginPage();
+  await this.browser.wait(until.elementLocated(LoginPage.getUsernameInput())).isDisplayed();
+
+  const username = await this.browser.findElement(LoginPage.getUsernameInput());
+  const password = await this.browser.findElement(LoginPage.getPasswordInput());
+  const loginButton = await this.browser.findElement(LoginPage.getLoginButton());
+
+  await username.sendKeys(envConfig.VALID_USER);
+  await password.sendKeys(envConfig.VALID_PASSWORD);
+
+  await loginButton.click();
+
+  return this.browser.wait(until.elementLocated(DashboardPage.getWelcomeMessage())).isDisplayed();
 });
