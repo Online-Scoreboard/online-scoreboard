@@ -42,8 +42,8 @@ Then(/^The page should contain a '(.*)' form$/, async function(form: string) {
 
   const formTitle =
     form === 'username'
-      ? (await this.browser.findElement(ProfilePage.getCardUsername())).getText()
-      : (await this.browser.findElement(ProfilePage.getCardUsername())).getText();
+      ? await this.browser.findElement(ProfilePage.getCardUsername()).getText()
+      : await this.browser.findElement(ProfilePage.getCardAvatar()).getText();
 
   assert.deepStrictEqual(formTitle, expected, `Expected form title to be: ${expected}, got: ${formTitle}`);
 });
