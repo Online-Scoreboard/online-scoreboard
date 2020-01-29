@@ -5,12 +5,11 @@ export default class HomePage {
   public static getPageTitle(): By {
     return By.css(`h1`);
   }
-  public static getForm(form: string): By {
-    if (form === 'username') {
-      return By.css(`#card-username span.MuiCardHeader-title`);
-    }
-
-    return By.css(`#card-avatar span.MuiCardHeader-title`);
+  public static getCardUsername(): By {
+    return By.css(`#card-username .card-username__title span`);
+  }
+  public static getCardAvatar(): By {
+    return By.css(`#card-avatar .card-avatar__title span`);
   }
   public static getUsernameInput(): By {
     return By.css('#card-username input');

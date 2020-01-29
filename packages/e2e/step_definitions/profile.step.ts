@@ -40,7 +40,10 @@ Then(/^I should see the Profile page$/, async function() {
 Then(/^The page should contain a '(.*)' form$/, async function(form: string) {
   const expected = form.charAt(0).toUpperCase() + form.slice(1, form.length); // Capitalize the title
 
-  const formTitle = await this.browser.findElement(ProfilePage.getForm(form)).getText();
+  const formTitle =
+    form === 'username'
+      ? (await this.browser.findElement(ProfilePage.getCardUsername())).getText()
+      : (await this.browser.findElement(ProfilePage.getCardUsername())).getText();
 
   assert.deepStrictEqual(formTitle, expected, `Expected form title to be: ${expected}, got: ${formTitle}`);
 });

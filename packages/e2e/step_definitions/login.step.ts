@@ -53,12 +53,12 @@ When(/^I am a logged in Online Scoreboard user$/, async function() {
   await LoginPage.navigateToLoginPage();
   await this.browser.wait(until.elementLocated(LoginPage.getUsernameInput())).isDisplayed();
 
-  const username = this.browser.findElement(LoginPage.getUsernameInput());
-  const password = this.browser.findElement(LoginPage.getPasswordInput());
-  const loginButton = this.browser.findElement(LoginPage.getLoginButton());
+  const username = await this.browser.findElement(LoginPage.getUsernameInput());
+  const password = await this.browser.findElement(LoginPage.getPasswordInput());
+  const loginButton = await this.browser.findElement(LoginPage.getLoginButton());
 
-  username.sendKeys(envConfig.VALID_USER);
-  password.sendKeys(envConfig.VALID_PASSWORD);
+  await username.sendKeys(envConfig.VALID_USER);
+  await password.sendKeys(envConfig.VALID_PASSWORD);
 
   await loginButton.click();
 
