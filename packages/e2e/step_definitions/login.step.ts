@@ -33,17 +33,17 @@ Given(/^I am on the Online Scoreboard login form$/, async function() {
 });
 
 Then(/^I enter '(.*)' login credentials$/, async function(credentialsType: string) {
-  const username = this.browser.findElement(LoginPage.getUsernameInput());
-  const password = this.browser.findElement(LoginPage.getPasswordInput());
-  const loginButton = this.browser.findElement(LoginPage.getLoginButton());
+  const username = await this.browser.findElement(LoginPage.getUsernameInput());
+  const password = await this.browser.findElement(LoginPage.getPasswordInput());
+  const loginButton = await this.browser.findElement(LoginPage.getLoginButton());
 
   if (credentialsType === 'wrong') {
-    username.sendKeys(envConfig.INVALID_USER);
-    password.sendKeys(envConfig.INVALID_PASSWORD);
+    await username.sendKeys(envConfig.INVALID_USER);
+    await password.sendKeys(envConfig.INVALID_PASSWORD);
   } else {
-    username.sendKeys(envConfig.VALID_USER);
-    password.sendKeys(envConfig.VALID_PASSWORD);
+    await username.sendKeys(envConfig.VALID_USER);
+    await password.sendKeys(envConfig.VALID_PASSWORD);
   }
 
-  loginButton.click();
+  await loginButton.click();
 });
