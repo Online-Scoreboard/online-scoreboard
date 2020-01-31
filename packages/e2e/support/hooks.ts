@@ -1,13 +1,18 @@
-import { After, Before, BeforeAll, Status } from 'cucumber';
+import { After, Before, BeforeAll, Status, AfterAll } from 'cucumber';
 import { Builder } from 'selenium-webdriver';
 import { IMPLICIT_TIMEOUT, PAGE_LOAD_TIMEOUT, SCRIPT_TIMEOUT } from './const';
 import { envConfig } from '../env-keys';
 import { getBrowserCapabilities } from './browser-capabilities';
 import { TestRunContext } from './test-run-context';
+import { createTestUser, destroyTestUser, TestUser } from '../utils/test-user';
+
+let testUser: TestUser;
 
 BeforeAll(async function() {
   const capabilities = getBrowserCapabilities(envConfig.BROWSER);
   TestRunContext.setCapabilities(capabilities);
+
+  testUser = await createTestUser();
 });
 
 Before(async function() {
@@ -23,6 +28,8 @@ Before(async function() {
     console.log(e);
     process.exit(1);
   }
+
+  this.testUser = testUser;
 });
 
 After(async function(scenario) {
@@ -42,4 +49,8 @@ After(async function(scenario) {
     console.log(e);
     process.exit(1);
   }
+});
+
+AfterAll(async function() {
+  await destroyTestUser(testUser);
 });

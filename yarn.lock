@@ -3342,7 +3342,7 @@ aws-sdk@^2.3.19:
     uuid "3.3.2"
     xml2js "0.4.19"
 
-aws-sdk@^2.404.0, aws-sdk@^2.603.0, aws-sdk@^2.7.0:
+aws-sdk@^2.404.0, aws-sdk@^2.603.0, aws-sdk@^2.610.0, aws-sdk@^2.7.0:
   version "2.610.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.610.0.tgz#a8633204bed83df763095824f8110ced4a717d2a"
   integrity sha512-kqcoCTKjbxrUo2KeLQR2Jw6l4PvkbHXSDk8KqF2hXcpHibiOcMXZZPVe9X+s90RC/B2+qU95M7FImp9ByMcw7A==
@@ -7555,6 +7555,17 @@ handlebars@^4.1.2:
   optionalDependencies:
     uglify-js "^3.1.4"
 
+handlebars@^4.5.3:
+  version "4.7.2"
+  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.7.2.tgz#01127b3840156a0927058779482031afe0e730d7"
+  integrity sha512-4PwqDL2laXtTWZghzzCtunQUTLbo31pcCJrd/B/9JP8XbhVzpS5ZXuKqlOzsd1rtcaLo4KqAn8nl8mkknS4MHw==
+  dependencies:
+    neo-async "^2.6.0"
+    optimist "^0.6.1"
+    source-map "^0.6.1"
+  optionalDependencies:
+    uglify-js "^3.1.4"
+
 hapi-plugin-websocket@^2.1.2:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/hapi-plugin-websocket/-/hapi-plugin-websocket-2.2.0.tgz#a546e9361bd6c438ea04684e4b59f601adf2f9d1"
@@ -9978,6 +9989,23 @@ luxon@^1.21.3:
   resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.21.3.tgz#f1d5c2a7e855d039836cf4954f883ecac8fc4727"
   integrity sha512-lLRwNcNnkZLuv13A1FUuZRZmTWF7ro2ricYvb0L9cvBYHPvZhQdKwrYnZzi103D2XKmlVmxWpdn2wfIiOt2YEw==
 
+mailslurp-client@^6.7.4:
+  version "6.7.4"
+  resolved "https://registry.yarnpkg.com/mailslurp-client/-/mailslurp-client-6.7.4.tgz#39e48dd42fcf5f787f31cf001c3ba461753fc879"
+  integrity sha512-L8UuM1rH10OlElkpEISaWcLBLaOLWr6pB4iRfcUH8Ylituo5odf7G1PON04D+pkUR1EXuwlhTQX+6AXh2O3CQg==
+  dependencies:
+    debug "^4.1.1"
+    mailslurp-swagger-sdk-ts "6.1.0"
+    typedoc-plugin-external-module-map "^1.0.0"
+    typedoc-plugin-markdown "^2.2.14"
+
+mailslurp-swagger-sdk-ts@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/mailslurp-swagger-sdk-ts/-/mailslurp-swagger-sdk-ts-6.1.0.tgz#e1865dd755149736178d2d47113a87098dd40472"
+  integrity sha512-sWoOlWcwwg2gUa/z7RMY7uAN6x/1Jgc1y9+kWNuBw9nXNE/4LDA17F647oWm20fv2lPqOo4GZaf4XrjZjuOayw==
+  dependencies:
+    portable-fetch "^3.0.0"
+
 make-dir@^1.0.0, make-dir@^1.2.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-1.3.0.tgz#79c1033b80515bd6d24ec9933e860ca75ee27f0c"
@@ -11538,6 +11566,14 @@ popper.js@^1.14.1:
   version "1.16.1"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
   integrity sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==
+
+portable-fetch@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/portable-fetch/-/portable-fetch-3.0.0.tgz#3cbf4aa6dbc5a5734b41c0419c9273313bfd9ad8"
+  integrity sha1-PL9KptvFpXNLQcBBnJJzMTv9mtg=
+  dependencies:
+    node-fetch "^1.0.1"
+    whatwg-fetch ">=0.10.0"
 
 portfinder@^1.0.25:
   version "1.0.25"
@@ -14800,6 +14836,19 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+
+typedoc-plugin-external-module-map@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/typedoc-plugin-external-module-map/-/typedoc-plugin-external-module-map-1.0.0.tgz#7021d0e2bc9a98b7266f4ea2eab593b7c63802ce"
+  integrity sha512-OtlTOmanX0yqRYUVLBuGSBjrffLLAjWNn8mqh6k6FkvfXAIIe3Yfg0kCeKZDN/65v4dt3MJ9AuGXTGLPue3Kqg==
+
+typedoc-plugin-markdown@^2.2.14:
+  version "2.2.16"
+  resolved "https://registry.yarnpkg.com/typedoc-plugin-markdown/-/typedoc-plugin-markdown-2.2.16.tgz#baac77e7278e1417f645c063d25f285ec06afdb8"
+  integrity sha512-0Y1zBqL8EQGnwMGoh82LtvioaVs1BGMr1qzINXWwh0R769Awg17vjnKZ8pBY9VHVc6yINB6ZvrLhJsfZuzJxkw==
+  dependencies:
+    fs-extra "^8.1.0"
+    handlebars "^4.5.3"
 
 typescript@3.6.4:
   version "3.6.4"
