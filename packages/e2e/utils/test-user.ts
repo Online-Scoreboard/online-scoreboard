@@ -23,7 +23,7 @@ export const createTestUser = async (): Promise<TestUser> => {
 
   try {
     console.warn('Creating a new Cognito user');
-    cognitoUser = await createUser(userInbox.id, userInbox.address);
+    cognitoUser = await createUser(userInbox.address);
     console.warn('Cognito user created');
 
     console.warn('Confirming user password');

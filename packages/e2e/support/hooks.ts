@@ -4,15 +4,12 @@ import { IMPLICIT_TIMEOUT, PAGE_LOAD_TIMEOUT, SCRIPT_TIMEOUT } from './const';
 import { envConfig } from '../env-keys';
 import { getBrowserCapabilities } from './browser-capabilities';
 import { TestRunContext } from './test-run-context';
-import { createTestUser, destroyTestUser, TestUser } from '../utils/test-user';
-
-let testUser: TestUser;
 
 BeforeAll(async function() {
   const capabilities = getBrowserCapabilities(envConfig.BROWSER);
-  TestRunContext.setCapabilities(capabilities);
 
-  testUser = await createTestUser();
+  TestRunContext.setCapabilities(capabilities);
+  await TestRunContext.createTestUser();
 });
 
 Before(async function() {
@@ -28,8 +25,6 @@ Before(async function() {
     console.log(e);
     process.exit(1);
   }
-
-  this.testUser = testUser;
 });
 
 After(async function(scenario) {
@@ -52,5 +47,5 @@ After(async function(scenario) {
 });
 
 AfterAll(async function() {
-  await destroyTestUser(testUser);
+  await TestRunContext.destroyTestUser();
 });

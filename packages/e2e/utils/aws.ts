@@ -4,7 +4,7 @@ import { envConfig } from '../env-keys';
 const cognitoidentity = new CognitoIdentityServiceProvider({ region: 'us-east-1' });
 const UserPoolId = envConfig.USER_POOL_ID;
 
-export const createUser = async (id: string, email: string): Promise<any> => {
+export const createUser = async (email: string): Promise<any> => {
   return new Promise(res => {
     cognitoidentity.adminCreateUser(
       {
