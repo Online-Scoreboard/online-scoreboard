@@ -1,4 +1,4 @@
-import { After, Before, BeforeAll, Status } from 'cucumber';
+import { After, Before, BeforeAll, Status, AfterAll } from 'cucumber';
 import { Builder } from 'selenium-webdriver';
 import { IMPLICIT_TIMEOUT, PAGE_LOAD_TIMEOUT, SCRIPT_TIMEOUT } from './const';
 import { envConfig } from '../env-keys';
@@ -7,7 +7,9 @@ import { TestRunContext } from './test-run-context';
 
 BeforeAll(async function() {
   const capabilities = getBrowserCapabilities(envConfig.BROWSER);
+
   TestRunContext.setCapabilities(capabilities);
+  await TestRunContext.createTestUser();
 });
 
 Before(async function() {
@@ -42,4 +44,8 @@ After(async function(scenario) {
     console.log(e);
     process.exit(1);
   }
+});
+
+AfterAll(async function() {
+  await TestRunContext.destroyTestUser();
 });

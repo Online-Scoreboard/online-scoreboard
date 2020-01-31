@@ -2,6 +2,7 @@ import assert from 'assert';
 import { until } from 'selenium-webdriver';
 import { Given, Then, When } from 'cucumber';
 import { envConfig } from '../env-keys';
+import { TestRunContext } from '../support/test-run-context';
 import NavBarPage from '../pages/navbar.page';
 import LoginPage from '../pages/login.page';
 import DashboardPage from '../pages/dashboard.page';
@@ -42,7 +43,7 @@ Then(/^I enter '(.*)' login credentials$/, async function(credentialsType: strin
     await username.sendKeys(envConfig.INVALID_USER);
     await password.sendKeys(envConfig.INVALID_PASSWORD);
   } else {
-    await username.sendKeys(envConfig.VALID_USER);
+    await username.sendKeys(TestRunContext.getTestUser().address);
     await password.sendKeys(envConfig.VALID_PASSWORD);
   }
 
@@ -57,7 +58,7 @@ When(/^I am a logged in Online Scoreboard user$/, async function() {
   const password = await this.browser.findElement(LoginPage.getPasswordInput());
   const loginButton = await this.browser.findElement(LoginPage.getLoginButton());
 
-  await username.sendKeys(envConfig.VALID_USER);
+  await username.sendKeys(TestRunContext.getTestUser().address);
   await password.sendKeys(envConfig.VALID_PASSWORD);
 
   await loginButton.click();
