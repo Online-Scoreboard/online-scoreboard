@@ -9,8 +9,7 @@
   "private": true,
   "scripts": {
     "start": "cucumber-js --require-module ts-node/register './features/' --require './step_definitions/*.ts' --require './support/*.ts' -f json:reporting/json/json-report.json --format summary",
-    "local": "cucumber-js --require-module ts-node/register './features/' --require './step_definitions/*.ts' --require './support/*.ts'",
-    "local:login": "yarn local --tags=@login",
+    "local": "cucumber-js --require-module ts-node/register './features/' --require './step_definitions/*.ts' --require './support/*.ts' --tags 'not @createNewUser'",
     "cucumber-js": "cucumber-js",
     "report": "ts-node reporter.ts",
     "lint": "eslint --ext=ts,tsx {pages,support,step_definitions}/**/*",

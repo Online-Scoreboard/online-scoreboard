@@ -3,7 +3,7 @@ Feature: Register
   I should be able to register a new Online Scoreboard account
   So that I can log in and start interacting with the app
 
-@register
+@register  @createNewUser
 Scenario: Register with invalid password
   Given I am on the Online Scoreboard registration form
   When I fill in the registration form with 'valid' email address and 'invalid' password for user 'test1'
@@ -24,7 +24,7 @@ Scenario: Register with existing email address
   Then I should see a 'error' notification saying 'An account with the given email already exists.'
   And I should see the registration form
 
-@register
+@register @createNewUser
 Scenario: Register with correct credentials
   Given I am on the Online Scoreboard registration form
   When I fill in the registration form with 'valid' email address and 'valid' password for user 'test3'
