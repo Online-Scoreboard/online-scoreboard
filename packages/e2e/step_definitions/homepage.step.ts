@@ -28,7 +28,7 @@ When(/^I navigate to the Online Scoreboard homepage$/, async function() {
   await HomePage.navigateToHomepage();
 });
 
-Then(/^I should see a '(.*)' notification saying '(.*)'$/, async function(
+Then(/^I should see a '(.*)' notification saying ['"](.*)['"]$/, async function(
   notificationType: string,
   notificationMessage: string
 ) {
