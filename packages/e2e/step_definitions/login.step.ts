@@ -43,7 +43,7 @@ Then(/^I enter '(.*)' login credentials$/, async function(credentialsType: strin
     await username.sendKeys(envConfig.INVALID_USER);
     await password.sendKeys(envConfig.INVALID_PASSWORD);
   } else if (credentialsType === 'correct') {
-    await username.sendKeys(TestRunContext.getTestUser().address);
+    await username.sendKeys(TestRunContext.getTestUser());
     await password.sendKeys(envConfig.VALID_PASSWORD);
   } else {
     const email = TestRunContext.getUserEmail(credentialsType);
@@ -62,7 +62,7 @@ When(/^I am a logged in Online Scoreboard user$/, async function() {
   const password = await this.browser.findElement(LoginPage.getPasswordInput());
   const loginButton = await this.browser.findElement(LoginPage.getLoginButton());
 
-  await username.sendKeys(TestRunContext.getTestUser().address);
+  await username.sendKeys(TestRunContext.getTestUser());
   await password.sendKeys(envConfig.VALID_PASSWORD);
 
   await loginButton.click();

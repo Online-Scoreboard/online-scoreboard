@@ -1,5 +1,6 @@
 import { BrowserCapabilities } from './browser-capabilities';
 import { WebDriver } from 'selenium-webdriver';
+import { envConfig } from '../env-keys';
 import {
   TestUser,
   Inbox,
@@ -27,7 +28,9 @@ export class TestRunContext {
   }
 
   public static async createTestUser(): Promise<void> {
-    this.testUser = await createTestUser();
+    if (!envConfig.TEST_USER) {
+      this.testUser = await createTestUser();
+    }
   }
 
   public static async destroyTestUsers(): Promise<void> {
@@ -41,8 +44,12 @@ export class TestRunContext {
     }
   }
 
-  public static getTestUser(): TestUser {
-    return this.testUser;
+  public static getTestUser(): string {
+    if (envConfig.TEST_USER) {
+      return envConfig.TEST_USER;
+    }
+
+    return this.testUser.address;
   }
 
   public static async generateNewInbox(tag?: string) {

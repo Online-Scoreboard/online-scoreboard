@@ -63,7 +63,7 @@ Then(/^I fill in the registration form with '(.*)' email address and '(.*)' pass
 
     await username.sendKeys(inbox.address);
   } else if (isValidEmail === 'existing') {
-    await username.sendKeys(TestRunContext.getTestUser().address);
+    await username.sendKeys(TestRunContext.getTestUser());
   } else {
     await username.sendKeys('invalidEmailAddress');
   }
