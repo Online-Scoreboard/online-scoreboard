@@ -12,10 +12,16 @@ export default class RegistrationPage {
   public static getUsernameInput(): By {
     return By.css('input#username');
   }
+  public static getVerificationCodeInput(): By {
+    return By.css('input#code');
+  }
   public static getPasswordInput(): By {
     return By.css('input#password');
   }
-  public static getLoginButton(): By {
+  public static getRegisterButton(): By {
+    return By.xpath('//button');
+  }
+  public static getVerifyCodeButton(): By {
     return By.xpath('//button');
   }
 }

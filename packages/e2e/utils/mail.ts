@@ -18,19 +18,17 @@ export const getVerificationCode = async (emailId: string) => {
 };
 
 export const waitForLatestEmail = async (inboxId: string) => {
-  const oldEmails = await mailslurp.getEmails(inboxId);
-  console.warn('Waiting for verification email...');
+  console.warn('\nWaiting for verification email...');
+  const email = await mailslurp.waitForEmailCount(1, inboxId, 20000);
 
-  const email = await mailslurp.waitForEmailCount(oldEmails.length + 1, inboxId, 60000);
-
-  return email[oldEmails.length].id || '';
+  return email[0].id || '';
 };
 
 export const createInbox = async () => {
   const { emailAddress, id } = await mailslurp.createInbox();
 
   if (!emailAddress || !id) {
-    throw Error('Cannot create a new inbox');
+    throw Error('\nCannot create a new inbox');
   }
 
   return { address: emailAddress, id };

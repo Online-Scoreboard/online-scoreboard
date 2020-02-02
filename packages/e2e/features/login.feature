@@ -1,7 +1,7 @@
 Feature: Login
   As a user
-  I want to be able to log in to my Online Scoreboard account
-  So that I can use the app
+  I want to be able to log in to my Online Scoreboard credentials
+  So that I can use and interact with the app
 
 @login
 Scenario: Login with wrong credentials

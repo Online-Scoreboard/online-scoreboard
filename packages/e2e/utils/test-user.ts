@@ -1,5 +1,5 @@
-import { destroyInbox, createInbox } from './mail';
-import { createUser, confirmUserPassword, destroyUser } from './aws';
+import { destroyInbox, createInbox, waitForLatestEmail, getVerificationCode } from './mail';
+import { createUser, confirmUserPassword, destroyUser, destroyCognitoUserByEmail } from './aws';
 
 export interface TestUser {
   address: string;
@@ -7,28 +7,49 @@ export interface TestUser {
   cognitoUser: string;
 }
 
-export const createTestUser = async (): Promise<TestUser> => {
-  console.warn('Creating a new test user...');
+export interface Inbox {
+  id: string;
+  address: string;
+  tag?: string;
+}
 
-  let userInbox: { id: string; address: string };
-  let cognitoUser: { User: { Username: string } };
+export const createNewInbox = async (): Promise<Inbox> => {
+  let inbox: Inbox;
 
   try {
-    console.warn('Creating a new inbox for the user');
-    userInbox = await createInbox();
-    console.warn(`Test user inbox created: ${userInbox.address}`);
+    console.warn('\nCreating a new email inbox...');
+    inbox = await createInbox();
+    console.warn(`\nEmail inbox created: ${inbox.address}`);
   } catch (err) {
-    throw Error('Cannot proceed without creating a test user inbox');
+    throw Error('Cannot create a new email inbox');
   }
 
-  try {
-    console.warn('Creating a new Cognito user');
-    cognitoUser = await createUser(userInbox.address);
-    console.warn('Cognito user created');
+  return inbox;
+};
 
-    console.warn('Confirming user password');
+export const deleteInbox = async (inboxId: string) => {
+  try {
+    console.warn(`\nDestroying user inbox ${inboxId}`);
+    await destroyInbox(inboxId);
+    console.warn('\nUser inbox destroyed');
+  } catch (err) {
+    console.warn(err.message || err);
+  }
+};
+
+export const createTestUser = async (): Promise<TestUser> => {
+  console.warn('\nCreating a new test user...');
+  const userInbox = await createNewInbox();
+
+  let cognitoUser: { User: { Username: string } };
+  try {
+    console.warn('\nCreating a new Cognito user');
+    cognitoUser = await createUser(userInbox.address);
+    console.warn('\nCognito user created');
+
+    console.warn('\nConfirming user password');
     await confirmUserPassword(userInbox.address);
-    console.warn('Cognito user confirmed');
+    console.warn('\nCognito user confirmed');
   } catch (err) {
     console.warn('\nDestroying user inbox');
     await destroyInbox(userInbox.address);
@@ -48,16 +69,38 @@ export const createTestUser = async (): Promise<TestUser> => {
 };
 
 export const destroyTestUser = async (user: TestUser) => {
-  try {
-    console.warn('\nDestroying user inbox');
-    await destroyInbox(user.id);
-    console.warn('User inbox destroyed');
+  await deleteInbox(user.id);
 
-    console.warn('Destroying Cognito user');
+  try {
+    console.warn('\nDestroying Cognito user');
     await destroyUser(user.cognitoUser);
-    console.warn('Cognito user destroyed');
+    console.warn('\nCognito user destroyed');
   } catch (err) {
     console.warn(err.message || err);
     throw Error('Something went wrong');
   }
+};
+
+export const destroyUserByEmail = async (email: string) => {
+  try {
+    await destroyCognitoUserByEmail(email);
+  } catch (err) {
+    console.warn(err.message || err);
+  }
+};
+
+export const waitForVerificationCode = async (inboxId: string): Promise<string> => {
+  let code;
+  try {
+    const email = await waitForLatestEmail(inboxId);
+    code = await getVerificationCode(email);
+  } catch (err) {
+    throw Error(err.message || err);
+  }
+
+  if (!code) {
+    throw Error('Verification code not received');
+  }
+
+  return code;
 };

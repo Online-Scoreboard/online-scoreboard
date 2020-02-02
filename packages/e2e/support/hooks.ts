@@ -47,5 +47,5 @@ After(async function(scenario) {
 });
 
 AfterAll(async function() {
-  await TestRunContext.destroyTestUser();
+  await TestRunContext.destroyTestUsers();
 });

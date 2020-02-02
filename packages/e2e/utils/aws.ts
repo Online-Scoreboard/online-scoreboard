@@ -21,7 +21,7 @@ export const createUser = async (email: string): Promise<any> => {
           throw Error(err.message);
         }
 
-        console.warn('Cognito user created', data);
+        console.warn('\nCognito user created', data);
 
         return res(data);
       }
@@ -65,4 +65,38 @@ export const destroyUser = (username: string) => {
       }
     );
   });
+};
+
+export const findUserByEmail = (email: string): Promise<string> => {
+  return new Promise(res => {
+    cognitoidentity.listUsers(
+      {
+        UserPoolId,
+        Filter: `email = \"${email}\"`,
+      },
+      (err, data) => {
+        if (err) {
+          console.warn(err.message || err);
+          return res();
+        }
+
+        if (data.Users && data.Users.length && data.Users[0].Username) {
+          return res(data.Users[0].Username);
+        }
+        res();
+      }
+    );
+  });
+};
+
+export const destroyCognitoUserByEmail = async (email: string) => {
+  console.log(`\nSearching for Cognito user matching email: ${email}`);
+  const user = await findUserByEmail(email);
+  console.log(`\nCognito user found: ${user}`);
+
+  if (user) {
+    console.log(`\nDestroying Cognito user: ${user}`);
+    await destroyUser(user);
+    console.log(`\nCognito user destroyed`);
+  }
 };

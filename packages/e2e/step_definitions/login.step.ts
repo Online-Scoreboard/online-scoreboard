@@ -42,8 +42,12 @@ Then(/^I enter '(.*)' login credentials$/, async function(credentialsType: strin
   if (credentialsType === 'wrong') {
     await username.sendKeys(envConfig.INVALID_USER);
     await password.sendKeys(envConfig.INVALID_PASSWORD);
-  } else {
+  } else if (credentialsType === 'correct') {
     await username.sendKeys(TestRunContext.getTestUser().address);
+    await password.sendKeys(envConfig.VALID_PASSWORD);
+  } else {
+    const email = TestRunContext.getUserEmail(credentialsType);
+    await username.sendKeys(email);
     await password.sendKeys(envConfig.VALID_PASSWORD);
   }
 
