@@ -107,8 +107,8 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
   }, [isMatchesBased, winningScore]);
 
   return (
-    <>
-      <CardHeader title="Game Rules" className="GameRulesHeader" classes={{ title: cardTitle }} />
+    <div id="gameRules">
+      <CardHeader title="Game Rules" className="newGameTitle" classes={{ title: cardTitle }} />
       <CardContent>
         <Grid item className={content}>
           <Typography gutterBottom>Choose a game from the available ones</Typography>
@@ -248,6 +248,6 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </CardContent>
-    </>
+    </div>
   );
 };

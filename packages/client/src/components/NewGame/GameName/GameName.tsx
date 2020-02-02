@@ -19,7 +19,7 @@ export const GameName: React.FC<GameNameProps> = ({ gameName, onChange }) => {
 
   return (
     <div id="gameName">
-      <CardHeader title="Game Name" classes={{ title: cardTitle }} />
+      <CardHeader title="Game Name" className="newGameTitle" classes={{ title: cardTitle }} />
       <CardContent>
         <TextField
           className="gameName"

@@ -49,6 +49,7 @@ const Component: React.FC<NewGameProps> = ({ newGameLoading, newGameError, onSub
         rules: {
           ...rules,
           teams: undefined,
+          clear: undefined,
         },
         teams,
         teamColors,

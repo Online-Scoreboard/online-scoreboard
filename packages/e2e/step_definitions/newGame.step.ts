@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { until } from 'selenium-webdriver';
+import { until, Key } from 'selenium-webdriver';
 import { When, Then } from 'cucumber';
 import NewGamePage from '../pages/newGame.page';
 
@@ -13,13 +13,26 @@ Then(/^I should see the New Game page$/, async function() {
   assert.deepStrictEqual(h1, expected, `Expected login page heading to be: Log In, got: ${h1}`);
 });
 
-Then(/^The new game page should contain a '(.*)' form$/, async function(formName: string) {
-  let formTitle = '';
-  if (formName === 'Game Name') {
-    formTitle = await this.browser.findElement(NewGamePage.getGameNameForm()).getText();
+Then(/^The new game page should contain a '(.*)' form$/, async function(stepName: string) {
+  const stepTitle = await this.browser.findElement(NewGamePage.getGameNameTitle()).getText();
+
+  assert.deepStrictEqual(stepTitle, stepName, `Expected form title to be: ${stepName}, got: ${stepTitle}`);
+});
+
+When(/^I complete the '(.*)' step$/, async function(step: string) {
+  if (step === 'gameName') {
+    const inputEl = await this.browser.findElement(NewGamePage.getGameNameInput());
+    const input = 'test game';
+
+    await inputEl.sendKeys(input);
+
+    const nextButton = this.browser.findElement(NewGamePage.getNextButton());
+
+    await nextButton.click();
+    return;
   }
 
-  assert.deepStrictEqual(formTitle, formName, `Expected form title to be: ${formName}, got: ${formTitle}`);
+  throw Error(`Invalid step "${step}"`);
 });
 
 Then(/^The '(.*)' button should be '(.*)'$/, async function(name: string, state: string) {
@@ -55,5 +68,82 @@ Then(/^I should see a '(.*)' message saying '(.*)'$/, async function(level: stri
     validationCopy,
     message,
     `Expected validation message to be: "${message}", got: ${validationCopy}`
+  );
+});
+
+Then(/^I should see a Predefined game Rules field$/, async function() {
+  const predefinedGameRules = await this.browser.findElement(NewGamePage.getPredefinedGameRules()).isDisplayed();
+
+  assert.deepStrictEqual(
+    predefinedGameRules,
+    true,
+    `Expected a Predefined game rules element to be visible of the page`
+  );
+});
+
+Then(/^I expand the Advanced Rules$/, async function() {
+  const advancedGameRules = await this.browser.findElement(NewGamePage.getAdvancedGameRules());
+
+  await advancedGameRules.click();
+  await new Promise(r => setTimeout(r, 500)); // wait for accordion to expand
+});
+
+Then(/^I should see a list of Advanced game Rules$/, async function() {
+  await this.browser.wait(until.elementLocated(NewGamePage.getMatchesBasedGame())).isDisplayed();
+
+  const matchesBasedGame = await this.browser.findElement(NewGamePage.getMatchesBasedGame()).isDisplayed();
+  const winningMatchesCondition = await this.browser
+    .findElement(NewGamePage.getWinningMatchesCondition())
+    .isDisplayed();
+
+  assert.ok(matchesBasedGame, `Expected a matches based checkbox to be visible on the page`);
+  assert.ok(winningMatchesCondition, `Expected a winning matches condition checkbox to be visible on the page`);
+});
+
+When(/^I interact with the custom game Rules$/, async function() {
+  const isMatchesBasedGame = await this.browser.findElement(NewGamePage.getMatchesBasedGame());
+
+  await isMatchesBasedGame.click();
+});
+
+Then(/^I click on the Predefined game Rules$/, async function() {
+  const predefinedGameRules = await this.browser.findElement(NewGamePage.getPredefinedGameRules());
+
+  await predefinedGameRules.click();
+});
+
+When(/^I enter some invalid game Rules$/, async function() {
+  const isMatchesBasedGame = await this.browser.findElement(NewGamePage.getMatchesBasedGame());
+  const winningScoreEnabled = await this.browser.findElement(NewGamePage.getWinningMatchesCondition());
+
+  await isMatchesBasedGame.click();
+  await winningScoreEnabled.click();
+
+  await new Promise(r => setTimeout(r, 500)); // wait for new element to appear
+  const winningScoreInput = await this.browser.findElement(NewGamePage.getWinningScoreInput());
+
+  await winningScoreInput.sendKeys(Key.BACK_SPACE);
+});
+
+Then(/^I should see a list of predefined game Rules$/, async function() {
+  await this.browser.wait(until.elementLocated(NewGamePage.getPredefinedGameRulesList())).isDisplayed();
+
+  const predefinedGameRules = await this.browser.findElement(NewGamePage.getPredefinedGameRulesList()).isDisplayed();
+
+  assert.deepStrictEqual(
+    predefinedGameRules,
+    true,
+    `Expected a list of Predefined game rules to be visible of the page`
+  );
+});
+
+Then(/^The selected predefined game Rule should be '(.*)'$/, async function(ruleName: string) {
+  const predefinedGameRule = await this.browser.findElement(NewGamePage.getPredefinedGameRules()).getAttribute('value');
+  const expectedRuleName = ruleName || '';
+
+  assert.deepStrictEqual(
+    predefinedGameRule,
+    expectedRuleName,
+    `Expected selected predefined game rule to be: "${expectedRuleName}", got: "${predefinedGameRule}"`
   );
 });

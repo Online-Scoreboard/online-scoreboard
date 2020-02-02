@@ -2,7 +2,7 @@ Feature: New Game
   As an Online Scoreboard user
   I should be able to create a new game
 
-@newGame
+@newGame @gameName
 Scenario: Game Name step
   Given I am a logged in Online Scoreboard user
   When I navigate to '/new-game'
@@ -11,7 +11,7 @@ Scenario: Game Name step
   And The 'prev' button should be 'disabled'
   And The 'next' button should be 'disabled'
 
-@newGame
+@newGame @gameName
 Scenario: Game Name too short
   Given I am a logged in Online Scoreboard user
   And I navigate to '/new-game'
@@ -19,7 +19,7 @@ Scenario: Game Name too short
   Then I should see a 'error' message saying 'Minimum name of 6 characters. You must enter at least 2 more characters'
   And The 'next' button should be 'disabled'
 
-@newGame
+@newGame @gameName
 Scenario: Game Name too long
   Given I am a logged in Online Scoreboard user
   And I navigate to '/new-game'
@@ -27,7 +27,7 @@ Scenario: Game Name too long
   Then I should see a 'error' message saying 'Ops! That name is too long. A maximum of 30 characters is allowed'
   And The 'next' button should be 'disabled'
 
-@newGame
+@newGame @gameName
 Scenario: Bad word in Game Name
   Given I am a logged in Online Scoreboard user
   And I navigate to '/new-game'
@@ -35,10 +35,52 @@ Scenario: Bad word in Game Name
   Then I should see a 'error' message saying 'Ops! Bad words are not allowed in here. Please check your game name'
   And The 'next' button should be 'disabled'
 
-@newGame
+@newGame @gameName
 Scenario: Valid Game Name
   Given I am a logged in Online Scoreboard user
   And I navigate to '/new-game'
   When I enter 'my new game' as a game name
   Then I should see a 'info' message saying 'Your game name looks amazing!'
   And The 'next' button should be 'enabled'
+
+@newGame @gameRules
+Scenario: Game Rules step
+  Given I am a logged in Online Scoreboard user
+  When I navigate to '/new-game'
+  And I complete the 'gameName' step
+  Then The new game page should contain a 'Game Rules' form
+  And I should see a Predefined game Rules field
+  And The selected predefined game Rule should be 'Chess'
+  And The 'prev' button should be 'enabled'
+  And The 'next' button should be 'enabled'
+
+@newGame @gameRules
+Scenario: Game predefined Rules
+  Given I am a logged in Online Scoreboard user
+  And I navigate to '/new-game'
+  And I complete the 'gameName' step
+  When I click on the Predefined game Rules
+  Then I should see a list of predefined game Rules
+
+@newGame @gameRules
+Scenario: Game custom Rules
+  Given I am a logged in Online Scoreboard user
+  And I navigate to '/new-game'
+  And I complete the 'gameName' step
+  And I expand the Advanced Rules
+  And I should see a list of Advanced game Rules
+  When I interact with the custom game Rules
+  Then The selected predefined game Rule should be ''
+  And I should see a 'info' message saying 'Define your game rules'
+  And The 'next' button should be 'enabled'
+
+@newGame @gameRules
+Scenario: Game with invalid custom Rules
+  Given I am a logged in Online Scoreboard user
+  And I navigate to '/new-game'
+  And I complete the 'gameName' step
+  And I expand the Advanced Rules
+  And I should see a list of Advanced game Rules
+  When I enter some invalid game Rules
+  Then I should see a 'error' message saying 'You cannot set a winning score equal to the staring one'
+  And The 'next' button should be 'disabled'
