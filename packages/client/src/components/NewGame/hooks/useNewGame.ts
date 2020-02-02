@@ -157,7 +157,7 @@ export const useNewGame = (): UseNewGame => {
           const overFlow = gameName.length - maxGameNameLength;
 
           if (diff > 0) {
-            return `Minimum name of ${minGameNameLength} characters. You must enter at lease ${diff} more characters`;
+            return `Minimum name of ${minGameNameLength} characters. You must enter at least ${diff} more characters`;
           } else if (overFlow >= 0) {
             return `Ops! That name is too long. A maximum of ${maxGameNameLength} characters is allowed`;
           }

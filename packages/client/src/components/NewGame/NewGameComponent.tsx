@@ -137,7 +137,7 @@ const Component: React.FC<NewGameProps> = ({ newGameLoading, newGameError, onSub
             />
             {gameSubmitted || newGameLoading ? <GameCreation error={error} /> : getStepContent(activeStep)}
             <CardActions className={isValid ? cardValidationGreen : cardValidationRed} disableSpacing>
-              <Typography align="right" className={cardAction}>
+              <Typography align="right" className={`cardValidation ${isValid ? 'info' : 'error'} ${cardAction}`}>
                 {getValidationNotes(activeStep)}
               </Typography>
             </CardActions>
