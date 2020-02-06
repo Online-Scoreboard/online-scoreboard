@@ -23,8 +23,8 @@ export const GameTeams: React.FC<GameTeamsProps> = ({ teams, onChange }) => {
   );
 
   return (
-    <>
-      <CardHeader title="Teams" classes={{ title: cardTitle }} />
+    <div id="gameTeams">
+      <CardHeader title="Teams" className="newGameTitle" classes={{ title: cardTitle }} />
 
       <CardContent>
         <Typography id="teams-slider" gutterBottom>
@@ -32,7 +32,7 @@ export const GameTeams: React.FC<GameTeamsProps> = ({ teams, onChange }) => {
         </Typography>
 
         <Slider
-          className={teamsSlider}
+          className={`teamSizeSlider ${teamsSlider}`}
           classes={{ thumb: teamsSliderLabel }}
           valueLabelDisplay="on"
           onChange={handleSlider}
@@ -43,6 +43,6 @@ export const GameTeams: React.FC<GameTeamsProps> = ({ teams, onChange }) => {
           marks
         />
       </CardContent>
-    </>
+    </div>
   );
 };

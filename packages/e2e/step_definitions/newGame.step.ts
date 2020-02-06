@@ -20,19 +20,16 @@ Then(/^The new game page should contain a '(.*)' form$/, async function(stepName
 });
 
 When(/^I complete the '(.*)' step$/, async function(step: string) {
-  if (step === 'gameName') {
+  const nextButton = this.browser.findElement(NewGamePage.getNextButton());
+
+  if (step === 'Game Name') {
     const inputEl = await this.browser.findElement(NewGamePage.getGameNameInput());
     const input = 'test game';
 
     await inputEl.sendKeys(input);
-
-    const nextButton = this.browser.findElement(NewGamePage.getNextButton());
-
-    await nextButton.click();
-    return;
   }
 
-  throw Error(`Invalid step "${step}"`);
+  await nextButton.click();
 });
 
 Then(/^The '(.*)' button should be '(.*)'$/, async function(name: string, state: string) {
@@ -146,4 +143,24 @@ Then(/^The selected predefined game Rule should be '(.*)'$/, async function(rule
     expectedRuleName,
     `Expected selected predefined game rule to be: "${expectedRuleName}", got: "${predefinedGameRule}"`
   );
+});
+
+Then(/^The predefined team size should be '(\d)'$/, async function(expectedTeamSize: number) {
+  const teamSize = await this.browser.findElement(NewGamePage.getTeamSize()).getAttribute('aria-valuenow');
+
+  assert.deepStrictEqual(expectedTeamSize, teamSize, `Expected team size to be: ${expectedTeamSize}, got: ${teamSize}`);
+});
+
+Then(/^I set the team size to '(\d)'$/, async function(teamSize: string) {
+  const expected = await this.browser.findElement(NewGamePage.getTeamSizeOnSlider(Number(teamSize)));
+
+  await expected.click();
+
+  await new Promise(r => setTimeout(r, 250));
+});
+
+Then(/^The team color '(.*)' should be selected$/, async function(teamColor: string) {
+  const expected = await this.browser.findElement(NewGamePage.getTeamColor(teamColor));
+
+  assert.deepStrictEqual(teamColor, expected, `Expected team color ${teamColor} to be selected`);
 });

@@ -41,10 +41,11 @@ export const TeamColors: React.FC<TeamColorsProps> = ({ teams, colors, teamColor
   );
 
   return (
-    <>
+    <div id="teamColors">
       <CardHeader
         title="Team Colors"
         subheader={`You must choose ${teams} colors`}
+        className="newGameTitle"
         classes={{ title: cardTitle, subheader: cardTitle }}
       />
 
@@ -54,14 +55,16 @@ export const TeamColors: React.FC<TeamColorsProps> = ({ teams, colors, teamColor
           <Checkbox
             key={color}
             color="default"
+            className={`teamColor__${color}`}
             icon={<PersonOutlineIcon />}
             checkedIcon={<PersonIcon />}
             checked={teamColors.indexOf(color) >= 0}
+            value={teamColors.indexOf(color) >= 0}
             classes={{ root: getCheckboxClass(color), checked: checkboxChecked }}
             onChange={handleChange(color)}
           />
         ))}
       </CardContent>
-    </>
+    </div>
   );
 };

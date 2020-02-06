@@ -47,7 +47,7 @@ Scenario: Valid Game Name
 Scenario: Game Rules step
   Given I am a logged in Online Scoreboard user
   When I navigate to '/new-game'
-  And I complete the 'gameName' step
+  And I complete the 'Game Name' step
   Then The new game page should contain a 'Game Rules' form
   And I should see a Predefined game Rules field
   And The selected predefined game Rule should be 'Chess'
@@ -58,7 +58,7 @@ Scenario: Game Rules step
 Scenario: Game predefined Rules
   Given I am a logged in Online Scoreboard user
   And I navigate to '/new-game'
-  And I complete the 'gameName' step
+  And I complete the 'Game Name' step
   When I click on the Predefined game Rules
   Then I should see a list of predefined game Rules
 
@@ -66,7 +66,7 @@ Scenario: Game predefined Rules
 Scenario: Game custom Rules
   Given I am a logged in Online Scoreboard user
   And I navigate to '/new-game'
-  And I complete the 'gameName' step
+  And I complete the 'Game Name' step
   And I expand the Advanced Rules
   And I should see a list of Advanced game Rules
   When I interact with the custom game Rules
@@ -78,9 +78,57 @@ Scenario: Game custom Rules
 Scenario: Game with invalid custom Rules
   Given I am a logged in Online Scoreboard user
   And I navigate to '/new-game'
-  And I complete the 'gameName' step
+  And I complete the 'Game Name' step
   And I expand the Advanced Rules
   And I should see a list of Advanced game Rules
   When I enter some invalid game Rules
   Then I should see a 'error' message saying 'You cannot set a winning score equal to the staring one'
   And The 'next' button should be 'disabled'
+
+@newGame @gameTeams
+Scenario: Teams step
+  Given I am a logged in Online Scoreboard user
+  When I navigate to '/new-game'
+  And I complete the 'Game Name' step
+  And I complete the 'Game Rules' step
+  Then The new game page should contain a 'Teams' form
+  And The predefined team size should be '2'
+  And The 'prev' button should be 'enabled'
+  And The 'next' button should be 'enabled'
+  And I should see a 'info' message saying 'You're all set to start a 2 teams game!'
+
+@newGame @gameTeams
+Scenario: Team size invalid because below minimum
+  Given I am a logged in Online Scoreboard user
+  And I navigate to '/new-game'
+  And I complete the 'Game Name' step
+  And I complete the 'Game Rules' step
+  When I set the team size to '1'
+  Then I should see a 'error' message saying 'You must chose 2 teams according to your game rules'
+  And The 'prev' button should be 'enabled'
+  And The 'next' button should be 'disabled'
+
+@newGame @gameTeams
+Scenario: Team size invalid because above maximum
+  Given I am a logged in Online Scoreboard user
+  And I navigate to '/new-game'
+  And I complete the 'Game Name' step
+  And I complete the 'Game Rules' step
+  When I set the team size to '3'
+  Then I should see a 'error' message saying 'You must chose 2 teams according to your game rules'
+  And The 'prev' button should be 'enabled'
+  And The 'next' button should be 'disabled'
+
+@newGame @teamColors
+Scenario: Team Colors step
+  Given I am a logged in Online Scoreboard user
+  And I navigate to '/new-game'
+  And I complete the 'Game Name' step
+  And I complete the 'Game Rules' step
+  And I complete the 'Team Size' step
+  Then The new game page should contain a 'Team Colors' form
+  And The team color 'black' should be selected
+  And The team color 'white' should be selected
+  And The 'prev' button should be 'enabled'
+  And The 'next' button should be 'enabled'
+  And I should see a 'info' message saying 'All your teams have a color!'
