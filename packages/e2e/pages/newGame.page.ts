@@ -43,10 +43,13 @@ export default class NewGamePage {
   public static getTeamSizeSlider(): By {
     return By.css(`.teamSizeSlider`);
   }
-  public static getTeamSizeOnSlider(step: number): By {
-    return By.css(`span.teamSizeSlider span.MuiSlider-mark:nth-child(${step * 2})`);
+  public static getTeamSizeOnSlider(): By {
+    return By.css(`span.teamSizeSlider span.MuiSlider-mark`);
+  }
+  public static getCurrentTeamSizeOnSlider(): By {
+    return By.css(`span.teamSizeSlider span.MuiSlider-thumb span`);
   }
   public static getTeamColor(color: string): By {
-    return By.css(`span.teamColor__${color}`);
+    return By.css(`span.teamColor__${color} input`);
   }
 }

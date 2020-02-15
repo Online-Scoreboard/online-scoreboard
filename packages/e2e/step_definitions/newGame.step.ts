@@ -152,15 +152,24 @@ Then(/^The predefined team size should be '(\d)'$/, async function(expectedTeamS
 });
 
 Then(/^I set the team size to '(\d)'$/, async function(teamSize: string) {
-  const expected = await this.browser.findElement(NewGamePage.getTeamSizeOnSlider(Number(teamSize)));
+  const expected = await this.browser.findElements(NewGamePage.getTeamSizeOnSlider());
 
-  await expected.click();
-
+  await expected[Number(teamSize) - 1].click();
   await new Promise(r => setTimeout(r, 250));
+
+  const teamSizeLabel = await this.browser.findElement(NewGamePage.getCurrentTeamSizeOnSlider());
+  const currentValue = await teamSizeLabel.getText();
+
+  assert.deepStrictEqual(currentValue, teamSize, `Expected team size to be: ${teamSize}, got: ${currentValue}`);
 });
 
 Then(/^The team color '(.*)' should be selected$/, async function(teamColor: string) {
-  const expected = await this.browser.findElement(NewGamePage.getTeamColor(teamColor));
+  const teamColorEl = await this.browser.findElement(NewGamePage.getTeamColor(teamColor));
+  const expected = await teamColorEl.getAttribute('value');
 
-  assert.deepStrictEqual(teamColor, expected, `Expected team color ${teamColor} to be selected`);
+  assert.deepStrictEqual(
+    'true',
+    expected,
+    `Expected team color ${teamColor} to be selected. Value received: ${expected}`
+  );
 });
