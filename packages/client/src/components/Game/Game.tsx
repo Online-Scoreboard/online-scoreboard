@@ -69,7 +69,7 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
     (playerId: string) => {
       return _rejectPlayer({ variables: { rejectPlayerInput: { gameId, playerId } } });
     },
-    [_acceptPlayer, gameId]
+    [_rejectPlayer, gameId]
   );
 
   const gameData = data && data.getGame;
@@ -87,7 +87,7 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
     );
   }
 
-  const operationLoading = acceptPlayerLoading || joinGameLoading || startGameLoading;
+  const operationLoading = acceptPlayerLoading || joinGameLoading || startGameLoading || rejectPlayerLoading;
 
   if (!gameData) {
     return (
