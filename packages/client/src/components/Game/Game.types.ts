@@ -11,6 +11,7 @@ export interface GameUserData {
 
 export interface Game {
   id: string;
+  name: string;
   owner: string;
   status: 'new' | 'started' | 'ended';
   pendingPlayers?: GameUserData[];
