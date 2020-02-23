@@ -3,7 +3,7 @@ import { RouteComponentProps } from '@reach/router';
 import { useQuery, useSubscription, useMutation } from '@apollo/react-hooks';
 import { Typography } from '@material-ui/core';
 
-import { GET_GAME, GAME_UPDATED, START_GAME, JOIN_GAME, ACCEPT_PLAYER } from './Game.graphql';
+import { GET_GAME, GAME_UPDATED, START_GAME, JOIN_GAME, ACCEPT_PLAYER, REJECT_PLAYER } from './Game.graphql';
 import { Loading } from '../Loading';
 import { useMessage } from '../../hooks/useMessage';
 import { useAuth } from '../../hooks/Auth';
@@ -42,6 +42,11 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
       createMessage(err.message, 'error');
     },
   });
+  const [_rejectPlayer, { loading: rejectPlayerLoading }] = useMutation(REJECT_PLAYER, {
+    onError: err => {
+      createMessage(err.message, 'error');
+    },
+  });
 
   useSubscription(GAME_UPDATED, { variables: { id: gameId } });
 
@@ -60,6 +65,13 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
     [_acceptPlayer, gameId]
   );
 
+  const rejectPlayer = useCallback(
+    (playerId: string) => {
+      return _rejectPlayer({ variables: { rejectPlayerInput: { gameId, playerId } } });
+    },
+    [_rejectPlayer, gameId]
+  );
+
   const gameData = data && data.getGame;
 
   if (loading) {
@@ -75,7 +87,7 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
     );
   }
 
-  const operationLoading = acceptPlayerLoading || joinGameLoading || startGameLoading;
+  const operationLoading = acceptPlayerLoading || joinGameLoading || startGameLoading || rejectPlayerLoading;
 
   if (!gameData) {
     return (
@@ -93,6 +105,7 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
       startGame={startGame}
       joinGame={joinGame}
       acceptPlayer={acceptPlayer}
+      rejectPlayer={rejectPlayer}
     />
   );
 };

@@ -4,18 +4,23 @@ export const GET_GAME = gql`
   query GetGame($gameId: String!) {
     getGame(gameId: $gameId) {
       id
+      name
       owner
       status
       users {
         id
         item {
+          id
           username
+          avatar
         }
       }
       pendingPlayers {
         id
         item {
+          id
           username
+          avatar
         }
       }
     }
@@ -31,13 +36,17 @@ export const GAME_UPDATED = gql`
       users {
         id
         item {
+          id
           username
+          avatar
         }
       }
       pendingPlayers {
         id
         item {
+          id
           username
+          avatar
         }
       }
     }
@@ -53,13 +62,17 @@ export const START_GAME = gql`
       users {
         id
         item {
+          id
           username
+          avatar
         }
       }
       pendingPlayers {
         id
         item {
+          id
           username
+          avatar
         }
       }
     }
@@ -75,13 +88,17 @@ export const JOIN_GAME = gql`
       users {
         id
         item {
+          id
           username
+          avatar
         }
       }
       pendingPlayers {
         id
         item {
+          id
           username
+          avatar
         }
       }
     }
@@ -97,13 +114,43 @@ export const ACCEPT_PLAYER = gql`
       users {
         id
         item {
+          id
           username
+          avatar
         }
       }
       pendingPlayers {
         id
         item {
+          id
           username
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+export const REJECT_PLAYER = gql`
+  mutation RejectPlayer($rejectPlayerInput: RejectPlayerInput!) {
+    rejectPlayer(input: $rejectPlayerInput) {
+      id
+      owner
+      status
+      users {
+        id
+        item {
+          id
+          username
+          avatar
+        }
+      }
+      pendingPlayers {
+        id
+        item {
+          id
+          username
+          avatar
         }
       }
     }

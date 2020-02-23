@@ -1,11 +1,13 @@
 import React, { memo, useEffect, useState, useCallback } from 'react';
-import { Typography, Button, CircularProgress } from '@material-ui/core';
+import { Typography, Button, CircularProgress, Container, Grid } from '@material-ui/core';
 
-import { User } from '../../hooks/Auth';
-import { Game } from './Game.types';
 import useStyles from './Game.styles';
 import { StaticNotification } from '../StaticNotification';
 import { usePendingPlayers } from './usePendingPlayers';
+import { Share } from './Share';
+import { Players } from './Players';
+import { User } from '../../hooks/Auth';
+import { Game } from './Game.types';
 
 interface Props {
   gameData: Game;
@@ -14,13 +16,22 @@ interface Props {
   startGame: () => void;
   joinGame: () => void;
   acceptPlayer: (playerId: string) => void;
+  rejectPlayer: (playerId: string) => void;
 }
 
-const Component: React.FC<Props> = ({ gameData, user, startGame, joinGame, acceptPlayer, operationLoading }) => {
-  const { id, owner, status, users = [], pendingPlayers = [] } = gameData;
+const Component: React.FC<Props> = ({
+  gameData,
+  user,
+  startGame,
+  joinGame,
+  acceptPlayer,
+  rejectPlayer,
+  operationLoading,
+}) => {
+  const { id, name, owner, status, users = [], pendingPlayers = [] } = gameData;
   const userId = user.id || '';
 
-  const { loader } = useStyles();
+  const { loader, root } = useStyles();
   const [staticMessage, setStaticMessage] = useState('');
   const {
     pendingPlayer,
@@ -45,8 +56,17 @@ const Component: React.FC<Props> = ({ gameData, user, startGame, joinGame, accep
     dismissPendingPlayer([...dismissedPendingPlayers, pendingPlayer.id]);
   }, [dismissPendingPlayer, dismissedPendingPlayers, pendingPlayer.id]);
 
+  const handleAcceptPlayer = (playerId: string) => {
+    acceptPlayer(playerId);
+  };
+
+  const handleRejectPlayer = (playerId: string) => {
+    rejectPlayer(playerId);
+    dismissPendingPlayer([...dismissedPendingPlayers, playerId]);
+  };
+
   return (
-    <div className="Game">
+    <Container maxWidth="md" component="main" className={`${root} Game`}>
       <StaticNotification
         message={staticMessage}
         open={Boolean(staticMessage)}
@@ -54,18 +74,40 @@ const Component: React.FC<Props> = ({ gameData, user, startGame, joinGame, accep
         handleCancel={dismissNotification}
       />
 
-      <div>
-        <Typography>Game id: {id}</Typography>
+      <Grid container direction="column" spacing={4}>
+        {isAcceptedUser() && (
+          <Grid item>
+            <Share gameId={id} />
+          </Grid>
+        )}
+
+        {!isAcceptedUser() && !isPendingUser() ? (
+          <Grid item>
+            <Button variant="outlined" disabled={operationLoading} onClick={joinGame}>
+              {operationLoading && <CircularProgress size={24} className={loader} />}
+              Ask to Join this Game
+            </Button>
+          </Grid>
+        ) : null}
+
+        <Typography align="center" variant="h2">
+          {name}
+        </Typography>
+
+        <Grid item>
+          <Players
+            users={users}
+            pendingPlayers={pendingPlayers}
+            onAcceptPlayer={handleAcceptPlayer}
+            onRejectPlayer={handleRejectPlayer}
+            isAcceptedUser={isAcceptedUser()}
+          />
+        </Grid>
+
         <Typography>Game creator: {owner}</Typography>
         <Typography>Game status: {status}</Typography>
-        <Typography>users connected:</Typography>
-        <ul>{users && users.map(({ id, item }) => <li key={`user-${id}`}>{item && item.username}</li>)}</ul>
-        <Typography>Pending Players:</Typography>
-        <ul>
-          {pendingPlayers &&
-            pendingPlayers.map(({ id, item }) => <li key={`pending-player-${id}`}>{item && item.username}</li>)}
-        </ul>
-      </div>
+      </Grid>
+
       <div>
         {isAcceptedUser() && status === 'new' ? (
           <Button disabled={operationLoading} onClick={startGame}>
@@ -73,14 +115,8 @@ const Component: React.FC<Props> = ({ gameData, user, startGame, joinGame, accep
             Start Game
           </Button>
         ) : null}
-        {!isAcceptedUser() && !isPendingUser() ? (
-          <Button disabled={operationLoading} onClick={joinGame}>
-            {operationLoading && <CircularProgress size={24} className={loader} />}
-            Join Game
-          </Button>
-        ) : null}
       </div>
-    </div>
+    </Container>
   );
 };
 

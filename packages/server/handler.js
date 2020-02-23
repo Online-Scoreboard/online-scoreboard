@@ -190,6 +190,37 @@ exports.graphqlHandler = async (event, context, callback) => {
       break;
     }
 
+    case 'rejectPlayer': {
+      const { userId } = event;
+      const { gameId, playerId } = input;
+      const gameData = await findItem(TABLE_NAME, gameId);
+      const gameExists = doesItemExist(gameData);
+
+      if (!gameExists) {
+        callback(null, { error: `Game ${gameId} does not exist` });
+      }
+
+      const gameDataItem = gameData.Items[0];
+      const pendingPlayers = (gameDataItem && gameDataItem.pendingPlayers) || [];
+      const isValid = Boolean(~gameDataItem.users.indexOf(userId));
+
+      if (!~pendingPlayers.indexOf(playerId)) {
+        callback(null, {
+          error: `Cannot find a pending player matching id ${playerId} in ${gameId}. The player needs to request to join first`,
+        });
+      }
+
+      const pendingPlayersUpdate = pendingPlayers.filter(item => item !== playerId);
+
+      const values = {
+        pendingPlayers: pendingPlayersUpdate,
+      };
+
+      callback(null, { id: gameId, values, isValid });
+
+      break;
+    }
+
     default: {
       callback(null, { error: `Unknown field, unable to resolve ${event.field}` });
       break;

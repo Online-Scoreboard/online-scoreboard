@@ -1,157 +1,162 @@
 enum Color {
-	white
-	red
-	yellow
-	blue
-	green
-	gray
-	pink
-	brown
-	lime
-	teal
-	purple
-	gold
-	aquamarine
-	darkorange
-	black
+  white
+  red
+  yellow
+  blue
+  green
+  gray
+  pink
+  brown
+  lime
+  teal
+  purple
+  gold
+  aquamarine
+  darkorange
+  black
 }
 
 type GameSetup {
-	gameName: String
+  gameName: String
 }
 
 type GameRules {
-	isMatchesBased: Boolean
-	winningScoreEnabled: Boolean
-	maxTeamSize: Int
-	minTeamSize: Int
-	startingScore: Int
-	winningScore: Int
-	name: String
-	scoringSystem: String
+  isMatchesBased: Boolean
+  winningScoreEnabled: Boolean
+  maxTeamSize: Int
+  minTeamSize: Int
+  startingScore: Int
+  winningScore: Int
+  name: String
+  scoringSystem: String
 }
 
 type GameLog {
-	playerId: String
-	score: Int
-	createdAt: String
+  playerId: String
+  score: Int
+  createdAt: String
 }
 
 type Game {
-	id: String!
-	createdAt: String!
-	updatedAt: String!
-	status: String!
-	owner: String!
-	name: String!
-	rules: GameRules!
-	users: [GameUser]!
-	teamColors: [Color]!
-	teams: Int!
-	players: [Player]!
-	log: [GameLog]
-	pendingPlayers: [PendingPlayer]!
+  id: String!
+  createdAt: String!
+  updatedAt: String!
+  status: String!
+  owner: String!
+  name: String!
+  rules: GameRules!
+  users: [GameUser]!
+  teamColors: [Color]!
+  teams: Int!
+  players: [Player]!
+  log: [GameLog]
+  pendingPlayers: [PendingPlayer]!
 }
 
 type PendingPlayer {
-	id: String
-	item: User
+  id: String
+  item: User
 }
 
 type GameUser {
-	id: String
-	item: User
+  id: String
+  item: User
 }
 
 type ModelGameConnection {
-	items: [Game]!
-	count: Int!
-	nextToken: String
+  items: [Game]!
+  count: Int!
+  nextToken: String
 }
 
 type ModelUserConnection {
-	items: [User]!
-	count: Int!
-	nextToken: String
+  items: [User]!
+  count: Int!
+  nextToken: String
 }
 
 type Player {
-	name: String!
-	color: Color!
-	userId: String
+  name: String!
+  color: Color!
+  userId: String
 }
 
 type User {
-	id: String!
-	username: String!
-	avatar: String!
-	createdAt: String!
-	completedGames: [Game]!
-	activeGames: [Game]!
+  id: String!
+  username: String!
+  avatar: String!
+  createdAt: String!
+  completedGames: [Game]!
+  activeGames: [Game]!
 }
 
 input GameSetupInput {
-	gameName: String
+  gameName: String
 }
 
 input GameRulesInput {
-	isMatchesBased: Boolean
-	winningScoreEnabled: Boolean
-	maxTeamSize: Int
-	minTeamSize: Int
-	startingScore: Int
-	winningScore: Int
-	name: String
-	scoringSystem: String
+  isMatchesBased: Boolean
+  winningScoreEnabled: Boolean
+  maxTeamSize: Int
+  minTeamSize: Int
+  startingScore: Int
+  winningScore: Int
+  name: String
+  scoringSystem: String
 }
 
 input CreateGameInput {
-	setup: GameSetupInput!
-	rules: GameRulesInput!
-	teams: Int!
-	teamColors: [Color]!
+  setup: GameSetupInput!
+  rules: GameRulesInput!
+  teams: Int!
+  teamColors: [Color]!
 }
 
 input UpdateUserInput {
-	username: String
-	avatar: String
+  username: String
+  avatar: String
 }
 
 input GameLogInput {
-	playerId: String
-	score: Int
+  playerId: String
+  score: Int
 }
 
 input AcceptPlayerInput {
-	gameId: String
-	playerId: String
+  gameId: String
+  playerId: String
+}
+
+input RejectPlayerInput {
+  gameId: String
+  playerId: String
 }
 
 type Query {
-	whoAmI: User
-	getUser(userId: String!): User
-	getGame(gameId: String!): Game
-	listGames(limit: Int, nextToken: String): ModelGameConnection!
-	listUsers(limit: Int, nextToken: String): ModelUserConnection!
+  whoAmI: User
+  getUser(userId: String!): User
+  getGame(gameId: String!): Game
+  listGames(limit: Int, nextToken: String): ModelGameConnection!
+  listUsers(limit: Int, nextToken: String): ModelUserConnection!
 }
 
 type Mutation {
-	shuffleAvatar: User
-	createUser: User
-	updateUser(input: UpdateUserInput!): User
-	createGame(input: CreateGameInput!): Game
-	startGame(gameId: String!): Game
-	joinGame(gameId: String!): Game
-	acceptPlayer(input: AcceptPlayerInput!): Game
+  shuffleAvatar: User
+  createUser: User
+  updateUser(input: UpdateUserInput!): User
+  createGame(input: CreateGameInput!): Game
+  startGame(gameId: String!): Game
+  joinGame(gameId: String!): Game
+  acceptPlayer(input: AcceptPlayerInput!): Game
+  rejectPlayer(input: RejectPlayerInput!): Game
 }
 
 type Subscription {
-	gameUpdated(id: String!): Game
-		@aws_subscribe(mutations: [ "startGame", "joinGame", "acceptPlayer"])
+  gameUpdated(id: String!): Game @aws_subscribe(mutations: ["startGame", "joinGame", "acceptPlayer", "rejectPlayer"])
 }
 
 schema {
-	query: Query
-	mutation: Mutation
-	subscription: Subscription
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
 }
