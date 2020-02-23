@@ -1,0 +1,11 @@
+#set( $identityValue = $util.defaultIfNull($ctx.identity.claims.get("username"), $util.defaultIfNull($ctx.identity.claims.get("cognito:username"), "___xamznone____")) )
+
+{
+    "version": "2018-05-29",
+    "operation": "Invoke",
+    "payload": {
+        "field": "rejectPlayer",
+        "input": $utils.toJson($ctx.args.input),
+        "userId": $utils.toJson($identityValue)
+    }
+}

@@ -1,7 +1,7 @@
 service:
   name: online-scoreboard-server
 
-frameworkVersion: ">=1.21.0 <2.0.0"
+frameworkVersion: '>=1.21.0 <2.0.0'
 
 provider:
   name: aws
@@ -24,219 +24,199 @@ plugins:
 
 custom:
   accountId: ${opt:accountId}
-  tableName: "OnlineScoreBoard-${self:provider.stage}"
+  tableName: 'OnlineScoreBoard-${self:provider.stage}'
   appSync:
-      name: OnlineScoreboard-${self:provider.stage}
-      authenticationType: AMAZON_COGNITO_USER_POOLS # API_KEY is also supported
-      serviceRole: "OnlineScoreboard-${self:provider.stage}"
+    name: OnlineScoreboard-${self:provider.stage}
+    authenticationType: AMAZON_COGNITO_USER_POOLS # API_KEY is also supported
+    serviceRole: 'OnlineScoreboard-${self:provider.stage}'
 
-      userPoolConfig:
-        awsRegion: ${self:provider.region}
-        defaultAction: ALLOW
-        userPoolId: {Ref: CognitoUserPoolUsers}
+    userPoolConfig:
+      awsRegion: ${self:provider.region}
+      defaultAction: ALLOW
+      userPoolId: { Ref: CognitoUserPoolUsers }
 
-      # mappingTemplatesLocation: # defaults to mapping-templates
-      mappingTemplates:
-        -
-          dataSource: OnlineScoreBoard
-          type: Query
-          field: listGames
-          request: "listGames-request-mapping-template.vtl"
-          response: "listGames-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: Query
-          field: listUsers
-          request: "listUsers-request-mapping-template.vtl"
-          response: "listUsers-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: ModelGameConnection
-          field: count
-          request: "countGames-request-mapping-template.vtl"
-          response: "countGames-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: Game
-          field: pendingPlayers
-          request: "gamePendingPlayers-request-mapping-template.vtl"
-          response: "gamePendingPlayers-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: PendingPlayer
-          field: id
-          request: "gamePendingPlayerId-request-mapping-template.vtl"
-          response: "gamePendingPlayerId-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: PendingPlayer
-          field: item
-          request: "gamePendingPlayerData-request-mapping-template.vtl"
-          response: "gamePendingPlayerData-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: Game
-          field: users
-          request: "gameUsers-request-mapping-template.vtl"
-          response: "gameUsers-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: GameUser
-          field: id
-          request: "gameUserId-request-mapping-template.vtl"
-          response: "gameUserId-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: GameUser
-          field: item
-          request: "gameUserData-request-mapping-template.vtl"
-          response: "gameUserData-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: ModelUserConnection
-          field: count
-          request: "countUsers-request-mapping-template.vtl"
-          response: "countUsers-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: Query
-          field: whoAmI
-          request: "whoAmI-request-mapping-template.vtl"
-          response: "whoAmI-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: Query
-          field: getUser
-          request: "getUser-request-mapping-template.vtl"
-          response: "getUser-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: Query
-          field: getGame
-          request: "getGame-request-mapping-template.vtl"
-          response: "getGame-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: User
-          field: completedGames
-          request: "completedGames-request-mapping-template.vtl"
-          response: "completedGames-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: User
-          field: activeGames
-          request: "activeGames-request-mapping-template.vtl"
-          response: "activeGames-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: Mutation
-          field: createUser
-          request: "createUser-request-mapping-template.vtl"
-          response: "createUser-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          type: Mutation
-          field: updateUser
-          request: "updateUser-request-mapping-template.vtl"
-          response: "updateUser-response-mapping-template.vtl"
-        -
-          type: Mutation
-          field: shuffleAvatar
-          request: "shuffleAvatar-request-mapping-template-before.vtl"
-          response: "shuffleAvatar-response-mapping-template-after.vtl"
-          kind: PIPELINE
-          functions:
-            - ShuffleAvatar
-            - UpdateUserData
-        -
-          type: Mutation
-          field: createGame
-          request: "createGame-request-mapping-template-before.vtl"
-          response: "createGame-response-mapping-template-after.vtl"
-          kind: PIPELINE
-          functions:
-            - CreateGame
-            - CreateGameData
-        -
-          type: Mutation
-          field: startGame
-          request: "startGame-request-mapping-template-before.vtl"
-          response: "startGame-response-mapping-template-after.vtl"
-          kind: PIPELINE
-          functions:
-            - StartGame
-            - UpdateGameData
-        -
-          type: Mutation
-          field: joinGame
-          request: "joinGame-request-mapping-template-before.vtl"
-          response: "joinGame-response-mapping-template-after.vtl"
-          kind: PIPELINE
-          functions:
-            - JoinGame
-            - UpdateGameData
-        -
-          type: Mutation
-          field: acceptPlayer
-          request: "acceptPlayer-request-mapping-template-before.vtl"
-          response: "acceptPlayer-response-mapping-template-after.vtl"
-          kind: PIPELINE
-          functions:
-            - AcceptPlayer
-            - UpdateGameData
+    # mappingTemplatesLocation: # defaults to mapping-templates
+    mappingTemplates:
+      - dataSource: OnlineScoreBoard
+        type: Query
+        field: listGames
+        request: 'listGames-request-mapping-template.vtl'
+        response: 'listGames-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: Query
+        field: listUsers
+        request: 'listUsers-request-mapping-template.vtl'
+        response: 'listUsers-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: ModelGameConnection
+        field: count
+        request: 'countGames-request-mapping-template.vtl'
+        response: 'countGames-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: Game
+        field: pendingPlayers
+        request: 'gamePendingPlayers-request-mapping-template.vtl'
+        response: 'gamePendingPlayers-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: PendingPlayer
+        field: id
+        request: 'gamePendingPlayerId-request-mapping-template.vtl'
+        response: 'gamePendingPlayerId-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: PendingPlayer
+        field: item
+        request: 'gamePendingPlayerData-request-mapping-template.vtl'
+        response: 'gamePendingPlayerData-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: Game
+        field: users
+        request: 'gameUsers-request-mapping-template.vtl'
+        response: 'gameUsers-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: GameUser
+        field: id
+        request: 'gameUserId-request-mapping-template.vtl'
+        response: 'gameUserId-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: GameUser
+        field: item
+        request: 'gameUserData-request-mapping-template.vtl'
+        response: 'gameUserData-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: ModelUserConnection
+        field: count
+        request: 'countUsers-request-mapping-template.vtl'
+        response: 'countUsers-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: Query
+        field: whoAmI
+        request: 'whoAmI-request-mapping-template.vtl'
+        response: 'whoAmI-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: Query
+        field: getUser
+        request: 'getUser-request-mapping-template.vtl'
+        response: 'getUser-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: Query
+        field: getGame
+        request: 'getGame-request-mapping-template.vtl'
+        response: 'getGame-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: User
+        field: completedGames
+        request: 'completedGames-request-mapping-template.vtl'
+        response: 'completedGames-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: User
+        field: activeGames
+        request: 'activeGames-request-mapping-template.vtl'
+        response: 'activeGames-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: Mutation
+        field: createUser
+        request: 'createUser-request-mapping-template.vtl'
+        response: 'createUser-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: Mutation
+        field: updateUser
+        request: 'updateUser-request-mapping-template.vtl'
+        response: 'updateUser-response-mapping-template.vtl'
+      - type: Mutation
+        field: shuffleAvatar
+        request: 'shuffleAvatar-request-mapping-template-before.vtl'
+        response: 'shuffleAvatar-response-mapping-template-after.vtl'
+        kind: PIPELINE
+        functions:
+          - ShuffleAvatar
+          - UpdateUserData
+      - type: Mutation
+        field: createGame
+        request: 'createGame-request-mapping-template-before.vtl'
+        response: 'createGame-response-mapping-template-after.vtl'
+        kind: PIPELINE
+        functions:
+          - CreateGame
+          - CreateGameData
+      - type: Mutation
+        field: startGame
+        request: 'startGame-request-mapping-template-before.vtl'
+        response: 'startGame-response-mapping-template-after.vtl'
+        kind: PIPELINE
+        functions:
+          - StartGame
+          - UpdateGameData
+      - type: Mutation
+        field: joinGame
+        request: 'joinGame-request-mapping-template-before.vtl'
+        response: 'joinGame-response-mapping-template-after.vtl'
+        kind: PIPELINE
+        functions:
+          - JoinGame
+          - UpdateGameData
+      - type: Mutation
+        field: acceptPlayer
+        request: 'acceptPlayer-request-mapping-template-before.vtl'
+        response: 'acceptPlayer-response-mapping-template-after.vtl'
+        kind: PIPELINE
+        functions:
+          - AcceptPlayer
+          - UpdateGameData
+      - type: Mutation
+        field: rejectPlayer
+        request: 'rejectPlayer-request-mapping-template-before.vtl'
+        response: 'rejectPlayer-response-mapping-template-after.vtl'
+        kind: PIPELINE
+        functions:
+          - RejectPlayer
+          - UpdateGameData
 
-      functionConfigurations:
-        -
-          dataSource: graphqlLambda
-          name: 'ShuffleAvatar'
-          request: "shuffleAvatar-request-mapping-template.vtl"
-          response: "shuffleAvatar-response-mapping-template.vtl"
-        -
-          dataSource: graphqlLambda
-          name: 'CreateGame'
-          request: "createGame-request-mapping-template.vtl"
-          response: "createGame-response-mapping-template.vtl"
-        -
-          dataSource: graphqlLambda
-          name: 'StartGame'
-          request: "startGame-request-mapping-template.vtl"
-          response: "startGame-response-mapping-template.vtl"
-        -
-          dataSource: graphqlLambda
-          name: 'JoinGame'
-          request: "joinGame-request-mapping-template.vtl"
-          response: "joinGame-response-mapping-template.vtl"
-        -
-          dataSource: graphqlLambda
-          name: 'AcceptPlayer'
-          request: "acceptPlayer-request-mapping-template.vtl"
-          response: "acceptPlayer-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          name: 'CreateGameData'
-          request: "createGameData-request-mapping-template.vtl"
-          response: "createGameData-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          name: 'UpdateGameData'
-          request: "updateGameData-request-mapping-template.vtl"
-          response: "updateGameData-response-mapping-template.vtl"
-        -
-          dataSource: OnlineScoreBoard
-          name: 'UpdateUserData'
-          request: "updateUserData-request-mapping-template.vtl"
-          response: "updateUserData-response-mapping-template.vtl"
+    functionConfigurations:
+      - dataSource: graphqlLambda
+        name: 'ShuffleAvatar'
+        request: 'shuffleAvatar-request-mapping-template.vtl'
+        response: 'shuffleAvatar-response-mapping-template.vtl'
+      - dataSource: graphqlLambda
+        name: 'CreateGame'
+        request: 'createGame-request-mapping-template.vtl'
+        response: 'createGame-response-mapping-template.vtl'
+      - dataSource: graphqlLambda
+        name: 'StartGame'
+        request: 'startGame-request-mapping-template.vtl'
+        response: 'startGame-response-mapping-template.vtl'
+      - dataSource: graphqlLambda
+        name: 'JoinGame'
+        request: 'joinGame-request-mapping-template.vtl'
+        response: 'joinGame-response-mapping-template.vtl'
+      - dataSource: graphqlLambda
+        name: 'AcceptPlayer'
+        request: 'acceptPlayer-request-mapping-template.vtl'
+        response: 'acceptPlayer-response-mapping-template.vtl'
+      - dataSource: graphqlLambda
+        name: 'RejectPlayer'
+        request: 'rejectPlayer-request-mapping-template.vtl'
+        response: 'rejectPlayer-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        name: 'CreateGameData'
+        request: 'createGameData-request-mapping-template.vtl'
+        response: 'createGameData-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        name: 'UpdateGameData'
+        request: 'updateGameData-request-mapping-template.vtl'
+        response: 'updateGameData-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        name: 'UpdateUserData'
+        request: 'updateUserData-request-mapping-template.vtl'
+        response: 'updateUserData-response-mapping-template.vtl'
 
-      dataSources:
-      -
-        type: AMAZON_DYNAMODB
+    dataSources:
+      - type: AMAZON_DYNAMODB
         name: OnlineScoreBoard
         description: 'Online Scoreboard ${self:provider.stage}'
         config:
           tableName: { Ref: OnlineScoreboardTable }
           serviceRoleArn: { Fn::GetAtt: [AppSyncDynamoDBServiceRole, Arn] }
-      -
-        type: AWS_LAMBDA
+      - type: AWS_LAMBDA
         name: graphqlLambda
         description: 'Lambda DataSource'
         config:
@@ -254,7 +234,7 @@ resources:
         AutoVerifiedAttributes:
           - email
         EmailVerificationMessage: "Hello from Online Scoreboard.\nHere's your verification code: {####}"
-        EmailVerificationSubject: "Online Scorebard"
+        EmailVerificationSubject: 'Online Scorebard'
         Policies:
           PasswordPolicy:
             MinimumLength: 6
@@ -268,41 +248,33 @@ resources:
     WebUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
-          ClientName: "Web"
-          GenerateSecret: false
-          RefreshTokenValidity: 30
-          UserPoolId: {Ref: CognitoUserPoolUsers}
+        ClientName: 'Web'
+        GenerateSecret: false
+        RefreshTokenValidity: 30
+        UserPoolId: { Ref: CognitoUserPoolUsers }
 
     OnlineScoreboardTable:
-      Type: "AWS::DynamoDB::Table"
+      Type: 'AWS::DynamoDB::Table'
       Properties:
         TableName: ${self:custom.tableName}
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
-          -
-            AttributeName: __typename
+          - AttributeName: __typename
             AttributeType: S
-          -
-            AttributeName: createdAt
+          - AttributeName: createdAt
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
-          -
-            AttributeName: __typename
+          - AttributeName: __typename
             KeyType: RANGE
         GlobalSecondaryIndexes:
-          -
-            IndexName: TypenameGSI
+          - IndexName: TypenameGSI
             KeySchema:
-              -
-                AttributeName: __typename
+              - AttributeName: __typename
                 KeyType: HASH
-              -
-                AttributeName: createdAt
+              - AttributeName: createdAt
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
@@ -314,93 +286,84 @@ resources:
           WriteCapacityUnits: 2
 
     AppSyncDynamoDBServiceRole:
-      Type: "AWS::IAM::Role"
+      Type: 'AWS::IAM::Role'
       Properties:
-        RoleName: "${self:custom.appSync.serviceRole}-Dynamo"
+        RoleName: '${self:custom.appSync.serviceRole}-Dynamo'
         AssumeRolePolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
-            -
-              Effect: "Allow"
+            - Effect: 'Allow'
               Principal:
                 Service:
-                  - "appsync.amazonaws.com"
+                  - 'appsync.amazonaws.com'
               Action:
-                - "sts:AssumeRole"
+                - 'sts:AssumeRole'
         Policies:
-          -
-            PolicyName: "${self:custom.appSync.serviceRole}-Dynamo-Policy"
+          - PolicyName: '${self:custom.appSync.serviceRole}-Dynamo-Policy'
             PolicyDocument:
-              Version: "2012-10-17"
+              Version: '2012-10-17'
               Statement:
-                -
-                  Effect: "Allow"
+                - Effect: 'Allow'
                   Action:
-                    - "dynamodb:Query"
-                    - "dynamodb:Scan"
-                    - "dynamodb:GetItem"
-                    - "dynamodb:UpdateItem"
-                    - "dynamodb:PutItem"
-                    - "dynamodb:DeleteItem"
+                    - 'dynamodb:Query'
+                    - 'dynamodb:Scan'
+                    - 'dynamodb:GetItem'
+                    - 'dynamodb:UpdateItem'
+                    - 'dynamodb:PutItem'
+                    - 'dynamodb:DeleteItem'
                   Resource:
-                    - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}"
-                    - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}/*"
+                    - 'arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}'
+                    - 'arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}/*'
 
     AppSyncLambdaServiceRole:
-      Type: "AWS::IAM::Role"
+      Type: 'AWS::IAM::Role'
       Properties:
-        RoleName: "${self:custom.appSync.serviceRole}-Lambda"
+        RoleName: '${self:custom.appSync.serviceRole}-Lambda'
         AssumeRolePolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
-            -
-              Effect: "Allow"
+            - Effect: 'Allow'
               Principal:
                 Service:
-                  - "appsync.amazonaws.com"
+                  - 'appsync.amazonaws.com'
               Action:
-                - "sts:AssumeRole"
+                - 'sts:AssumeRole'
         Policies:
-          -
-            PolicyName: "${self:custom.appSync.serviceRole}-Lambda-Policy"
+          - PolicyName: '${self:custom.appSync.serviceRole}-Lambda-Policy'
             PolicyDocument:
-              Version: "2012-10-17"
+              Version: '2012-10-17'
               Statement:
-                -
-                  Effect: "Allow"
+                - Effect: 'Allow'
                   Action:
-                    - "lambda:invokeFunction"
+                    - 'lambda:invokeFunction'
                   Resource:
-                    - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql"
-                    - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql:*"
+                    - 'arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql'
+                    - 'arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:online-scoreboard-server-${self:provider.stage}-graphql:*'
 
     GraphQLServiceRole:
-      Type: "AWS::IAM::Role"
+      Type: 'AWS::IAM::Role'
       Properties:
-        RoleName: "${self:custom.appSync.serviceRole}-GraphQL-Function"
+        RoleName: '${self:custom.appSync.serviceRole}-GraphQL-Function'
         AssumeRolePolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
-            -
-              Effect: "Allow"
+            - Effect: 'Allow'
               Principal:
                 Service:
-                  - "lambda.amazonaws.com"
+                  - 'lambda.amazonaws.com'
               Action:
-                - "sts:AssumeRole"
+                - 'sts:AssumeRole'
         Policies:
-          -
-            PolicyName: "${self:custom.appSync.serviceRole}-GraphQL-Dynamo-Policy"
+          - PolicyName: '${self:custom.appSync.serviceRole}-GraphQL-Dynamo-Policy'
             PolicyDocument:
-              Version: "2012-10-17"
+              Version: '2012-10-17'
               Statement:
-                -
-                  Effect: "Allow"
+                - Effect: 'Allow'
                   Action:
-                    - "dynamodb:Query"
+                    - 'dynamodb:Query'
                   Resource:
-                    - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}"
-                    - "arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}/*"
+                    - 'arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}'
+                    - 'arn:aws:dynamodb:${self:provider.region}:${self:custom.accountId}:table/OnlineScoreBoard-${self:provider.stage}/*'
           # Uncomment to enable Cloudwatch on the GraphQL Lambda Function
           # -
           #   PolicyName: "${self:custom.appSync.serviceRole}-GraphQL-CloudWatch-Policy"
