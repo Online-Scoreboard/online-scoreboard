@@ -1,16 +1,27 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { amber } from '@material-ui/core/colors';
+import { green, blue } from '@material-ui/core/colors';
 
 export const useStyles = makeStyles(theme => ({
   notificationRoot: {
-    top: 0,
-    left: -3,
-    right: -3,
+    [theme.breakpoints.down('xs')]: {
+      top: 0,
+      left: -3,
+      right: -3,
+    },
+  },
+  success: {
+    backgroundColor: green[600],
+    color: theme.palette.getContrastText(green[600]),
+  },
+  error: {
+    backgroundColor: theme.palette.error.dark,
+    color: theme.palette.error.contrastText,
   },
   info: {
-    backgroundColor: amber[700],
-    color: theme.palette.getContrastText(amber[700]),
+    backgroundColor: blue[700],
+    color: theme.palette.getContrastText(blue[700]),
   },
+
   icon: {
     fontSize: 20,
   },
