@@ -15,7 +15,7 @@ interface Props {
 
 const Component: React.FC<Props> = ({ userData, isAcceptedUser, pending, onAcceptPlayer, onRejectPlayer }) => {
   const [menuStatus, setMenuStatus] = React.useState(null);
-  const { avatarWrapper, avatarIcon, pendingAvatarWrapper, pendingPlayer } = useStyles();
+  const { avatarWrapper, avatarIcon, pendingAvatarWrapper, pendingPlayer, playerAvatar } = useStyles();
 
   const handleCloseMenu = () => {
     setMenuStatus(null);
@@ -36,7 +36,7 @@ const Component: React.FC<Props> = ({ userData, isAcceptedUser, pending, onAccep
   };
 
   return (
-    <div className="PlayerAvatar">
+    <div className={`PlayerAvatar ${playerAvatar}`}>
       {pending ? (
         (isAcceptedUser && (
           <>
@@ -49,7 +49,9 @@ const Component: React.FC<Props> = ({ userData, isAcceptedUser, pending, onAccep
               className={`pendingPlayer pendingPlayer-${userData.id}`}
               onClick={handleMenu}
             >
-              <div className={`pendingAvatarWrapper pendingAvatarWrapper-${userData.id} ${pendingAvatarWrapper}`}>
+              <div
+                className={`avatarWrapper pendingAvatarWrapper pendingAvatarWrapper-${userData.id} ${avatarWrapper} ${pendingAvatarWrapper}`}
+              >
                 <Avatar size="40px" hash={userData.avatar} className={avatarIcon} />
                 <span className={pendingPlayer} />
               </div>
@@ -66,7 +68,9 @@ const Component: React.FC<Props> = ({ userData, isAcceptedUser, pending, onAccep
             </Menu>
           </>
         )) || (
-          <div className={`pendingAvatarWrapper pendingAvatarWrapper-${userData.id} ${pendingAvatarWrapper}`}>
+          <div
+            className={`avatarWrapper pendingAvatarWrapper pendingAvatarWrapper-${userData.id} ${avatarWrapper} ${pendingAvatarWrapper}`}
+          >
             <Avatar size="40px" hash={userData.avatar} className={avatarIcon} />
             <span className={pendingPlayer} />
           </div>

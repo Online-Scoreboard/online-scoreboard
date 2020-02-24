@@ -3,8 +3,9 @@ import { amber } from '@material-ui/core/colors';
 
 export const useStyles = makeStyles(theme => ({
   notificationRoot: {
-    width: '100%',
     top: 0,
+    left: -3,
+    right: -3,
   },
   info: {
     backgroundColor: amber[700],

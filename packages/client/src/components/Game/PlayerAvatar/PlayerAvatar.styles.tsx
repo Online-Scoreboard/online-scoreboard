@@ -16,17 +16,19 @@ export default makeStyles(() => ({
     background: 'rgba(255, 255, 255, 0.9)',
     overflow: 'hidden',
   },
-  avatarIcon: {
-    position: 'relative',
 
+  avatarIcon: {
     '& svg': {
       filter: 'drop-shadow(1px -1px 0 rgba(0,0,0,0.3))',
     },
   },
+
+  playerAvatar: {
+    position: 'relative',
+  },
+
   pendingAvatarWrapper: {
-    borderRadius: '50%',
     background: 'rgba(100, 100, 100, 0.9)',
-    overflow: 'hidden',
     boxSizing: 'border-box',
 
     '& > div': {
