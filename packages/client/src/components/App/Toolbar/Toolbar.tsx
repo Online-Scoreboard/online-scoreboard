@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import { Avatar } from 'react-avataaars';
 
+import { useStaticMessage } from '../../../hooks/useStaticMessage';
 import useStyles from './Toolbar.styles';
 
 interface ToolbarProps {
@@ -20,6 +21,7 @@ interface ToolbarProps {
 }
 
 const ToolbarComponent: React.FC<ToolbarProps> = ({ isLoggedIn, onLogOut, user }) => {
+  const { staticMessage } = useStaticMessage();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -48,7 +50,7 @@ const ToolbarComponent: React.FC<ToolbarProps> = ({ isLoggedIn, onLogOut, user }
   }, [handleClose]);
 
   return (
-    <MaterialToolbar className={classes.toolbar}>
+    <MaterialToolbar className={`${classes.toolbar} ${staticMessage ? classes.toolbarWithStaticNotification : ''}`}>
       <Typography variant="h6" noWrap className={classes.toolbarTitle}>
         <Link to="/">
           <LinkButton className="pageTitle" variant="h6" component="span" color="textPrimary">

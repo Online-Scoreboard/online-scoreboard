@@ -55,7 +55,7 @@ const Component: React.FC<Props> = ({ gameId }) => {
               <Typography variant="inherit">Share this game ID with other players</Typography>
               <Grid item container direction="row" justify="space-between" alignItems="center">
                 <Grid item>
-                  <TextField margin="normal" name="gameId" value={gameId} />
+                  <TextField margin="normal" name="gameShareLink" value={gameId} />
                 </Grid>
                 <Grid item>
                   <Button variant="outlined" onClick={handleCopyShareLink}>
@@ -70,7 +70,7 @@ const Component: React.FC<Props> = ({ gameId }) => {
               <Typography variant="inherit">Or share this game direct URL</Typography>
               <Grid item container direction="row" justify="space-between" alignItems="center">
                 <Grid item>
-                  <TextField margin="normal" name="gameUrl" value={gameUrl.current} />
+                  <TextField margin="normal" name="gameShareUrl" value={gameUrl.current} />
                 </Grid>
                 <Grid item>
                   <Button variant="outlined" onClick={handleCopyShareURL}>

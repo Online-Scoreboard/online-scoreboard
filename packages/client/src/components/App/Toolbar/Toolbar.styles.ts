@@ -4,6 +4,11 @@ export default makeStyles(theme => ({
   toolbar: {
     flexWrap: 'wrap',
   },
+  toolbarWithStaticNotification: {
+    [theme.breakpoints.down('xs')]: {
+      marginTop: 78,
+    },
+  },
   toolbarTitle: {
     flexGrow: 1,
   },

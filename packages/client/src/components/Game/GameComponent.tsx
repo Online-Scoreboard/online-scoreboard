@@ -6,6 +6,7 @@ import { StaticNotification } from '../StaticNotification';
 import { usePendingPlayers } from './usePendingPlayers';
 import { Share } from './Share';
 import { Players } from './Players';
+import { useStaticMessage } from '../../hooks/useStaticMessage';
 import { User } from '../../hooks/Auth';
 import { Game } from './Game.types';
 
@@ -32,7 +33,7 @@ const Component: React.FC<Props> = ({
   const userId = user.id || '';
 
   const { loader, root } = useStyles();
-  const [staticMessage, setStaticMessage] = useState('');
+  const { staticMessage, setStaticMessage } = useStaticMessage();
   const {
     pendingPlayer,
     dismissedPendingPlayers,

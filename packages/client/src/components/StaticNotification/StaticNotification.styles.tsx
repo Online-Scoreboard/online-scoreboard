@@ -7,6 +7,7 @@ export const useStyles = makeStyles(theme => ({
       top: 0,
       left: -3,
       right: -3,
+      minHeight: 78,
     },
   },
   success: {
