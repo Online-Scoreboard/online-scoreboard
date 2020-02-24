@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { Typography, Button, Menu, MenuItem, TextField, Grid } from '@material-ui/core';
 
 import { useMessage } from '../../../hooks/useMessage';
@@ -8,6 +8,7 @@ interface Props {
 }
 
 const Component: React.FC<Props> = ({ gameId }) => {
+  const gameUrl = useRef(`${window.location.origin}/game/${gameId}`);
   const [shareMenuStatus, setShareMenuStatus] = React.useState(null);
   const { createMessage } = useMessage();
 
@@ -20,7 +21,15 @@ const Component: React.FC<Props> = ({ gameId }) => {
   };
 
   const handleCopyShareLink = () => {
+    navigator.clipboard.writeText(gameId);
     createMessage('Game ID copied to clipboard', 'success');
+
+    handleCloseShareMenu();
+  };
+
+  const handleCopyShareURL = () => {
+    navigator.clipboard.writeText(gameUrl.current);
+    createMessage('Game URL copied to clipboard', 'success');
 
     handleCloseShareMenu();
   };
@@ -43,13 +52,28 @@ const Component: React.FC<Props> = ({ gameId }) => {
         >
           <MenuItem dense={true}>
             <Grid container direction="column">
-              <Typography variant="inherit">Share this game with other players</Typography>
+              <Typography variant="inherit">Share this game ID with other players</Typography>
               <Grid item container direction="row" justify="space-between" alignItems="center">
                 <Grid item>
                   <TextField margin="normal" name="gameId" value={gameId} />
                 </Grid>
                 <Grid item>
                   <Button variant="outlined" onClick={handleCopyShareLink}>
+                    copy
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          </MenuItem>
+          <MenuItem dense={true}>
+            <Grid container direction="column">
+              <Typography variant="inherit">Or share this game direct URL</Typography>
+              <Grid item container direction="row" justify="space-between" alignItems="center">
+                <Grid item>
+                  <TextField margin="normal" name="gameUrl" value={gameUrl.current} />
+                </Grid>
+                <Grid item>
+                  <Button variant="outlined" onClick={handleCopyShareURL}>
                     copy
                   </Button>
                 </Grid>
