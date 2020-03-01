@@ -27,7 +27,7 @@ export const Home: React.FC<RouteComponentProps> = () => {
         </Container>
         <Grid container direction="column" alignItems="center">
           <Grid item>
-            <Typography component="h1" variant="h2" align="center" gutterBottom>
+            <Typography component="h2" variant="h2" align="center" gutterBottom>
               Online Scoreboard
             </Typography>
           </Grid>

@@ -58,7 +58,7 @@ const VerifyEmailComponent: React.FC<RouteComponentProps> = () => {
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h4">
+        <Typography component="h2" variant="h4">
           Verify Email
         </Typography>
       </Grid>

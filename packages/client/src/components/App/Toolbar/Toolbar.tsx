@@ -53,7 +53,7 @@ const ToolbarComponent: React.FC<ToolbarProps> = ({ isLoggedIn, onLogOut, user }
     <MaterialToolbar className={`${classes.toolbar} ${staticMessage ? classes.toolbarWithStaticNotification : ''}`}>
       <Typography variant="h6" noWrap className={classes.toolbarTitle}>
         <Link to="/">
-          <LinkButton className="pageTitle" variant="h6" component="span" color="textPrimary">
+          <LinkButton className="pageTitle" variant="h6" component="h1" color="textPrimary">
             Online Scoreboard
           </LinkButton>
         </Link>

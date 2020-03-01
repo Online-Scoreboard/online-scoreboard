@@ -21,7 +21,7 @@ export const DashboardComponent: React.FC<DashboardComponentProps> = memo(({ use
   return (
     <Container component="main" maxWidth="md" className={`${root} Dashboard`}>
       <Grid container direction="column" alignItems="center">
-        <Typography className="welcome" component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
+        <Typography className="welcome" component="h2" variant="h2" align="center" color="textPrimary" gutterBottom>
           Welcome {user.username}!
         </Typography>
       </Grid>

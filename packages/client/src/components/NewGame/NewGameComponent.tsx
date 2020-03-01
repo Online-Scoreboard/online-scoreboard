@@ -107,7 +107,7 @@ const Component: React.FC<NewGameProps> = ({ newGameLoading, newGameError, onSub
   if (newGameError) {
     return (
       <Container maxWidth="md" component="main" className={`${root} NewGame error`}>
-        <Typography component="h1" variant="h2" align="center" color="textPrimary" className={pageTitle}>
+        <Typography component="h2" variant="h2" align="center" color="textPrimary" className={pageTitle}>
           Ops!
         </Typography>
         <Typography color="textPrimary">
@@ -121,7 +121,7 @@ const Component: React.FC<NewGameProps> = ({ newGameLoading, newGameError, onSub
 
   return (
     <Container maxWidth="md" component="main" className={`${root} NewGame`}>
-      <Typography component="h1" variant="h2" align="center" color="textPrimary" className={pageTitle}>
+      <Typography component="h2" variant="h2" align="center" color="textPrimary" className={pageTitle}>
         Create A New Game
       </Typography>
 

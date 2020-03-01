@@ -40,7 +40,7 @@ export const ProfileComponent: React.FC<ProfileComponentProps> = memo(
 
     return (
       <Container component="main" className={`${root} Profile`}>
-        <Typography component="h1" variant="h2" align="center" color="textPrimary" className={pageTitle}>
+        <Typography component="h2" variant="h2" align="center" color="textPrimary" className={pageTitle}>
           Profile
         </Typography>
 
