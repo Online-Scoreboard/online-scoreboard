@@ -111,7 +111,7 @@ export const GameRules: React.FC<GameRulesProps> = ({ rules, onChange, onGameRul
       <CardHeader title="Game Rules" className="GameRulesHeader" classes={{ title: cardTitle }} />
       <CardContent>
         <Grid item className={content}>
-          <Typography gutterBottom>Chose a game from the available ones</Typography>
+          <Typography gutterBottom>Choose a game from the available ones</Typography>
           <Autocomplete
             id="gameRulesAutocomplete"
             options={gamesList}

@@ -325,21 +325,22 @@ describe('NewGameComponent', () => {
       expect(teamColors.exists()).toBe(true);
     });
 
-    it('should change a team color', () => {
-      const testTeamSize = getDefaultTeams();
+    it('should remove and add some team colors', () => {
       mockedUseNewGame.mockImplementation(() => ({
         ...jest.requireActual('./hooks/useNewGame').useNewGame(),
         activeStep,
       }));
       const testError = null;
+      const expectedColorSize = 1;
 
       const wrapper = mount(<NewGameComponent newGameLoading={false} onSubmit={newGame} newGameError={testError} />);
 
       let teamColorsEl = wrapper.find(TeamColors);
       let currTeamColors = teamColorsEl.prop('teamColors');
+
       const testRemovedColor = currTeamColors[0];
 
-      expect(currTeamColors.length).toBe(testTeamSize);
+      expect(currTeamColors.length).toBe(expectedColorSize);
 
       // Remove an existing color
       act(() => {
@@ -352,7 +353,7 @@ describe('NewGameComponent', () => {
 
       teamColorsEl = wrapper.find(TeamColors);
       currTeamColors = teamColorsEl.prop('teamColors');
-      expect(currTeamColors.length).toBe(testTeamSize - 1);
+      expect(currTeamColors.length).toBe(expectedColorSize - 1);
       expect(Boolean(~currTeamColors.indexOf(testRemovedColor))).toBe(false);
 
       const testNewColor: TeamColor = 'aquamarine';
@@ -368,7 +369,7 @@ describe('NewGameComponent', () => {
 
       teamColorsEl = wrapper.find(TeamColors);
       currTeamColors = teamColorsEl.prop('teamColors');
-      expect(currTeamColors.length).toBe(testTeamSize);
+      expect(currTeamColors.length).toBe(expectedColorSize);
       expect(Boolean(~currTeamColors.indexOf(testNewColor))).toBe(true);
     });
 

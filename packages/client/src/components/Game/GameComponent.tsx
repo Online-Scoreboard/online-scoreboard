@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useCallback } from 'react';
+import React, { memo, useEffect, useCallback } from 'react';
 import { Typography, Button, CircularProgress, Container, Grid } from '@material-ui/core';
 
 import useStyles from './Game.styles';
@@ -51,7 +51,7 @@ const Component: React.FC<Props> = ({
     } else if (staticMessage) {
       setStaticMessage('');
     }
-  }, [pendingPlayer, staticMessage]);
+  }, [pendingPlayer, staticMessage, setStaticMessage]);
 
   const dismissNotification = useCallback(async () => {
     dismissPendingPlayer([...dismissedPendingPlayers, pendingPlayer.id]);
