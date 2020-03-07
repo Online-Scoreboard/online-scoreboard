@@ -72,7 +72,6 @@ describe('NewGameReducer', () => {
         type: TEAMS,
         payload: {
           teams: testTeams,
-          teamColors: [],
         },
       };
 
@@ -81,23 +80,7 @@ describe('NewGameReducer', () => {
       expect(reducer.teams).toBe(testTeams);
     });
 
-    it('should update the team colors', () => {
-      const testTeamColors: TeamColor[] = ['yellow', 'red'];
-
-      const testAction: NewGameActionType = {
-        type: TEAMS,
-        payload: {
-          teams: 1,
-          teamColors: testTeamColors,
-        },
-      };
-
-      const reducer = newGameReducer(initialState, testAction);
-
-      expect(reducer.teamColors).toBe(testTeamColors);
-    });
-
-    it('should override both "teams" and "teamColors"', () => {
+    it('should override "teams"', () => {
       const testPayload: any = {};
       const testAction: NewGameActionType = {
         type: TEAMS,
@@ -107,7 +90,6 @@ describe('NewGameReducer', () => {
       const reducer = newGameReducer(initialState, testAction);
 
       expect(reducer.teams).toBeUndefined();
-      expect(reducer.teamColors).toBeUndefined();
     });
   });
 

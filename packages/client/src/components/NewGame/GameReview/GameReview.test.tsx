@@ -33,7 +33,7 @@ describe('GameReview', () => {
     const teams = 2;
     const teamColors: TeamColor[] = ['red', 'purple'];
     const wrapper = shallow(<GameReview gameName={gameName} rules={rules} teams={teams} teamColors={teamColors} />);
-    const expectedGameTemplate = `"${rules.name}" has been used for setting this game base rules`;
+    const expectedGameTemplate = `"${rules.name}" has been used for setting this game rules`;
 
     const gameTemplate = wrapper.find('.gameTemplate');
     expect(gameTemplate.text()).toBe(expectedGameTemplate);
@@ -45,7 +45,7 @@ describe('GameReview', () => {
     const teams = 2;
     const teamColors: TeamColor[] = ['red', 'purple'];
     const wrapper = shallow(<GameReview gameName={gameName} rules={rules} teams={teams} teamColors={teamColors} />);
-    const expectedGameTemplate = `A custom configuration has been used for setting this game base rules`;
+    const expectedGameTemplate = `A custom configuration has been used for setting this game rules`;
 
     const gameTemplate = wrapper.find('.gameTemplate');
     expect(gameTemplate.text()).toBe(expectedGameTemplate);

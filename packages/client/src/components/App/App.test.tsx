@@ -61,7 +61,7 @@ describe('App', () => {
   it('should render an App component', () => {
     const app = shallow(<App />);
 
-    expect(app.find('div.App').exists()).toBe(true);
+    expect(app.find('.App').exists()).toBe(true);
   });
 
   it('should display a loading spinner while fetching the initial data', () => {

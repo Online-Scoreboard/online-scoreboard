@@ -16,21 +16,15 @@
     "lint:ci": "eslint --format junit -o reports/junit/js-lint-results.xml --ext=ts,tsx {pages,support,step_definitions}/**/*"
   },
   "devDependencies": {
-    "@types/cucumber": "^6.0.0",
-    "@types/dotenv": "^8.2.0",
-    "@types/selenium-webdriver": "^4.0.5",
-    "chromedriver": "^78.0.1",
+    "chromedriver": "^80.0.1",
     "cucumber": "^6.0.5",
-    "cucumber-html-reporter": "^5.0.2",
-    "selenium-webdriver": "^4.0.0-alpha.5"
+    "cucumber-html-reporter": "^5.1.0",
+    "selenium-webdriver": "^4.0.0-alpha.7"
   },
   "dependencies": {
-    "aws-sdk": "^2.610.0",
+    "aws-sdk": "^2.635.0",
     "dotenv": "^8.2.0",
     "mailslurp-client": "^6.7.4",
-    "unique-names-generator": "^4.1.1"
-  },
-  "engines": {
-    "node": "12.x"
+    "unique-names-generator": "^4.2.0"
   }
 }

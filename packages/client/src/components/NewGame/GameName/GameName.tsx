@@ -23,7 +23,7 @@ export const GameName: React.FC<GameNameProps> = ({ gameName, onChange }) => {
       <CardContent>
         <TextField
           className="gameName"
-          label="Chose a name for your game"
+          label="Choose a name for your game"
           placeholder="Game Name"
           variant="outlined"
           value={gameName}

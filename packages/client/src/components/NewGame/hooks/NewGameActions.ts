@@ -32,28 +32,11 @@ export const colorsAction = (teamColor: TeamColor, teamColors: TeamColor[], team
   return { type: COLORS, payload: newTeamColors };
 };
 
-export const teamsAction = (colorsList: TeamColor[], teamColors: TeamColor[], newTeams: number): NewGameActionType => {
-  let newTeamColors = [...teamColors];
-
-  if (newTeams < teamColors.length) {
-    newTeamColors = teamColors.slice(0, newTeams);
-  }
-
-  if (newTeams > teamColors.length) {
-    const availableColors = colorsList.filter(teamColor => teamColors.indexOf(teamColor) === -1).reverse();
-
-    if (availableColors.length) {
-      newTeamColors = new Array(newTeams - teamColors.length)
-        .fill(true)
-        .reduce(totTeams => [...totTeams, availableColors.pop()], teamColors);
-    }
-  }
-
+export const teamsAction = (newTeams: number): NewGameActionType => {
   return {
     type: TEAMS,
     payload: {
       teams: newTeams,
-      teamColors: newTeamColors,
     },
   };
 };

@@ -35,26 +35,21 @@ describe('NewGameActions', () => {
 
   describe('teamsAction', () => {
     it('should return the correct type and payload', () => {
-      const testColorList: TeamColor[] = ['black', 'blue'];
-      const testTeamColors: TeamColor[] = ['black', 'blue'];
-      const testNewTeams = testTeamColors.length;
+      const testNewTeams = 3;
 
-      const res: any = teamsAction(testColorList, testTeamColors, testNewTeams);
+      const res: any = teamsAction(testNewTeams);
 
       expect(res.type).toEqual(TEAMS);
       expect(res).toHaveProperty('payload');
       expect(res.payload).toHaveProperty('teams');
-      expect(res.payload).toHaveProperty('teamColors');
+      expect(res.payload.teams).toBe(testNewTeams);
     });
 
-    it('should return the provided "newTeams" and "teamColors" when the new team size has not changed', () => {
-      const testColorList: TeamColor[] = ['black', 'blue'];
-      const testTeamColors: TeamColor[] = ['black', 'blue'];
-      const testNewTeams = testTeamColors.length;
+    it('should return the provided "newTeams" when the new team size has not changed', () => {
+      const testNewTeams = 3;
 
       const testValue = {
         teams: testNewTeams,
-        teamColors: testTeamColors,
       };
 
       const expectedResult: NewGameActionType = {
@@ -62,70 +57,7 @@ describe('NewGameActions', () => {
         payload: testValue,
       };
 
-      const res = teamsAction(testColorList, testTeamColors, testNewTeams);
-
-      expect(res).toEqual(expectedResult);
-    });
-
-    it('should remove a team color when the provided "newTeams" is smaller than the existing team colors selected', () => {
-      const testColorList: TeamColor[] = ['black', 'blue'];
-      const testTeamColors: TeamColor[] = ['black', 'blue'];
-      const testNewTeams = testTeamColors.length - 1;
-      const expectedTeamColors = testTeamColors.slice(0, testNewTeams);
-
-      const testValue = {
-        teams: testNewTeams,
-        teamColors: expectedTeamColors,
-      };
-
-      const expectedResult: NewGameActionType = {
-        type: TEAMS,
-        payload: testValue,
-      };
-
-      const res = teamsAction(testColorList, testTeamColors, testNewTeams);
-
-      expect(res).toEqual(expectedResult);
-    });
-
-    it('should add a new team color when the provided "newTeams" is bigger than the existing team colors selected', () => {
-      const testColorList: TeamColor[] = ['black', 'blue', 'red'];
-      const testTeamColors: TeamColor[] = ['black', 'blue'];
-      const testNewTeams = testTeamColors.length + 1;
-      const expectedTeamColors = [...testTeamColors, testColorList[testNewTeams - 1]];
-
-      const testValue = {
-        teams: testNewTeams,
-        teamColors: expectedTeamColors,
-      };
-
-      const expectedResult: NewGameActionType = {
-        type: TEAMS,
-        payload: testValue,
-      };
-
-      const res = teamsAction(testColorList, testTeamColors, testNewTeams);
-
-      expect(res).toEqual(expectedResult);
-    });
-
-    it('should not add any new team color when the provided "newTeams" is bigger than the existing team colors selected but there are no colors available', () => {
-      const testColorList: TeamColor[] = ['black', 'blue'];
-      const testTeamColors: TeamColor[] = ['black', 'blue'];
-      const testNewTeams = testTeamColors.length + 1;
-      const expectedTeamColors = [...testTeamColors];
-
-      const testValue = {
-        teams: testNewTeams,
-        teamColors: expectedTeamColors,
-      };
-
-      const expectedResult: NewGameActionType = {
-        type: TEAMS,
-        payload: testValue,
-      };
-
-      const res = teamsAction(testColorList, testTeamColors, testNewTeams);
+      const res = teamsAction(testNewTeams);
 
       expect(res).toEqual(expectedResult);
     });

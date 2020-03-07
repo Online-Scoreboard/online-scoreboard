@@ -29,7 +29,7 @@ const NotificationContent: React.FC<SnackbarContentWrapperProps> = ({ message, h
           Accept
         </Button>,
         <Button key="cancel" color="default" size="small" onClick={handleCancel}>
-          Cancel
+          Ignore
         </Button>,
       ]}
     />

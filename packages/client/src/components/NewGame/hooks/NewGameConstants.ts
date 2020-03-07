@@ -6,7 +6,7 @@ const minGameNameLength = 6;
 const maxGameNameLength = 30;
 const steps = ['Setup', 'Rules', 'Teams', 'Colors'];
 const defaultTeams = 2;
-const defaultTeamColors: TeamColor[] = ['black', 'white'];
+const defaultTeamColors: TeamColor[] = ['black'];
 const colors: TeamColor[] = [
   'black',
   'white',

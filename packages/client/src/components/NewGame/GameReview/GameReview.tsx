@@ -43,7 +43,7 @@ export const GameReview: React.FC<GameReviewProps> = ({ gameName, teams, teamCol
           {gameName}
         </Typography>
         <Typography variant="subtitle1" className="gameTemplate" gutterBottom>
-          {name ? `"${name}"` : 'A custom configuration'} has been used for setting this game base rules
+          {name ? `"${name}"` : 'A custom configuration'} has been used for setting this game rules
         </Typography>
         <Typography className="teams" gutterBottom>
           {teams} teams

@@ -206,13 +206,13 @@ export const useNewGame = (): UseNewGame => {
             return 'Maximum team size cannot be bigger than the minimum one';
           }
 
-          return 'Define your game rules';
+          return '';
         }
         case 2: {
           const { minTeamSize, maxTeamSize } = rules;
 
           if (minTeamSize === maxTeamSize && teams !== minTeamSize) {
-            return `You must chose ${minTeamSize} teams according to your game rules`;
+            return `You must choose ${minTeamSize} teams according to your game rules`;
           }
           if (teams < minTeamSize) {
             return `According to your Rules setup, this game will require at least ${minTeamSize} teams`;
@@ -226,16 +226,17 @@ export const useNewGame = (): UseNewGame => {
         case 3: {
           const teamColorsLength = (teamColors && teamColors.length) || 0;
           const diff = teams - teamColorsLength;
-          if (!checkStep(3)) {
-            return `You've selected an incorrect number of teams. Please go back and fix the problem first`;
-          }
           if (diff > 0) {
-            return `You must chose ${diff} more color${diff > 1 ? 's' : ''}`;
+            return `You must choose ${diff} more color${diff > 1 ? 's' : ''}`;
           }
-          return 'All your teams have a color!';
+          if (!checkStep(3)) {
+            return `You must choose ${teams} colors`;
+          }
+
+          return '';
         }
         case 4: {
-          return 'Are you ready?';
+          return 'Click next to start the game';
         }
         default: {
           return '';
@@ -262,9 +263,9 @@ export const useNewGame = (): UseNewGame => {
         return;
       }
 
-      dispatch(teamsAction(colorsList, teamColors, newTeams));
+      dispatch(teamsAction(newTeams));
     },
-    [colorsList, teamColors, teams]
+    [teams]
   );
 
   const handleGameRulesChange = useCallback(

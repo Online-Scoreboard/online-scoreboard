@@ -22,7 +22,6 @@ interface TeamsAction {
   type: typeof TEAMS;
   payload: {
     teams: number;
-    teamColors: TeamColor[];
   };
 }
 

@@ -38,7 +38,6 @@ export const newGameReducer = (state: NewGameState, action: NewGameActionType): 
       return {
         ...state,
         teams: action.payload.teams,
-        teamColors: action.payload.teamColors,
       };
     case COLORS:
       return {
