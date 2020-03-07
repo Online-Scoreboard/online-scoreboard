@@ -236,7 +236,7 @@ export const useNewGame = (): UseNewGame => {
           return '';
         }
         case 4: {
-          return 'Click next to start the game';
+          return '';
         }
         default: {
           return '';

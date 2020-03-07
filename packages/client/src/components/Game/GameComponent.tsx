@@ -29,10 +29,10 @@ const Component: React.FC<Props> = ({
   rejectPlayer,
   operationLoading,
 }) => {
-  const { id, name, owner, status, users = [], pendingPlayers = [] } = gameData;
+  const { id, name, status, users = [], pendingPlayers = [] } = gameData;
   const userId = user.id || '';
 
-  const { loader, root } = useStyles();
+  const { loader, root, content } = useStyles();
   const { staticMessage, setStaticMessage } = useStaticMessage();
   const {
     pendingPlayer,
@@ -67,56 +67,54 @@ const Component: React.FC<Props> = ({
   };
 
   return (
-    <Container maxWidth="md" component="main" className={`${root} Game`}>
+    <Container component="main" className={`${root} Game`}>
       <StaticNotification
         message={staticMessage}
         open={Boolean(staticMessage)}
         handleOk={() => acceptPlayer(pendingPlayer.id)}
         handleCancel={dismissNotification}
       />
+      <Container maxWidth="md" className={content}>
+        <Grid container direction="column" spacing={4}>
+          {isAcceptedUser() && (
+            <Grid item>
+              <Share gameId={id} />
+            </Grid>
+          )}
 
-      <Grid container direction="column" spacing={4}>
-        {isAcceptedUser() && (
+          {!isAcceptedUser() && !isPendingUser() ? (
+            <Grid item>
+              <Button variant="outlined" disabled={operationLoading} onClick={joinGame}>
+                {operationLoading && <CircularProgress size={24} className={loader} />}
+                Ask to Join this Game
+              </Button>
+            </Grid>
+          ) : null}
+
           <Grid item>
-            <Share gameId={id} />
+            <Players
+              users={users}
+              pendingPlayers={pendingPlayers}
+              onAcceptPlayer={handleAcceptPlayer}
+              onRejectPlayer={handleRejectPlayer}
+              isAcceptedUser={isAcceptedUser()}
+            />
           </Grid>
-        )}
 
-        {!isAcceptedUser() && !isPendingUser() ? (
-          <Grid item>
-            <Button variant="outlined" disabled={operationLoading} onClick={joinGame}>
-              {operationLoading && <CircularProgress size={24} className={loader} />}
-              Ask to Join this Game
-            </Button>
-          </Grid>
-        ) : null}
-
-        <Typography align="center" variant="h2">
-          {name}
-        </Typography>
-
-        <Grid item>
-          <Players
-            users={users}
-            pendingPlayers={pendingPlayers}
-            onAcceptPlayer={handleAcceptPlayer}
-            onRejectPlayer={handleRejectPlayer}
-            isAcceptedUser={isAcceptedUser()}
-          />
+          <Typography align="center" variant="h2">
+            {name}
+          </Typography>
         </Grid>
+      </Container>
 
-        <Typography>Game creator: {owner}</Typography>
-        <Typography>Game status: {status}</Typography>
-      </Grid>
-
-      <div>
+      <Grid container alignContent="center" direction="column">
         {isAcceptedUser() && status === 'new' ? (
-          <Button disabled={operationLoading} onClick={startGame}>
+          <Button variant="outlined" size="large" disabled={operationLoading} onClick={startGame}>
             {operationLoading && <CircularProgress size={24} className={loader} />}
             Start Game
           </Button>
         ) : null}
-      </div>
+      </Grid>
     </Container>
   );
 };

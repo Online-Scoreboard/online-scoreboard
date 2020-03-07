@@ -41,7 +41,7 @@ export const ProfileComponent: React.FC<ProfileComponentProps> = memo(
 
     const goBack = useCallback(() => {
       navigate('/');
-    }, [navigate]);
+    }, []);
 
     return (
       <Container component="main" className={`${root} Profile`}>

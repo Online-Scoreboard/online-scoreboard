@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { CardContent, Typography, CardHeader, Checkbox } from '@material-ui/core';
+import { CardContent, CardHeader, Checkbox } from '@material-ui/core';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import PersonIcon from '@material-ui/icons/Person';
 
