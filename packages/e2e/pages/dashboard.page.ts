@@ -6,6 +6,6 @@ export default class HomePage {
   }
 
   public static getWelcomeMessage(): By {
-    return By.css('h1.welcome');
+    return By.css('h2.welcome');
   }
 }

@@ -4,7 +4,7 @@ import { envConfig } from '../env-keys';
 
 export default class HomePage {
   public static getMainHeading(): By {
-    return By.css(`div > h1`);
+    return By.css(`h1`);
   }
 
   public static navigateToHomepage(): Promise<void> {

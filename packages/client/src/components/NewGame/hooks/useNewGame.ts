@@ -227,10 +227,10 @@ export const useNewGame = (): UseNewGame => {
           const teamColorsLength = (teamColors && teamColors.length) || 0;
           const diff = teams - teamColorsLength;
           if (diff > 0) {
-            return `You must choose ${diff} more color${diff > 1 ? 's' : ''}`;
+            return `You must select ${diff} more color${diff > 1 ? 's' : ''}`;
           }
           if (!checkStep(3)) {
-            return `You must choose ${teams} colors`;
+            return `You must select ${teams} colors`;
           }
 
           return '';

@@ -3,7 +3,7 @@ import { uniqueNamesGenerator, names } from 'unique-names-generator';
 
 export default class HomePage {
   public static getPageTitle(): By {
-    return By.css(`h1`);
+    return By.css(`h2`);
   }
   public static getCardUsername(): By {
     return By.css(`#card-username .card-username__title span`);

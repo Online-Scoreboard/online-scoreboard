@@ -44,13 +44,12 @@ export const TeamColors: React.FC<TeamColorsProps> = ({ teams, colors, teamColor
     <div id="teamColors">
       <CardHeader
         title="Team Colors"
-        subheader={`You must choose ${teams} colors`}
+        subheader={`Choose some colors for your teams`}
         className="newGameTitle"
         classes={{ title: cardTitle, subheader: cardTitle }}
       />
 
       <CardContent className={cardCentredContent}>
-        <Typography gutterBottom>Choose some colors for your teams</Typography>
         {colors.map(color => (
           <Checkbox
             key={color}

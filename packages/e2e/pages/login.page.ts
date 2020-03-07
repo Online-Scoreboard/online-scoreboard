@@ -4,7 +4,7 @@ import { envConfig } from '../env-keys';
 
 export default class LoginPage {
   public static getMainHeading(): By {
-    return By.css(`div > h1`);
+    return By.xpath(`//main/div/h2[text() = "Log In"]`);
   }
   public static getUsernameInput(): By {
     return By.css('input#username');

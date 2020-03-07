@@ -2,7 +2,7 @@ import { By } from 'selenium-webdriver';
 
 export default class NewGamePage {
   public static getMainHeading(): By {
-    return By.css(`h1`);
+    return By.css(`h2`);
   }
   public static getGameNameTitle(): By {
     return By.css(`.newGameTitle span`);

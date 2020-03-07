@@ -4,7 +4,7 @@ import { envConfig } from '../env-keys';
 
 export default class RegistrationPage {
   public static getMainHeading(): By {
-    return By.css(`div > h1`);
+    return By.xpath(`//main/div/h2[text() = "Register"]`);
   }
   public static navigateToRegistrationPage(): Promise<void> {
     return TestRunContext.browser.get(envConfig.HOMEPAGE_URL + '/register');
