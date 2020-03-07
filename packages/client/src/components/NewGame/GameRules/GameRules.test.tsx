@@ -36,7 +36,7 @@ describe('GameRules', () => {
 
     expect(
       wrapper
-        .find('.GameRulesHeader')
+        .find('.newGameTitle')
         .first()
         .text()
     ).toBe('Game Rules');

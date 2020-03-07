@@ -157,7 +157,7 @@ export const useNewGame = (): UseNewGame => {
           const overFlow = gameName.length - maxGameNameLength;
 
           if (diff > 0) {
-            return `Minimum name of ${minGameNameLength} characters. You must enter at lease ${diff} more characters`;
+            return `Minimum name of ${minGameNameLength} characters. You must enter at least ${diff} more characters`;
           } else if (overFlow >= 0) {
             return `Ops! That name is too long. A maximum of ${maxGameNameLength} characters is allowed`;
           }
@@ -227,16 +227,16 @@ export const useNewGame = (): UseNewGame => {
           const teamColorsLength = (teamColors && teamColors.length) || 0;
           const diff = teams - teamColorsLength;
           if (diff > 0) {
-            return `You must choose ${diff} more color${diff > 1 ? 's' : ''}`;
+            return `You must select ${diff} more color${diff > 1 ? 's' : ''}`;
           }
           if (!checkStep(3)) {
-            return `You must choose ${teams} colors`;
+            return `You must select ${teams} colors`;
           }
 
           return '';
         }
         case 4: {
-          return 'Click next to start the game';
+          return '';
         }
         default: {
           return '';

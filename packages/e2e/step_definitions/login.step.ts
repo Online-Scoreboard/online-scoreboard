@@ -30,8 +30,8 @@ Then(/^I should see login form$/, async function() {
 Given(/^I am on the Online Scoreboard login form$/, async function() {
   await LoginPage.navigateToLoginPage();
   const expected = 'Log In';
-  const h1 = await this.browser.findElement(LoginPage.getMainHeading()).getText();
-  assert.deepStrictEqual(h1, expected, `Expected login page heading to be: Log In, got: ${h1}`);
+  const title = await this.browser.findElement(LoginPage.getMainHeading()).getText();
+  assert.deepStrictEqual(title, expected, `Expected login page heading to be: Log In, got: ${title}`);
 });
 
 Then(/^I enter '(.*)' login credentials$/, async function(credentialsType: string) {

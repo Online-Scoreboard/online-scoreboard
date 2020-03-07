@@ -72,7 +72,7 @@ export const findUserByEmail = (email: string): Promise<string> => {
     cognitoidentity.listUsers(
       {
         UserPoolId,
-        Filter: `email = \"${email}\"`,
+        Filter: `email = "${email}"`,
       },
       (err, data) => {
         if (err) {

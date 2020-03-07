@@ -18,8 +18,8 @@ export const GameName: React.FC<GameNameProps> = ({ gameName, onChange }) => {
   );
 
   return (
-    <>
-      <CardHeader title="Game Name" classes={{ title: cardTitle }} />
+    <div id="gameName">
+      <CardHeader title="Game Name" className="newGameTitle" classes={{ title: cardTitle }} />
       <CardContent>
         <TextField
           className="gameName"
@@ -32,6 +32,6 @@ export const GameName: React.FC<GameNameProps> = ({ gameName, onChange }) => {
           fullWidth
         />
       </CardContent>
-    </>
+    </div>
   );
 };

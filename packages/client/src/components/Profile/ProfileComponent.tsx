@@ -10,6 +10,7 @@ import {
   CardHeader,
   TextField,
 } from '@material-ui/core';
+import { navigate } from '@reach/router';
 import { Avatar } from 'react-avataaars';
 
 import { User } from '../../hooks/Auth';
@@ -38,6 +39,10 @@ export const ProfileComponent: React.FC<ProfileComponentProps> = memo(
       saveUsername(username);
     }, [saveUsername, username]);
 
+    const goBack = useCallback(() => {
+      navigate('/');
+    }, []);
+
     return (
       <Container component="main" className={`${root} Profile`}>
         <Typography component="h2" variant="h2" align="center" color="textPrimary" className={pageTitle}>
@@ -49,10 +54,14 @@ export const ProfileComponent: React.FC<ProfileComponentProps> = memo(
             <CardHeader title="Username" className="card-username__title" classes={{ title: cardTitle }} />
             <CardContent>
               <TextField
+                fullWidth
                 className="username"
                 label="Username"
                 variant="outlined"
                 value={username}
+                inputProps={{
+                  maxLength: 16,
+                }}
                 onChange={handleUsernameChange}
                 disabled={saveUsernameLoading}
               />
@@ -61,10 +70,10 @@ export const ProfileComponent: React.FC<ProfileComponentProps> = memo(
               <Button
                 className={`${cardAction} saveUsername`}
                 startIcon={saveUsernameLoading && <CircularProgress size={24} />}
-                disabled={saveUsernameLoading}
+                disabled={saveUsernameLoading || username === user.username}
                 onClick={handleSaveUsername}
               >
-                Save
+                Save Username
               </Button>
             </CardActions>
           </Card>
@@ -83,7 +92,11 @@ export const ProfileComponent: React.FC<ProfileComponentProps> = memo(
                 disabled={shuffleAvatarLoading}
                 onClick={shuffleAvatar}
               >
-                Chose New Avatar
+                New Random Avatar
+              </Button>
+
+              <Button className={`${cardAction} back`} onClick={goBack}>
+                Go Back
               </Button>
             </CardActions>
           </Card>

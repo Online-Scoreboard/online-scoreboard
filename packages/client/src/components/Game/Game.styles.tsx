@@ -8,4 +8,7 @@ export default makeStyles(theme => ({
   loader: {
     marginRight: theme.spacing(1),
   },
+  content: {
+    marginBottom: theme.spacing(4),
+  },
 }));
