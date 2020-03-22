@@ -7,6 +7,10 @@ export const GET_GAME = gql`
       name
       owner
       status
+      teams
+      teamColors
+      createdAt
+      updatedAt
       users {
         id
         item {
@@ -15,13 +19,20 @@ export const GET_GAME = gql`
           avatar
         }
       }
-      pendingPlayers {
+      pendingUsers {
         id
         item {
           id
           username
           avatar
         }
+      }
+      rules {
+        isMatchesBased
+        scoringSystem
+        startingScore
+        winningScore
+        winningScoreEnabled
       }
     }
   }
@@ -41,7 +52,7 @@ export const GAME_UPDATED = gql`
           avatar
         }
       }
-      pendingPlayers {
+      pendingUsers {
         id
         item {
           id
@@ -67,7 +78,7 @@ export const START_GAME = gql`
           avatar
         }
       }
-      pendingPlayers {
+      pendingUsers {
         id
         item {
           id
@@ -93,7 +104,7 @@ export const JOIN_GAME = gql`
           avatar
         }
       }
-      pendingPlayers {
+      pendingUsers {
         id
         item {
           id
@@ -105,9 +116,9 @@ export const JOIN_GAME = gql`
   }
 `;
 
-export const ACCEPT_PLAYER = gql`
-  mutation AcceptPlayer($acceptPlayerInput: AcceptPlayerInput!) {
-    acceptPlayer(input: $acceptPlayerInput) {
+export const ACCEPT_USER = gql`
+  mutation AcceptUser($acceptUserInput: AcceptUserInput!) {
+    acceptUser(input: $acceptUserInput) {
       id
       owner
       status
@@ -119,7 +130,7 @@ export const ACCEPT_PLAYER = gql`
           avatar
         }
       }
-      pendingPlayers {
+      pendingUsers {
         id
         item {
           id
@@ -131,9 +142,9 @@ export const ACCEPT_PLAYER = gql`
   }
 `;
 
-export const REJECT_PLAYER = gql`
-  mutation RejectPlayer($rejectPlayerInput: RejectPlayerInput!) {
-    rejectPlayer(input: $rejectPlayerInput) {
+export const REJECT_USER = gql`
+  mutation RejectUser($rejectUserInput: RejectUserInput!) {
+    rejectUser(input: $rejectUserInput) {
       id
       owner
       status
@@ -145,7 +156,7 @@ export const REJECT_PLAYER = gql`
           avatar
         }
       }
-      pendingPlayers {
+      pendingUsers {
         id
         item {
           id

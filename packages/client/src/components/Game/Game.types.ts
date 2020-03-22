@@ -1,3 +1,5 @@
+import { TeamColor } from '../NewGame/NewGameTypes';
+
 export interface UserData {
   id: string;
   username: string;
@@ -9,11 +11,24 @@ export interface GameUserData {
   item?: UserData;
 }
 
+export interface GameRules {
+  isMatchesBased: boolean;
+  scoringSystem: 'increase' | 'decrease';
+  startingScore: number;
+  winningScore: number;
+  winningScoreEnabled: boolean;
+}
+
 export interface Game {
   id: string;
   name: string;
   owner: string;
   status: 'new' | 'started' | 'ended';
-  pendingPlayers?: GameUserData[];
+  teams: number;
+  teamColors: TeamColor[];
+  createdAt: string;
+  updatedAt: string;
+  rules: GameRules;
+  pendingUsers?: GameUserData[];
   users?: GameUserData[];
 }

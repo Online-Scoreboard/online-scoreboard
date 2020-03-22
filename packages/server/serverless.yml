@@ -48,25 +48,48 @@ custom:
         request: 'listUsers-request-mapping-template.vtl'
         response: 'listUsers-response-mapping-template.vtl'
       - dataSource: OnlineScoreBoard
+        type: Query
+        field: whoAmI
+        request: 'whoAmI-request-mapping-template.vtl'
+        response: 'whoAmI-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: Query
+        field: getUser
+        request: 'getUser-request-mapping-template.vtl'
+        response: 'getUser-response-mapping-template.vtl'
+      - dataSource: OnlineScoreBoard
+        type: Query
+        field: getGame
+        request: 'getGame-request-mapping-template.vtl'
+        response: 'getGame-response-mapping-template.vtl'
+
+      - dataSource: OnlineScoreBoard
         type: ModelGameConnection
         field: count
         request: 'countGames-request-mapping-template.vtl'
         response: 'countGames-response-mapping-template.vtl'
       - dataSource: OnlineScoreBoard
+        type: ModelUserConnection
+        field: count
+        request: 'countUsers-request-mapping-template.vtl'
+        response: 'countUsers-response-mapping-template.vtl'
+
+      - dataSource: OnlineScoreBoard
         type: Game
-        field: pendingPlayers
-        request: 'gamePendingPlayers-request-mapping-template.vtl'
-        response: 'gamePendingPlayers-response-mapping-template.vtl'
+        field: pendingUsers
+        request: 'gamePendingUsers-request-mapping-template.vtl'
+        response: 'gamePendingUsers-response-mapping-template.vtl'
       - dataSource: OnlineScoreBoard
-        type: PendingPlayer
+        type: PendingUser
         field: id
-        request: 'gamePendingPlayerId-request-mapping-template.vtl'
-        response: 'gamePendingPlayerId-response-mapping-template.vtl'
+        request: 'gamePendingUserId-request-mapping-template.vtl'
+        response: 'gamePendingUserId-response-mapping-template.vtl'
       - dataSource: OnlineScoreBoard
-        type: PendingPlayer
+        type: PendingUser
         field: item
-        request: 'gamePendingPlayerData-request-mapping-template.vtl'
-        response: 'gamePendingPlayerData-response-mapping-template.vtl'
+        request: 'gamePendingUserData-request-mapping-template.vtl'
+        response: 'gamePendingUserData-response-mapping-template.vtl'
+
       - dataSource: OnlineScoreBoard
         type: Game
         field: users
@@ -82,26 +105,23 @@ custom:
         field: item
         request: 'gameUserData-request-mapping-template.vtl'
         response: 'gameUserData-response-mapping-template.vtl'
+
       - dataSource: OnlineScoreBoard
-        type: ModelUserConnection
-        field: count
-        request: 'countUsers-request-mapping-template.vtl'
-        response: 'countUsers-response-mapping-template.vtl'
+        type: Game
+        field: players
+        request: 'gamePlayers-request-mapping-template.vtl'
+        response: 'gamePlayers-response-mapping-template.vtl'
       - dataSource: OnlineScoreBoard
-        type: Query
-        field: whoAmI
-        request: 'whoAmI-request-mapping-template.vtl'
-        response: 'whoAmI-response-mapping-template.vtl'
+        type: GamePlayer
+        field: id
+        request: 'gamePlayerId-request-mapping-template.vtl'
+        response: 'gamePlayerId-response-mapping-template.vtl'
       - dataSource: OnlineScoreBoard
-        type: Query
-        field: getUser
-        request: 'getUser-request-mapping-template.vtl'
-        response: 'getUser-response-mapping-template.vtl'
-      - dataSource: OnlineScoreBoard
-        type: Query
-        field: getGame
-        request: 'getGame-request-mapping-template.vtl'
-        response: 'getGame-response-mapping-template.vtl'
+        type: GamePlayer
+        field: item
+        request: 'gamePlayerData-request-mapping-template.vtl'
+        response: 'gamePlayerData-response-mapping-template.vtl'
+
       - dataSource: OnlineScoreBoard
         type: User
         field: completedGames
@@ -112,6 +132,7 @@ custom:
         field: activeGames
         request: 'activeGames-request-mapping-template.vtl'
         response: 'activeGames-response-mapping-template.vtl'
+
       - dataSource: OnlineScoreBoard
         type: Mutation
         field: createUser
@@ -155,20 +176,20 @@ custom:
           - JoinGame
           - UpdateGameData
       - type: Mutation
-        field: acceptPlayer
-        request: 'acceptPlayer-request-mapping-template-before.vtl'
-        response: 'acceptPlayer-response-mapping-template-after.vtl'
+        field: acceptUser
+        request: 'acceptUser-request-mapping-template-before.vtl'
+        response: 'acceptUser-response-mapping-template-after.vtl'
         kind: PIPELINE
         functions:
-          - AcceptPlayer
+          - AcceptUser
           - UpdateGameData
       - type: Mutation
-        field: rejectPlayer
-        request: 'rejectPlayer-request-mapping-template-before.vtl'
-        response: 'rejectPlayer-response-mapping-template-after.vtl'
+        field: rejectUser
+        request: 'rejectUser-request-mapping-template-before.vtl'
+        response: 'rejectUser-response-mapping-template-after.vtl'
         kind: PIPELINE
         functions:
-          - RejectPlayer
+          - RejectUser
           - UpdateGameData
 
     functionConfigurations:
@@ -189,13 +210,13 @@ custom:
         request: 'joinGame-request-mapping-template.vtl'
         response: 'joinGame-response-mapping-template.vtl'
       - dataSource: graphqlLambda
-        name: 'AcceptPlayer'
-        request: 'acceptPlayer-request-mapping-template.vtl'
-        response: 'acceptPlayer-response-mapping-template.vtl'
+        name: 'AcceptUser'
+        request: 'acceptUser-request-mapping-template.vtl'
+        response: 'acceptUser-response-mapping-template.vtl'
       - dataSource: graphqlLambda
-        name: 'RejectPlayer'
-        request: 'rejectPlayer-request-mapping-template.vtl'
-        response: 'rejectPlayer-response-mapping-template.vtl'
+        name: 'RejectUser'
+        request: 'rejectUser-request-mapping-template.vtl'
+        response: 'rejectUser-response-mapping-template.vtl'
       - dataSource: OnlineScoreBoard
         name: 'CreateGameData'
         request: 'createGameData-request-mapping-template.vtl'

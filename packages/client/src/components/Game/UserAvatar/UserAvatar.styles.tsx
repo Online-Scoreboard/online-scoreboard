@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles(() => ({
   '@global': {
-    '@keyframes pendingPlayer': {
+    '@keyframes pendingUser': {
       '0%': { transform: 'rotateZ(0)' },
       '25%': { transform: 'rotateZ(40deg)' },
       '50%': { transform: 'rotateZ(0deg)' },
@@ -23,7 +23,7 @@ export default makeStyles(() => ({
     },
   },
 
-  playerAvatar: {
+  userAvatar: {
     position: 'relative',
   },
 
@@ -32,10 +32,10 @@ export default makeStyles(() => ({
     boxSizing: 'border-box',
 
     '& > div': {
-      animation: '2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite pendingPlayer',
+      animation: '2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite pendingUser',
     },
   },
-  pendingPlayer: {
+  pendingUser: {
     position: 'absolute',
     bottom: 0,
     right: 0,

@@ -3,7 +3,7 @@ import { RouteComponentProps } from '@reach/router';
 import { useQuery, useSubscription, useMutation } from '@apollo/react-hooks';
 import { Typography } from '@material-ui/core';
 
-import { GET_GAME, GAME_UPDATED, START_GAME, JOIN_GAME, ACCEPT_PLAYER, REJECT_PLAYER } from './Game.graphql';
+import { GET_GAME, GAME_UPDATED, START_GAME, JOIN_GAME, ACCEPT_USER, REJECT_USER } from './Game.graphql';
 import { Loading } from '../Loading';
 import { useMessage } from '../../hooks/useMessage';
 import { useAuth } from '../../hooks/Auth';
@@ -37,12 +37,12 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
       createMessage(err.message, 'error');
     },
   });
-  const [_acceptPlayer, { loading: acceptPlayerLoading }] = useMutation(ACCEPT_PLAYER, {
+  const [_acceptUser, { loading: acceptUserLoading }] = useMutation(ACCEPT_USER, {
     onError: err => {
       createMessage(err.message, 'error');
     },
   });
-  const [_rejectPlayer, { loading: rejectPlayerLoading }] = useMutation(REJECT_PLAYER, {
+  const [_rejectUser, { loading: rejectUserLoading }] = useMutation(REJECT_USER, {
     onError: err => {
       createMessage(err.message, 'error');
     },
@@ -58,18 +58,18 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
     return _joinGame({ variables: { gameId } });
   }, [_joinGame, gameId]);
 
-  const acceptPlayer = useCallback(
-    (playerId: string) => {
-      return _acceptPlayer({ variables: { acceptPlayerInput: { gameId, playerId } } });
+  const acceptUser = useCallback(
+    (pendingUserId: string) => {
+      return _acceptUser({ variables: { acceptUserInput: { gameId, pendingUserId } } });
     },
-    [_acceptPlayer, gameId]
+    [_acceptUser, gameId]
   );
 
-  const rejectPlayer = useCallback(
-    (playerId: string) => {
-      return _rejectPlayer({ variables: { rejectPlayerInput: { gameId, playerId } } });
+  const rejectUser = useCallback(
+    (pendingUserId: string) => {
+      return _rejectUser({ variables: { rejectUserInput: { gameId, pendingUserId } } });
     },
-    [_rejectPlayer, gameId]
+    [_rejectUser, gameId]
   );
 
   const gameData = data && data.getGame;
@@ -87,7 +87,7 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
     );
   }
 
-  const operationLoading = acceptPlayerLoading || joinGameLoading || startGameLoading || rejectPlayerLoading;
+  const operationLoading = acceptUserLoading || joinGameLoading || startGameLoading || rejectUserLoading;
 
   if (!gameData) {
     return (
@@ -104,8 +104,8 @@ const Component: React.FC<GameProps> = ({ gameId }) => {
       operationLoading={operationLoading}
       startGame={startGame}
       joinGame={joinGame}
-      acceptPlayer={acceptPlayer}
-      rejectPlayer={rejectPlayer}
+      acceptUser={acceptUser}
+      rejectUser={rejectUser}
     />
   );
 };

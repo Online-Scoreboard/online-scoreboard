@@ -52,7 +52,7 @@ const Component: React.FC<Props> = ({ gameId }) => {
         >
           <MenuItem dense={true}>
             <Grid container direction="column">
-              <Typography variant="inherit">Share this game ID with other players</Typography>
+              <Typography variant="inherit">Share this game ID with other users</Typography>
               <Grid item container direction="row" justify="space-between" alignItems="center">
                 <Grid item>
                   <TextField margin="normal" name="gameShareLink" value={gameId} />

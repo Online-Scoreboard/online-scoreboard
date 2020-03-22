@@ -8,7 +8,6 @@ const mailslurp = new MailSlurp({
 export const getVerificationCode = async (emailId: string) => {
   const fullEmail = await mailslurp.getEmail(emailId);
   const body = fullEmail.body;
-  console.warn(body);
 
   if (body) {
     const code = body.match(/verification code: (\d{6})/);

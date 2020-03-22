@@ -75,7 +75,7 @@ exports.graphqlHandler = async (event, context, callback) => {
 
     case 'createGame': {
       const { rules, teams, teamColors, setup } = input;
-      const pendingPlayers = [];
+      const pendingUsers = [];
       const isValid = Boolean(setup && setup.gameName, rules && teams && teamColors && teamColors.length);
 
       if (!isValid) {
@@ -95,7 +95,7 @@ exports.graphqlHandler = async (event, context, callback) => {
         users: [owner],
         createdAt,
         owner,
-        pendingPlayers,
+        pendingUsers,
         teamColors,
         teams,
         rules,
@@ -142,15 +142,15 @@ exports.graphqlHandler = async (event, context, callback) => {
 
       const isValid = true;
       const gameDataItem = gameData.Items[0];
-      const pendingPlayers = (gameDataItem && gameDataItem.pendingPlayers) || [];
+      const pendingUsers = (gameDataItem && gameDataItem.pendingUsers) || [];
       const gameAuthor = gameDataItem && gameDataItem.owner;
 
-      if (!~pendingPlayers.indexOf(userId) && gameAuthor !== userId) {
-        pendingPlayers.push(userId);
+      if (!~pendingUsers.indexOf(userId) && gameAuthor !== userId) {
+        pendingUsers.push(userId);
       }
 
       const values = {
-        pendingPlayers,
+        pendingUsers,
       };
 
       callback(null, { id: gameId, values, isValid });
@@ -158,9 +158,9 @@ exports.graphqlHandler = async (event, context, callback) => {
       break;
     }
 
-    case 'acceptPlayer': {
+    case 'acceptUser': {
       const { userId } = event;
-      const { gameId, playerId } = input;
+      const { gameId, pendingUserId } = input;
       const gameData = await findItem(TABLE_NAME, gameId);
       const gameExists = doesItemExist(gameData);
 
@@ -169,19 +169,19 @@ exports.graphqlHandler = async (event, context, callback) => {
       }
 
       const gameDataItem = gameData.Items[0];
-      const pendingPlayers = (gameDataItem && gameDataItem.pendingPlayers) || [];
+      const pendingUsers = (gameDataItem && gameDataItem.pendingUsers) || [];
       const users = (gameDataItem && gameDataItem.users) || [];
       const isValid = Boolean(~gameDataItem.users.indexOf(userId));
 
-      if (!~pendingPlayers.indexOf(playerId)) {
-        callback(null, { error: `Cannot add ${playerId} to ${gameId}. The player needs to request to join first` });
+      if (!~pendingUsers.indexOf(pendingUserId)) {
+        callback(null, { error: `Cannot add ${pendingUserId} to ${gameId}. The user needs to request to join first` });
       }
 
-      const pendingPlayersUpdate = pendingPlayers.filter(item => item !== playerId);
-      const usersUpdated = [...users, playerId];
+      const pendingUsersUpdate = pendingUsers.filter(item => item !== pendingUserId);
+      const usersUpdated = [...users, pendingUserId];
 
       const values = {
-        pendingPlayers: pendingPlayersUpdate,
+        pendingUsers: pendingUsersUpdate,
         users: usersUpdated,
       };
 
@@ -190,9 +190,9 @@ exports.graphqlHandler = async (event, context, callback) => {
       break;
     }
 
-    case 'rejectPlayer': {
+    case 'rejectUser': {
       const { userId } = event;
-      const { gameId, playerId } = input;
+      const { gameId, pendingUserId } = input;
       const gameData = await findItem(TABLE_NAME, gameId);
       const gameExists = doesItemExist(gameData);
 
@@ -201,19 +201,19 @@ exports.graphqlHandler = async (event, context, callback) => {
       }
 
       const gameDataItem = gameData.Items[0];
-      const pendingPlayers = (gameDataItem && gameDataItem.pendingPlayers) || [];
+      const pendingUsers = (gameDataItem && gameDataItem.pendingUsers) || [];
       const isValid = Boolean(~gameDataItem.users.indexOf(userId));
 
-      if (!~pendingPlayers.indexOf(playerId)) {
+      if (!~pendingUsers.indexOf(pendingUserId)) {
         callback(null, {
-          error: `Cannot find a pending player matching id ${playerId} in ${gameId}. The player needs to request to join first`,
+          error: `Cannot find a pending user matching id ${pendingUserId} in ${gameId}. The user needs to request to join first`,
         });
       }
 
-      const pendingPlayersUpdate = pendingPlayers.filter(item => item !== playerId);
+      const pendingUsersUpdate = pendingUsers.filter(item => item !== pendingUserId);
 
       const values = {
-        pendingPlayers: pendingPlayersUpdate,
+        pendingUsers: pendingUsersUpdate,
       };
 
       callback(null, { id: gameId, values, isValid });

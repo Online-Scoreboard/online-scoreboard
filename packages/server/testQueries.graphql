@@ -17,7 +17,7 @@ query GetGame {
         username
       }
     }
-    pendingPlayers {
+    pendingUsers {
       id
       item {
         username
@@ -57,7 +57,7 @@ mutation CreateGame {
 mutation JoinGame {
   joinGame(gameId: "excited_fuchsia_squirrel") {
     id
-    pendingPlayers {
+    pendingUsers {
       id
     }
     users {
@@ -66,8 +66,8 @@ mutation JoinGame {
   }
 }
 
-mutation AcceptPlayer($acceptPlayerInput: AcceptPlayerInput!) {
-  acceptPlayer(input: $acceptPlayerInput) {
+mutation AcceptUser($acceptUserInput: AcceptUserInput!) {
+  acceptUser(input: $acceptUserInput) {
     id
       owner
       users {
@@ -76,7 +76,7 @@ mutation AcceptPlayer($acceptPlayerInput: AcceptPlayerInput!) {
           username
         }
       }
-      pendingPlayers {
+      pendingUsers {
         id
       }
       status
@@ -93,8 +93,8 @@ subscription OnGameUpdated {
 ## Variables
 
 {
-  "acceptPlayerInput": {
+  "acceptUserInput": {
     "gameId": "excited_fuchsia_squirrel",
-    "playerId": "0a201c8d-47d2-4b40-a1ef-70de367b52e6"
+    "userId": "0a201c8d-47d2-4b40-a1ef-70de367b52e6"
   }
 }
