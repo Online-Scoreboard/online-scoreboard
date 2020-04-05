@@ -4,7 +4,6 @@ import { TestRunContext } from '../support/test-run-context';
 import RegistrationPage from '../pages/RegistrationPage';
 import LoginPage from '../pages/LoginPage';
 import { envConfig } from '../env-keys';
-import { deepStrictEqual } from 'assert';
 
 When(/^I am on the registration page$/, async function() {
   // navigate to page, see page, see form

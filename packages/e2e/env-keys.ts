@@ -11,5 +11,5 @@ export const envConfig = {
   INVALID_PASSWORD: 'password000',
   MAILSLURP_API_KEY: process.env.MAILSLURP_API_KEY || '',
   TEST_USER: process.env.TEST_USER || '',
-  HEADLESS: process.env.HEADLESS || false,
+  HEADLESS: process.env.HEADLESS === 'true',
 };
