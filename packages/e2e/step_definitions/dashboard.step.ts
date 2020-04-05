@@ -1,11 +1,13 @@
-import assert from 'assert';
+import { ok } from 'assert';
 import { until } from 'selenium-webdriver';
 import { Then } from 'cucumber';
-import DashboardPage from '../pages/dashboard.page';
+import HomePage from '../pages/HomePage';
 
 Then(/^I should see the user dashboard$/, async function() {
-  await this.browser.wait(until.elementLocated(DashboardPage.getWelcomeMessage())).isDisplayed();
+  await this.browser
+    .wait(until.elementLocated(HomePage.welcomeMessage), 5000, `User dashboard is not visible`)
+    .isDisplayed();
 
-  const welcome = await this.browser.findElement(DashboardPage.getWelcomeMessage()).getText();
-  assert.ok(welcome.match(/Welcome \w+!/g), 'Cannot find a welcome message on the page');
+  const welcome = await this.browser.findElement(HomePage.welcomeMessage).getText();
+  ok(welcome.match(/Welcome \w+!/g), 'Cannot find a welcome message on the page');
 });

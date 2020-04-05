@@ -1,20 +1,31 @@
-import { After, Before, BeforeAll, Status, AfterAll } from 'cucumber';
+import { After, Before, BeforeAll, Status, AfterAll, setDefaultTimeout } from 'cucumber';
 import { Builder } from 'selenium-webdriver';
-import { IMPLICIT_TIMEOUT, PAGE_LOAD_TIMEOUT, SCRIPT_TIMEOUT } from './const';
+import { IMPLICIT_TIMEOUT, PAGE_LOAD_TIMEOUT, SCRIPT_TIMEOUT, CUCUMBER_STEP_TIMEOUT } from './const';
 import { envConfig } from '../env-keys';
-import { getBrowserCapabilities } from './browser-capabilities';
 import { TestRunContext } from './test-run-context';
+import { Options } from 'selenium-webdriver/chrome';
+
+BeforeAll(function() {
+  setDefaultTimeout(CUCUMBER_STEP_TIMEOUT);
+});
 
 BeforeAll(async function() {
-  const capabilities = getBrowserCapabilities(envConfig.BROWSER);
-
-  TestRunContext.setCapabilities(capabilities);
   await TestRunContext.createTestUser();
 });
 
 Before(async function() {
   try {
-    this.browser = await new Builder().withCapabilities(TestRunContext.capabilities).build();
+    const chromeOptions = new Options();
+
+    if (envConfig.HEADLESS) {
+      chromeOptions.addArguments('--headless');
+    }
+
+    this.browser = await new Builder()
+      .forBrowser(envConfig.BROWSER)
+      .setChromeOptions(chromeOptions)
+      .build();
+
     TestRunContext.setBrowser(this.browser);
 
     await this.browser

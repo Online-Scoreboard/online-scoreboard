@@ -1,4 +1,3 @@
-import { BrowserCapabilities } from './browser-capabilities';
 import { WebDriver } from 'selenium-webdriver';
 import { envConfig } from '../env-keys';
 import {
@@ -13,15 +12,9 @@ import {
 } from '../utils/test-user';
 
 export class TestRunContext {
-  public static capabilities: BrowserCapabilities;
   public static browser: WebDriver;
-
   private static testUser: TestUser;
   private static inboxes: Inbox[] = [];
-
-  public static setCapabilities(capabilities: BrowserCapabilities): void {
-    this.capabilities = capabilities;
-  }
 
   public static setBrowser(browser: WebDriver): void {
     this.browser = browser;
