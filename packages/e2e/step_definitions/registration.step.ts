@@ -1,42 +1,32 @@
-import assert from 'assert';
 import { until } from 'selenium-webdriver';
 import { When, Then } from 'cucumber';
 import { TestRunContext } from '../support/test-run-context';
-import RegistrationPage from '../pages/registration.page';
-import LoginPage from '../pages/login.page';
+import RegistrationPage from '../pages/RegistrationPage';
+import LoginPage from '../pages/LoginPage';
 import { envConfig } from '../env-keys';
 
-When(/^I am on the Online Scoreboard registration form$/, async function() {
+When(/^I am on the registration page$/, async function() {
+  // navigate to page, see page, see form
   await RegistrationPage.navigateToRegistrationPage();
-
-  const expected = 'Register';
-  const h1 = await this.browser.findElement(RegistrationPage.getMainHeading()).getText();
-
-  assert.deepStrictEqual(h1, expected, `Expected registration page heading to be: ${expected}, got: ${h1}`);
+  await RegistrationPage.userIsOnRegistrationPage();
+  await RegistrationPage.userSeesRegistrationForm();
 });
 
 When(/^I navigate to the Registration page$/, async function() {
-  await this.browser.wait(until.elementLocated(LoginPage.doNotHaveAccountButton())).click();
+  await this.browser.wait(until.elementLocated(LoginPage.doNotHaveAccountBtn)).click();
 });
 
 Then(/^I should see the Registration page$/, async function() {
-  await new Promise(r => setTimeout(r, 300)); // wait for page navigation
-  const urlRegister = '/register';
-  await this.browser.wait(until.urlContains(urlRegister), 5000, `Expected url path to be /register`);
-
-  const h1 = await this.browser.findElement(RegistrationPage.getMainHeading()).getText();
-  assert.deepStrictEqual(h1, 'Register', `Expected registration heading to be: Register, got: ${h1}`);
+  await RegistrationPage.userIsOnRegistrationPage();
 });
 
 Then(/^I should see the registration form$/, async function() {
-  await this.browser.wait(until.elementLocated(RegistrationPage.getUsernameInput())).isDisplayed();
-  await this.browser.wait(until.elementLocated(RegistrationPage.getPasswordInput())).isDisplayed();
-  await this.browser.wait(until.elementLocated(RegistrationPage.getRegisterButton())).isDisplayed();
+  await RegistrationPage.userSeesRegistrationForm();
 });
 
 Then(/^The user '(.*)' should receive an email containing the verification code$/, async function(inboxId: string) {
-  const codeInput = await this.browser.findElement(RegistrationPage.getVerificationCodeInput());
-  const verifyCodeButton = await this.browser.findElement(RegistrationPage.getVerifyCodeButton());
+  const codeInput = await this.browser.findElement(RegistrationPage.verificationCodeInput);
+  const verifyCodeButton = await this.browser.findElement(RegistrationPage.verifyCodeBtn);
 
   const code = await TestRunContext.waitForVerificationCode(inboxId);
 
@@ -45,8 +35,21 @@ Then(/^The user '(.*)' should receive an email containing the verification code$
 });
 
 Then(/^I should see the email verification form$/, async function() {
-  await this.browser.wait(until.elementLocated(RegistrationPage.getVerificationCodeInput())).isDisplayed();
-  await this.browser.wait(until.elementLocated(RegistrationPage.getVerifyCodeButton())).isDisplayed();
+  await this.browser
+    .wait(
+      until.elementLocated(RegistrationPage.verificationCodeInput),
+      5000,
+      'Could not find Verification code input in Registration page'
+    )
+    .isDisplayed();
+
+  await this.browser
+    .wait(
+      until.elementLocated(RegistrationPage.verifyCodeBtn),
+      5000,
+      'Could not find Verify code button in Registration page'
+    )
+    .isDisplayed();
 });
 
 Then(/^I fill in the registration form with '(.*)' email address and '(.*)' password for user '(.*)'$/, async function(
@@ -54,9 +57,9 @@ Then(/^I fill in the registration form with '(.*)' email address and '(.*)' pass
   isValidPassword: string,
   userTag?: string
 ) {
-  const username = await this.browser.findElement(RegistrationPage.getUsernameInput());
-  const password = await this.browser.findElement(RegistrationPage.getPasswordInput());
-  const registerButton = await this.browser.findElement(RegistrationPage.getRegisterButton());
+  const username = await this.browser.findElement(RegistrationPage.usernameInput);
+  const password = await this.browser.findElement(RegistrationPage.passwordInput);
+  const registerButton = await this.browser.findElement(RegistrationPage.registerBtn);
 
   if (isValidEmail === 'valid') {
     const inbox = await TestRunContext.generateNewInbox(userTag);

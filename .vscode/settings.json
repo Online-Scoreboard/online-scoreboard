@@ -1,4 +1,5 @@
 {
   "eslint.enable": true,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "cucumberautocomplete.steps": ["packages/e2e/step_definitions/*.ts"]
 }
